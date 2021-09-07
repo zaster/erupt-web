@@ -1,5 +1,5 @@
 import {Edit, EruptFieldModel, View} from "./erupt-field.model";
-import {OperationMode, OperationType} from "./erupt.enum";
+import {OperationEruptMode, OperationMode, OperationType} from "./erupt.enum";
 
 
 export interface EruptModel {
@@ -19,6 +19,7 @@ export interface Erupt {
     linkTree: LinkTree;
     rowOperation: { [key: string]: RowOperation };
     drills: { [key: string]: Drill };
+    params:{}
 }
 
 interface LinkTree {
@@ -58,6 +59,7 @@ export interface Link {
 
 
 export interface RowOperation {
+    eruptMode: OperationEruptMode;
     icon: string;
     title: string;
     mode: OperationMode;

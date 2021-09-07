@@ -10,7 +10,7 @@ import {ActivatedRoute} from "@angular/router";
 import {NzMessageService, NzModalService} from "ng-zorro-antd";
 import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {EruptBuildModel} from "../../model/erupt-build.model";
-import {OperationMode, OperationType, RestPath, Scene, SelectMode} from "../../model/erupt.enum";
+import {OperationEruptMode, OperationMode, OperationType, RestPath, Scene, SelectMode} from "../../model/erupt.enum";
 import {DataHandlerService} from "../../service/data-handler.service";
 import {ExcelImportComponent} from "../../components/excel-import/excel-import.component";
 import {BuildConfig} from "../../model/build-config";
@@ -79,6 +79,7 @@ export class TableComponent implements OnInit {
 
     adding: boolean = false; //新增行为防抖
 
+    
     @Input() set drill(drill: { erupt: string, code: string, eruptParent: string, val: any }) {
         this._drill = drill;
         this.init(this.dataService.getEruptBuild(drill.erupt), {
@@ -148,6 +149,7 @@ export class TableComponent implements OnInit {
         this.stConfig.req.headers = req.header;
         this.stConfig.url = req.url;
         observable.subscribe(eb => {
+            
                 let dt = eb.eruptModel.eruptJson.linkTree;
                 this.linkTree = !!dt;
                 if (dt) {
@@ -318,6 +320,7 @@ export class TableComponent implements OnInit {
 
         //drill
         const eruptJson = this.eruptBuildModel.eruptModel.eruptJson;
+
         for (let key in eruptJson.drills) {
             let drill = eruptJson.drills[key];
             tableOperators.push({
@@ -403,38 +406,81 @@ export class TableComponent implements OnInit {
                 operationErupt = this.eruptBuildModel.operationErupts[code];
             }
             if (operationErupt) {
-                this.dataHandler.emptyEruptValue({
-                    eruptModel: operationErupt
-                });
-                let modal = this.modal.create({
-                    nzKeyboard: false,
-                    nzTitle: ro.title,
-                    nzMaskClosable: false,
-                    nzCancelText: "关闭",
-                    nzWrapClassName: "modal-lg",
-                    nzOnOk: async () => {
-                        modal.getInstance().nzCancelDisabled = true;
-                        let eruptValue = this.dataHandler.eruptValueToObject({eruptModel: operationErupt});
-                        let res = await this.dataService.execOperatorFun(eruptModel.eruptName, code, ids, eruptValue).toPromise().then(res => res);
-                        modal.getInstance().nzCancelDisabled = false;
-                        this.selectedRows = [];
-                        if (res.status === Status.SUCCESS) {
-                            this.st.reload();
-                            res.data && eval(res.data);
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    },
-                    nzContent: EditTypeComponent,
-                    nzComponentParams: {
-                        mode: Scene.ADD,
-                        eruptBuildModel: {
-                            eruptModel: operationErupt
+                if (ro.eruptMode === OperationEruptMode.FORM) {
+                    this.dataHandler.emptyEruptValue({
+                        eruptModel: operationErupt
+                    });
+                    let modal = this.modal.create({
+                        nzKeyboard: false,
+                        nzTitle: ro.title,
+                        nzMaskClosable: false,
+                        nzCancelText: "关闭",
+                        nzWrapClassName: "modal-lg",
+                        nzOnOk: async () => {
+                            modal.getInstance().nzCancelDisabled = true;
+                            let eruptValue = this.dataHandler.eruptValueToObject({eruptModel: operationErupt});
+                            let res = await this.dataService.execOperatorFun(eruptModel.eruptName, code, ids, eruptValue).toPromise().then(res => res);
+                            modal.getInstance().nzCancelDisabled = false;
+                            this.selectedRows = [];
+                            if (res.status === Status.SUCCESS) {
+                                this.st.reload();
+                                res.data && eval(res.data);
+                                return true;
+                            } else {
+                                return false;
+                            }
                         },
-                        parentEruptName: this.eruptBuildModel.eruptModel.eruptName
-                    }
-                });
+                        nzContent: EditTypeComponent,
+                        nzComponentParams: {
+                            mode: Scene.ADD,
+                            eruptBuildModel: {
+                                eruptModel: operationErupt
+                            },
+                            parentEruptName: this.eruptBuildModel.eruptModel.eruptName
+                        }
+                    });
+                } else {
+                    
+                    let modal = this.modal.create({
+                        nzKeyboard: false,
+                        nzTitle: ro.title,
+                        nzMaskClosable: false,
+                        nzCancelText: "关闭",
+                        nzWrapClassName: "modal-lg",
+                        nzOnOk: async () => {
+                            modal.getInstance().nzCancelDisabled = true;
+                            const sids = [];
+                           
+                            const sRows = modal.getContentComponent().selectedRows;
+                            if (!sRows || sRows.length === 0) {
+                                this.msg.warning("请至少选一条数据");
+                                return;
+                            }
+                           
+                            
+                            sRows.forEach(e => {
+                               
+                                sids.push(e[modal.getContentComponent().eruptBuildModel.eruptModel.eruptJson.primaryKeyCol]);
+                            });
+                            //let eruptValue = this.dataHandler.eruptValueToObject({eruptModel: operationErupt});
+                            let res = await this.dataService.execOperatorFun(eruptModel.eruptName, code, sids, this._drill).toPromise().then(res => res);
+                            modal.getInstance().nzCancelDisabled = false;
+                            this.selectedRows = [];
+                            if (res.status === Status.SUCCESS) {
+                                this.st.reload();
+                                res.data && eval(res.data);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        },
+                        nzContent: TableComponent,
+                        nzComponentParams: {
+                            eruptName:operationErupt.eruptName
+                        }
+                    });
+                }
+             
             } else {
                 this.modal.confirm({
                     nzTitle: ro.title,
