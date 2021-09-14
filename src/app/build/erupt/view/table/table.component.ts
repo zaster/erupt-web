@@ -320,14 +320,8 @@ export class TableComponent implements OnInit {
 
         //drill
         const eruptJson = this.eruptBuildModel.eruptModel.eruptJson;
-<<<<<<< HEAD
-
-        for (let key in eruptJson.drills) {
-            let drill = eruptJson.drills[key];
-=======
         for (let i in eruptJson.drills) {
             let drill = eruptJson.drills[i];
->>>>>>> 494aa260c16ff013b8a62b775a7d1b04c75af08f
             tableOperators.push({
                 type: 'link',
                 tooltip: drill.title,
@@ -469,7 +463,7 @@ export class TableComponent implements OnInit {
                                 sids.push(e[modal.getContentComponent().eruptBuildModel.eruptModel.eruptJson.primaryKeyCol]);
                             });
                             //let eruptValue = this.dataHandler.eruptValueToObject({eruptModel: operationErupt});
-                            let res = await this.dataService.execOperatorFun(eruptModel.eruptName, code, sids, this._drill).toPromise().then(res => res);
+                            let res = await this.dataService.execOperatorFun(eruptModel.eruptName, ro.code, sids, this._drill).toPromise().then(res => res);
                             modal.getInstance().nzCancelDisabled = false;
                             this.selectedRows = [];
                             if (res.status === Status.SUCCESS) {
