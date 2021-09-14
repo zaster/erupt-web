@@ -17,9 +17,8 @@ export interface Erupt {
     power: Power;
     tree: Tree;
     linkTree: LinkTree;
-    rowOperation: { [key: string]: RowOperation };
-    drills: { [key: string]: Drill };
-    params:{}
+    rowOperation: RowOperation[];
+    drills: Drill[];
 }
 
 interface LinkTree {
@@ -60,6 +59,7 @@ export interface Link {
 
 export interface RowOperation {
     eruptMode: OperationEruptMode;
+    code: string;
     icon: string;
     title: string;
     mode: OperationMode;
