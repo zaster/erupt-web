@@ -33,6 +33,7 @@ export interface Drill {
     icon: string;
     column: string;
     link: Link;
+    power:Power;
 }
 
 export interface Tree {

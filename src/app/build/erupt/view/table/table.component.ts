@@ -1,6 +1,6 @@
 import {Component, Inject, Input, OnInit, ViewChild} from "@angular/core";
 import {DataService} from "@shared/service/data.service";
-import {EruptModel, RowOperation} from "../../model/erupt.model";
+import {EruptModel,Power, RowOperation} from "../../model/erupt.model";
 
 import {DrawerHelper, ModalHelper, SettingsService} from "@delon/theme";
 import {EditTypeComponent} from "../../components/edit-type/edit-type.component";
@@ -74,19 +74,22 @@ export class TableComponent implements OnInit {
 
     showTable: boolean = true;
 
-    _drill: { erupt: string, code: string, eruptParent: string, val: any };
+    _drill: { erupt: string, code: string, eruptParent: string, val: any,power:Power };
 
 
     adding: boolean = false; //新增行为防抖
 
     
-    @Input() set drill(drill: { erupt: string, code: string, eruptParent: string, val: any }) {
+    @Input() set drill(drill: { erupt: string, code: string, eruptParent: string, val: any,power:Power }) {
         this._drill = drill;
         this.init(this.dataService.getEruptBuild(drill.erupt), {
             url: RestPath.data + "/" + drill.eruptParent + "/drill/" + drill.code + "/" + drill.val,
             header: {
                 erupt: drill.eruptParent
             }
+        },(eb: EruptBuildModel) => {
+            let erupt = eb.eruptModel.eruptJson;
+            erupt.power=drill.power
         });
     }
 
@@ -341,6 +344,7 @@ export class TableComponent implements OnInit {
                                 code: drill.code,
                                 val: record[this.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol],
                                 erupt: drill.link.linkErupt,
+                                power:drill.power,
                                 eruptParent: this.eruptBuildModel.eruptModel.eruptName
                             }
                         }
@@ -479,7 +483,9 @@ export class TableComponent implements OnInit {
                             eruptName:operationErupt.eruptName
                         }
                     });
+
                 }
+
              
             } else {
                 this.modal.confirm({
