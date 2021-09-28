@@ -407,6 +407,7 @@ export class TableComponent implements OnInit {
                 }
             });
         } else if(ro.type==OperationType.IMPORT)  {
+            let paramData ={parent:this.drill.eruptParent,parentId:this.drill.val};
             let model = this.modal.create({
                 nzKeyboard: true,
                 nzTitle: "Excel导入",
@@ -417,7 +418,7 @@ export class TableComponent implements OnInit {
                 nzComponentParams: {
                     eruptModel:this.eruptBuildModel.eruptModel,
                     url: RestPath.data + "/" + this.eruptBuildModel.eruptModel.eruptName + "/importx/" + ro.code,
-                    param:"{parentErupt:"+this.drill.eruptParent+",parentId:"+this.drill.val+"}"
+                    param:paramData
                 },
                 nzOnCancel: () => {
                     if (model.getContentComponent().upload) {

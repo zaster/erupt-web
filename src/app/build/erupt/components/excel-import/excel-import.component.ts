@@ -14,7 +14,7 @@ export class ExcelImportComponent implements OnInit {
 
     @Input() url: string;
     @Input() eruptModel:EruptModel;
-    @Input() param: string;
+    @Input() param: {};
 
 
     upload: boolean = false;
