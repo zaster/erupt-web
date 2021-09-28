@@ -417,7 +417,7 @@ export class TableComponent implements OnInit {
                 nzContent: ExcelImportComponent,
                 nzComponentParams: {
                     eruptModel:this.eruptBuildModel.eruptModel,
-                    url: RestPath.data + "/" + this.eruptBuildModel.eruptModel.eruptName + "/operator/" + ro.code +"/importx",
+                    url: RestPath.data + "/" + this.eruptBuildModel.eruptModel.eruptName + "/operator/importx/" + ro.code ,
                     param:paramData
                 },
                 nzOnCancel: () => {
