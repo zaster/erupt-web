@@ -288,7 +288,11 @@ export class TableComponent implements OnInit {
                         record[this.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol])
                         .subscribe(result => {
                             if (result.status === Status.SUCCESS) {
-                                this.st.reload();
+                                if (this.st._data.length == 1) {
+                                    this.st.load(this.st.pi == 1 ? 1 : this.st.pi - 1);
+                                } else {
+                                    this.st.reload();
+                                }
                                 this.msg.success("删除成功");
                             }
                         });
@@ -595,8 +599,12 @@ export class TableComponent implements OnInit {
                         let res = await this.dataService.deleteEruptDatas(this.eruptBuildModel.eruptModel.eruptName, ids).toPromise().then(res => res);
                         this.deleting = false;
                         if (res.status == Status.SUCCESS) {
+                            if (this.selectedRows.length == this.st._data.length) {
+                                this.st.load(this.st.pi == 1 ? 1 : this.st.pi - 1);
+                            } else {
+                                this.st.reload();
+                            }
                             this.selectedRows = [];
-                            this.st.reload();
                             this.msg.success("删除成功");
                         }
                     }
