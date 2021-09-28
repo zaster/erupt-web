@@ -415,6 +415,7 @@ export class TableComponent implements OnInit {
                 nzWrapClassName: "modal-lg",
                 nzContent: ExcelImportComponent,
                 nzComponentParams: {
+                    eruptModel:this.eruptBuildModel.eruptModel,
                     url: RestPath.data + "/" + this.eruptBuildModel.eruptModel.eruptName + "/operator/" + ro.code,
                 },
                 nzOnCancel: () => {
@@ -683,6 +684,7 @@ export class TableComponent implements OnInit {
             nzWrapClassName: "modal-lg",
             nzContent: ExcelImportComponent,
             nzComponentParams: {
+                eruptModel:this.eruptBuildModel.eruptModel,
                 url: this.dataService.excelImport + this.eruptBuildModel.eruptModel.eruptName
             },
             nzOnCancel: () => {

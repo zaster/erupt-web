@@ -13,6 +13,7 @@ import {EruptApiModel, Status} from "../../model/erupt-api.model";
 export class ExcelImportComponent implements OnInit {
 
     @Input() url: string;
+    @Input() eruptModel:EruptModel;
 
     upload: boolean = false;
 
