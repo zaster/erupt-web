@@ -407,7 +407,7 @@ export class TableComponent implements OnInit {
                 }
             });
         } else if(ro.type==OperationType.IMPORT)  {
-            let paramData ={parent:this.drill.eruptParent,parentId:this.drill.val};
+            let paramData ={parent:this._drill?.eruptParent,parentId:this._drill?.val};
             let model = this.modal.create({
                 nzKeyboard: true,
                 nzTitle: "Excel导入",
