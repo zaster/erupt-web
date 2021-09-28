@@ -6,6 +6,7 @@
 <nz-upload nzType="drag"
            [(nzFileList)]="fileList"
            [nzLimit]="1"
+           [nzData]="param"
            [nzHeaders]="{token:tokenService.get().token,erupt:eruptModel.eruptName}"
            [nzAction]="url"
            [nzShowButton]="true"

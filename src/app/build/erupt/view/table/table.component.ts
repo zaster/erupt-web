@@ -416,7 +416,8 @@ export class TableComponent implements OnInit {
                 nzContent: ExcelImportComponent,
                 nzComponentParams: {
                     eruptModel:this.eruptBuildModel.eruptModel,
-                    url: RestPath.data + "/" + this.eruptBuildModel.eruptModel.eruptName + "/operator/" + ro.code,
+                    url: RestPath.data + "/" + this.eruptBuildModel.eruptModel.eruptName + "/importx/" + ro.code,
+                    param:"{parentErupt:"+this.drill.eruptParent+",parentId:"+this.drill.val+"}"
                 },
                 nzOnCancel: () => {
                     if (model.getContentComponent().upload) {
@@ -685,7 +686,8 @@ export class TableComponent implements OnInit {
             nzContent: ExcelImportComponent,
             nzComponentParams: {
                 eruptModel:this.eruptBuildModel.eruptModel,
-                url: this.dataService.excelImport + this.eruptBuildModel.eruptModel.eruptName
+                url: this.dataService.excelImport + this.eruptBuildModel.eruptModel.eruptName,
+                param:"{test:test}"
             },
             nzOnCancel: () => {
                 if (model.getContentComponent().upload) {
