@@ -31,7 +31,18 @@
                                 <i nz-icon nzType="download" nzTheme="outline"></i>下载
                             </button>
                         </ng-container>
-
+                        <ng-container *ngIf="eruptBuildModel.eruptModel.eruptJson.power.importable">
+                            &nbsp;
+                            <nz-button-group>
+                                <button nz-button (click)="importableExcel()" id="erupt-btn-importable">
+                                    <i nz-icon nzType="import" nzTheme="outline"></i> &nbsp;导入
+                                </button>
+                                <button nz-button nz-dropdown [nzDropdownMenu]="menu1" nzPlacement="bottomRight">
+                                    <i nz-icon nzType="ellipsis"></i>
+                                </button>
+                            </nz-button-group>
+                            &nbsp;
+                        </ng-container>
                         <ng-container *ngIf="eruptBuildModel.eruptModel.eruptJson.power.importable">
                             &nbsp;
                             <nz-button-group>
@@ -59,7 +70,17 @@
                                 <i nz-icon nzType="search" nzTheme="outline"></i>查询
                             </button>
                         </ng-container>
-
+                        <ng-container *ngIf="eruptBuildModel.eruptModel.eruptJson.rowOperation">
+                            <ng-container *ngFor="let item of eruptBuildModel.eruptModel.eruptJson.rowOperation">
+                                <ng-container *ngIf="item.mode != operationMode.SINGLE">
+                                    <button nz-button nzType="dashed" class="mb-sm" [nz-tooltip]="item.tip"
+                                            (click)="createOperator(item)">
+                                        <i class="fa" [ngClass]="item.icon"></i>
+                                        <span style="margin-left: 8px;">{{item.title}}</span>
+                                    </button>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
                         <ng-container>
                             <nz-divider nzType="vertical" class="hidden-mobile"></nz-divider>
                             <button nz-button nzType="default" nz-popover
@@ -90,17 +111,7 @@
                     </div>
                 </div>
                 <div>
-                    <ng-container *ngIf="eruptBuildModel.eruptModel.eruptJson.rowOperation">
-                        <ng-container *ngFor="let item of eruptBuildModel.eruptModel.eruptJson.rowOperation">
-                            <ng-container *ngIf="item.mode != operationMode.SINGLE">
-                                <button nz-button nzType="dashed" class="mb-sm" [nz-tooltip]="item.tip"
-                                        (click)="createOperator(item)">
-                                    <i class="fa" [ngClass]="item.icon"></i>
-                                    <span style="margin-left: 8px;">{{item.title}}</span>
-                                </button>
-                            </ng-container>
-                        </ng-container>
-                    </ng-container>
+                    
                 </div>
 
                 <nz-card *ngIf="searchErupt.eruptFieldModels&&searchErupt.eruptFieldModels.length>0"

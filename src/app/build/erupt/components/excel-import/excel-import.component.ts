@@ -1,6 +1,6 @@
 import {Component, Inject, Input, OnInit} from "@angular/core";
 import {DataService} from "@shared/service/data.service";
-import {EruptModel} from "../../model/erupt.model";
+import {EruptModel, RowOperation} from "../../model/erupt.model";
 import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {NzMessageService, NzModalService, UploadChangeParam, UploadFile} from "ng-zorro-antd";
 import {EruptApiModel, Status} from "../../model/erupt-api.model";
@@ -12,7 +12,7 @@ import {EruptApiModel, Status} from "../../model/erupt-api.model";
 })
 export class ExcelImportComponent implements OnInit {
 
-    @Input() eruptModel: EruptModel;
+    @Input() url: string;
 
     upload: boolean = false;
 

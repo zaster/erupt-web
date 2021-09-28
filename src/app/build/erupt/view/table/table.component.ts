@@ -402,7 +402,26 @@ export class TableComponent implements OnInit {
                     url: url
                 }
             });
-        } else if (ro.type === OperationType.ERUPT) {
+        } else if(ro.type==OperationType.IMPORT)  {
+            let model = this.modal.create({
+                nzKeyboard: true,
+                nzTitle: "Excel导入",
+                nzOkText: null,
+                nzCancelText: "关闭（ESC）",
+                nzWrapClassName: "modal-lg",
+                nzContent: ExcelImportComponent,
+                nzComponentParams: {
+                    url: RestPath.data + "/" + this.eruptBuildModel.eruptModel.eruptName + "/operator/" + ro.code,
+                },
+                nzOnCancel: () => {
+                    if (model.getContentComponent().upload) {
+                        this.st.reload();
+                    }
+                }
+            });
+        }
+        
+        else if(ro.type === OperationType.ERUPT) {
             let operationErupt = null;
             if (this.eruptBuildModel.operationErupts) {
                 operationErupt = this.eruptBuildModel.operationErupts[ro.code];
@@ -597,6 +616,7 @@ export class TableComponent implements OnInit {
     tableDataChange(event: any) {
         if (this._reference) {
             if (this._reference.mode == SelectMode.radio) {
+                console.log(event.type)
                 if (event.type === "click") {
                     for (let datum of this.st._data) {
                         datum.checked = false;
@@ -604,8 +624,10 @@ export class TableComponent implements OnInit {
                     event.click.item.checked = true;
                     this._reference.eruptField.eruptFieldJson.edit.$tempValue = event.click.item;
                 } else if (event.type === "radio") {
+                    
                     this._reference.eruptField.eruptFieldJson.edit.$tempValue = event.radio;
                 }
+                console.log(this._reference.eruptField.eruptFieldJson.edit.$tempValue)
             } else if (this._reference.mode == SelectMode.checkbox) {
                 if (event.type === "checkbox") {
                     this._reference.eruptField.eruptFieldJson.edit.$tempValue = event.checkbox;
@@ -653,7 +675,7 @@ export class TableComponent implements OnInit {
             nzWrapClassName: "modal-lg",
             nzContent: ExcelImportComponent,
             nzComponentParams: {
-                eruptModel: this.eruptBuildModel.eruptModel
+                url: this.dataService.excelImport + this.eruptBuildModel.eruptModel.eruptName
             },
             nzOnCancel: () => {
                 if (model.getContentComponent().upload) {

@@ -117,7 +117,7 @@ export enum OperationMode {
 }
 
 export enum OperationType {
-    ERUPT = "ERUPT", TPL = "TPL",
+    ERUPT = "ERUPT", TPL = "TPL",IMPORT="IMPORT"
 }
 
 export enum OperationEruptMode {

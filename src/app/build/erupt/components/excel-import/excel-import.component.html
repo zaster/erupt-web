@@ -7,7 +7,7 @@
            [(nzFileList)]="fileList"
            [nzLimit]="1"
            [nzHeaders]="{token:tokenService.get().token,erupt:eruptModel.eruptName}"
-           [nzAction]="dataService.excelImport + eruptModel.eruptName"
+           [nzAction]="url"
            [nzShowButton]="true"
            (nzChange)="upLoadNzChange($event)">
     <p class="ant-upload-drag-icon">
