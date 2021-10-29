@@ -476,7 +476,7 @@ export class TableComponent implements OnInit {
                         nzTitle: ro.title,
                         nzMaskClosable: false,
                         nzCancelText: "关闭",
-                        nzWrapClassName: "modal-lg",
+                        nzWrapClassName: "modal-xxl",
                         nzOnOk: async () => {
                             modal.getInstance().nzCancelDisabled = true;
                             const sids = [];
@@ -520,7 +520,7 @@ export class TableComponent implements OnInit {
                     nzCancelText: "关闭",
                     nzOnOk: async () => {
                         this.selectedRows = [];
-                        let res = await this.dataService.execOperatorFun(this.eruptBuildModel.eruptModel.eruptName, ro.code, ids, null)
+                        let res = await this.dataService.execOperatorFun(this.eruptBuildModel.eruptModel.eruptName, ro.code, ids, this._drill)
                             .toPromise().then();
                         this.st.reload();
                         if (res.data) {
