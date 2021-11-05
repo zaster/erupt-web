@@ -111,18 +111,25 @@ export class UiBuildService {
                 case ViewType.BOOLEAN:
                     obj.className = "text-center";
                     obj.type = "tag";
+                    console.log(dataConvert);
+                    console.log(edit.boolType.trueText);
+                    console.log(edit.title);
+                    console.log(edit.boolType.falseText)
                     if (dataConvert) {
+                        console.log("boolean data convert");
                         obj.tag = {
                             true: {text: edit.boolType.trueText, color: 'green'},
                             false: {text: edit.boolType.falseText, color: 'red'},
                         };
                     } else {
                         if (edit.title) {
+                            console.log("boolean title true");
                             obj.tag = {
                                 [edit.boolType.trueText]: {text: edit.boolType.trueText, color: 'green'},
                                 [edit.boolType.falseText]: {text: edit.boolType.falseText, color: 'red'},
                             };
                         } else {
+                            console.log("boolean title false");
                             obj.tag = {
                                 true: {text: '是', color: 'green'},
                                 false: {text: '否', color: 'red'},

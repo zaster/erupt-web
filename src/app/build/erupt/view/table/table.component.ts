@@ -74,17 +74,17 @@ export class TableComponent implements OnInit {
 
     showTable: boolean = true;
 
-    _drill: { erupt: string, code: string, eruptParent: string, val: any };
+    _drill: { erupt: string, code: string, parent: any, val: any };
 
 
     adding: boolean = false; //新增行为防抖
 
-    @Input() set drill(drill: { erupt: string, code: string, eruptParent: string, val: any }) {
+    @Input() set drill(drill: { erupt: string, code: string, parent: any, val: any }) {
         this._drill = drill;
         this.init(this.dataService.getEruptBuild(drill.erupt), {
-            url: RestPath.data + "/" + drill.eruptParent + "/drill/" + drill.code + "/" + drill.val,
+            url: RestPath.data + "/" + drill.parent.eruptName + "/drill/" + drill.code + "/" + drill.val[drill.parent.eruptJson.primaryKeyCol],
             header: {
-                erupt: drill.eruptParent
+                erupt: drill.parent.parent.eruptName
             }
         });
     }
@@ -341,9 +341,9 @@ export class TableComponent implements OnInit {
                         nzComponentParams: {
                             drill: {
                                 code: drill.code,
-                                val: record[this.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol],
+                                val: record,
                                 erupt: drill.link.linkErupt,
-                                eruptParent: this.eruptBuildModel.eruptModel.eruptName
+                                parent: this.eruptBuildModel.eruptModel
                             }
                         }
                     });
@@ -481,9 +481,9 @@ export class TableComponent implements OnInit {
                         let res: EruptApiModel;
                         if (this._drill && this._drill.val) {
                             res = await this.dataService.addEruptDrillData(
-                                this._drill.eruptParent,
+                                this._drill.parent.eruptName,
                                 this._drill.code,
-                                this._drill.val,
+                                this._drill.val[this._drill.parent.eruptJson.primaryKeyCol],
                                 this.dataHandler.eruptValueToObject(this.eruptBuildModel)).toPromise().then(res => res);
                         } else {
                             let header = {};
