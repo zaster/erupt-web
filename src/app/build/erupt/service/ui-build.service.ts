@@ -52,12 +52,8 @@ export class UiBuildService {
                 }
             };
             obj.show = view.show;
-            if (lineData) {
-                //修复表格显示子类属性时无法正确检索到属性值的缺陷
-                obj.index = view.column.replace(/\./g, "_");
-            } else {
-                obj.index = view.column;
-            }
+            
+            obj.index = view.column;
             if (view.sortable) {
                 obj.sort = {
                     reName: {
@@ -539,6 +535,7 @@ export class UiBuildService {
             }
             cols.push(obj);
         }
+        console.log(cols)
         return cols;
     }
 }
