@@ -1,5 +1,5 @@
-<ng-container *ngIf="show">
-    <ng-container [ngSwitch]="view.viewType">
+<ng-container *ngIf="show&&view.link">
+    <ng-container [ngSwitch]="view.link.type">
         <ng-container *ngSwitchCase="viewType.IMAGE">
             <nz-carousel class="text-center" onselectstart="return false;" unselectable="on"
                          style="-moz-user-select:none;" #carousel>

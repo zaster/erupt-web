@@ -1,25 +1,31 @@
-import {EruptBuildModel} from "../model/erupt-build.model";
-import {STColumn, STData} from "@delon/abc";
-import {DateEnum, EditType, ViewType} from "../model/erupt.enum";
-import {ViewTypeComponent} from "../components/view-type/view-type.component";
-import {MarkdownComponent} from "../components/markdown/markdown.component";
-import {CodeEditorComponent} from "../components/code-editor/code-editor.component";
-import {DataService} from "@shared/service/data.service";
-import {Inject, Injectable} from "@angular/core";
-import {NzMessageService, NzModalService} from "ng-zorro-antd";
-import {ALAIN_I18N_TOKEN} from "@delon/theme";
-import {I18NService} from "@core";
-
+import { EruptBuildModel } from '../model/erupt-build.model';
+import { STColumn, STData, STColumnBadge, STColumnBadgeValue, STColumnSource } from '@delon/abc';
+import { DateEnum, EditType, ViewType } from '../model/erupt.enum';
+import { ViewTypeComponent } from '../components/view-type/view-type.component';
+import { MarkdownComponent } from '../components/markdown/markdown.component';
+import { CodeEditorComponent } from '../components/code-editor/code-editor.component';
+import { DataService } from '@shared/service/data.service';
+import { Inject, Injectable } from '@angular/core';
+import { ModalOptionsForService, NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
+import { Column, VL } from '../model/erupt-field.model';
 
 @Injectable()
 export class UiBuildService {
-
     constructor(
         @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
         @Inject(NzModalService) private modal: NzModalService,
-        @Inject(NzMessageService) private msg: NzMessageService) {
-    }
+        @Inject(NzMessageService) private msg: NzMessageService
+    ) {}
 
+    getBadgeFromChoice(map: Map<String, VL>): STColumnBadge {
+        let badge: STColumnBadge = {};
+        map.forEach((vl) => {
+            badge[vl.value] = { text: vl.label, color: 'default' };
+        });
+        return badge;
+    }
 
     /**
      * 将view数据转换为alain table组件配置信息
@@ -29,506 +35,192 @@ export class UiBuildService {
      *     false  数据形式为：带有层级的json
      * @param dataConvert 是否需要数据转换,如bool转换，choice转换
      */
-    viewToAlainTableConfig(eruptBuildModel: EruptBuildModel, lineData: boolean, dataConvert?: boolean): STColumn[] {
+    viewToAlainTableConfig(eruptBuildModel: EruptBuildModel, lineData: boolean): STColumn[] {
         let cols: STColumn[] = [];
-        const views = eruptBuildModel.eruptModel.tableColumns;
-        for (let view of views) {
-            let titleWidth = view.title.length * 14 + 22;
+        const columns = eruptBuildModel.eruptModel.tableColumns;
+        for (let column of columns) {
+            let titleWidth = column.title.text.length * 14 + 22;
             if (titleWidth > 280) {
                 titleWidth = 280;
             }
-            if (view.sortable) {
+            if (column.sort) {
                 titleWidth += 20;
             }
-            if (view.desc) {
+            if (column.title.desc) {
                 titleWidth += 16;
             }
-            let edit = view.eruptFieldModel.eruptFieldJson.edit;
-            let obj: STColumn = {
-                title: {
-                    text: view.title,
-                    optional: "   ",
-                    optionalHelp: view.desc
-                }
-            };
-            obj.show = view.show;
-            
-            obj.index = view.column;
-            if (view.sortable) {
-                obj.sort = {
-                    reName: {
-                        ascend: "asc",
-                        descend: "desc"
-                    },
-                    key: view.column,
-                    compare: ((a: STData, b: STData) => {
-                        return a[view.column] > b[view.column] ? 1 : -1;
-                    })
+            column.width = titleWidth;
+            //展示类型
+            if (column.type === 'link') {
+                column.className += ' ';
+                column.className += column.link.className;
+
+                column.format = (item: any) => {
+                    if (item[column.index]) {
+                        if (column.link.viewType === ViewType.IMAGE) {
+                            let img = (<string>item[column.index]).split('|')[0];
+                            return `<img width="100%" class="text-center" src="${DataService.previewAttachment(
+                                img
+                            )}" />`;
+                        } else if (ViewType.IMAGE_BASE64 == column.link.viewType) {
+                            return `<img width="100%" src="${item[column.index]}" />`;
+                        }
+
+                        return "<i class='fa " + getLinkColumnIcon(column) + "' aria-hidden='true'></i>";
+                    } else {
+                        return '';
+                    }
+                };
+
+                column.click = (item) => {
+                    switch (column.link.viewType) {
+                        case ViewType.LINK:
+                            window.open(item[column.index]);
+                            break;
+                        case ViewType.DOWNLOAD:
+                            window.open(DataService.downloadAttachment(item[column.index]));
+                            break;
+                        case ViewType.ATTACHMENT:
+                            window.open(DataService.previewAttachment(item[column.index]));
+                            break;
+                        default:
+                            this.modal.create(getLinkColumnModelOptions(column, item, eruptBuildModel));
+                            break;
+                    }
                 };
             }
-            if (dataConvert) {
-                switch (view.eruptFieldModel.eruptFieldJson.edit.type) {
-                    case EditType.CHOICE:
-                        obj.format = (item: any) => {
-                            if (item[view.column]) {
-                                return view.eruptFieldModel.choiceMap.get(item[view.column] + "").label;
-                            } else {
-                                return "";
-                            }
-                        };
-                        break;
-                    case EditType.DATE:
-                        obj.format = (item: any) => {
-                            if (item[view.column]) {
-                                if (view.eruptFieldModel.eruptFieldJson.edit.dateType.type == DateEnum.DATE) {
-                                    return item[view.column].substr(0, 10);
-                                } else {
-                                    return item[view.column];
-                                }
-                            } else {
-                                return "";
-                            }
-                        };
-                        break;
-                }
-            }
 
-            obj.width = titleWidth;
-            //展示类型
-            switch (view.viewType) {
-                case ViewType.TEXT:
-                    obj.className = "text-col";
-                    obj.width = null;
-                    break;
-                case ViewType.NUMBER:
-                    obj.className = "text-right";
-                    break;
-                case ViewType.DATE:
-                    obj.className = "date-col";
-                    obj.width = 180;
-                    break;
-                case ViewType.BOOLEAN:
-                    obj.className = "text-center";
-                    obj.type = "tag";
-                    if (dataConvert) {
-                        obj.tag = {
-                            true: {text: this.i18n.fanyi(edit.boolType.trueText), color: 'green'},
-                            false: {text: this.i18n.fanyi(edit.boolType.falseText), color: 'red'},
-                        };
-                    } else {
-                        if (edit.title) {
-                            obj.tag = {
-                                [edit.boolType.trueText]: {text: this.i18n.fanyi(edit.boolType.trueText), color: 'green'},
-                                [edit.boolType.falseText]: {text: this.i18n.fanyi(edit.boolType.falseText), color: 'red'},
-                            };
-                        } else {
-                            obj.tag = {
-                                true: {text: this.i18n.fanyi('是'), color: 'green'},
-                                false: {text: this.i18n.fanyi('否'), color: 'red'},
-                            };
-                        }
-                    }
-                    break;
-                case ViewType.LINK:
-                    obj.type = "link";
-                    obj.className = "text-center";
-                    obj.click = (item) => {
-                        window.open(item[view.column]);
-                    };
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return "<i class='fa fa-link' aria-hidden='true'></i>";
-                        } else {
-                            return "";
-                        }
-                    };
-                    break;
-                case ViewType.LINK_DIALOG:
-                    obj.className = "text-center";
-                    obj.type = "link";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return "<i class='fa fa-dot-circle-o' aria-hidden='true'></i>";
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-lg modal-body-nopadding",
-                            nzStyle: {top: "20px"},
-                            nzMaskClosable: false,
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzTitle: view.title,
-                            nzContent: ViewTypeComponent,
-                            nzComponentParams: {
-                                value: item[view.column],
-                                view: view
-                            }
-                        });
-                    };
-                    break;
-                case ViewType.QR_CODE:
-                    obj.className = "text-center";
-                    obj.type = "link";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return "<i class='fa fa-qrcode' aria-hidden='true'></i>";
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-sm",
-                            nzMaskClosable: true,
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzTitle: view.title,
-                            nzContent: ViewTypeComponent,
-                            nzComponentParams: {
-                                value: item[view.column],
-                                view: view
-                            }
-                        });
-                    };
-                    break;
-                case ViewType.MARKDOWN:
-                    obj.className = "text-center";
-                    obj.type = "link";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return "<i class='fa fa-file-text' aria-hidden='true'></i>";
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-lg",
-                            nzStyle: {top: "24px"},
-                            nzBodyStyle: {padding: "0"},
-                            nzMaskClosable: true,
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzTitle: view.title,
-                            nzContent: MarkdownComponent,
-                            nzComponentParams: {
-                                value: item[view.column]
-                            }
-                        });
-                    };
-                    break;
-                case ViewType.CODE:
-                    obj.className = "text-center";
-                    obj.type = "link";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return "<i class='fa fa-code' aria-hidden='true'></i>";
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-lg",
-                            // nzStyle: {top: "60px"},
-                            nzBodyStyle: {padding: 0},
-                            nzMaskClosable: true,
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzTitle: view.title,
-                            nzContent: CodeEditorComponent,
-                            nzComponentParams: {
-                                height: 500,
-                                readonly: true,
-                                language: view.eruptFieldModel.eruptFieldJson.edit.codeEditType.language,
-                                // @ts-ignore
-                                edit: {
-                                    $value: item[view.column]
-                                }
-                            }
-                        });
-                    };
-                    break;
-                case ViewType.MAP:
-                    obj.className = "text-center";
-                    obj.type = "link";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return "<i class='fa fa-map' aria-hidden='true'></i>";
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-lg",
-                            nzBodyStyle: {
-                                padding: 0
-                            },
-                            nzMaskClosable: true,
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzTitle: view.title,
-                            nzContent: ViewTypeComponent,
-                            nzComponentParams: {
-                                value: item[view.column],
-                                view: view
-                            }
-                        });
-                    };
-                    break;
-                case ViewType.IMAGE:
-                    obj.type = "link";
-                    obj.width = "90px";
-                    obj.className = "text-center p-sm";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            const attachmentType = view.eruptFieldModel.eruptFieldJson.edit.attachmentType;
-                            if (attachmentType) {
-                                let img = (<string>item[view.column]).split(attachmentType.fileSeparator)[0];
-                                //height="50px"
-                                return `<img width="100%" class="text-center" src="${DataService.previewAttachment(img)}" />`;
-                            } else {
-                                let img = (<string>item[view.column]).split("|")[0];
-                                //height="50px"
-                                return `<img width="100%" class="text-center" src="${DataService.previewAttachment(img)}" />`;
-                            }
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-lg",
-                            nzStyle: {top: "50px"},
-                            nzMaskClosable: true,
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzTitle: view.title,
-                            nzContent: ViewTypeComponent,
-                            nzComponentParams: {
-                                value: item[view.column],
-                                view: view
-                            }
-                        });
-                    };
-                    break;
-                case ViewType.HTML:
-                    obj.type = "link";
-                    obj.className = "text-center";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return `<i class='fa fa-file-text' aria-hidden='true'></i>`;
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-lg",
-                            nzStyle: {top: "50px"},
-                            nzMaskClosable: true,
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzTitle: view.title,
-                            nzContent: ViewTypeComponent,
-                            nzComponentParams: {
-                                value: item[view.column],
-                                view: view
-                            }
-                        });
-                    };
-                    break;
-                case ViewType.MOBILE_HTML:
-                    obj.className = "text-center";
-                    obj.type = "link";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return "<i class='fa fa-file-text' aria-hidden='true'></i>";
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-xs",
-                            nzMaskClosable: true,
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzTitle: view.title,
-                            nzContent: ViewTypeComponent,
-                            nzComponentParams: {
-                                value: item[view.column],
-                                view: view
-                            }
-                        });
-                    };
-                    break;
-                case ViewType.SWF:
-                    obj.type = "link";
-                    obj.className = "text-center";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return `<i class='fa fa-file-image-o' aria-hidden='true'></i>`;
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-lg modal-body-nopadding",
-                            nzStyle: {top: "40px"},
-                            nzMaskClosable: true,
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzTitle: view.title,
-                            nzContent: ViewTypeComponent,
-                            nzComponentParams: {
-                                value: item[view.column],
-                                view: view
-                            }
-                        });
-                    };
-                    break;
-                case ViewType.IMAGE_BASE64:
-                    obj.type = "link";
-                    obj.width = "90px";
-                    obj.className = "text-center p-sm";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return `<img width="100%" src="${item[view.column]}" />`;
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-lg",
-                            nzStyle: {top: "50px", textAlign: 'center'},
-                            nzMaskClosable: true,
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzTitle: view.title,
-                            nzContent: ViewTypeComponent,
-                            nzComponentParams: {
-                                value: item[view.column],
-                                view: view
-                            }
-                        });
-                    };
-                    break;
-                case ViewType.ATTACHMENT_DIALOG:
-                    obj.type = "link";
-                    obj.className = "text-center";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return `<i class='fa fa-dot-circle-o' aria-hidden='true'></i>`;
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-lg modal-body-nopadding",
-                            nzStyle: {top: "30px"},
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzContent: ViewTypeComponent,
-                            nzComponentParams: {
-                                value: item[view.column],
-                                view: view
-                            }
-                        });
-                    };
-                    break;
-                case ViewType.DOWNLOAD:
-                    obj.type = "link";
-                    obj.className = "text-center";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return `<i class='fa fa-download' aria-hidden='true'></i>`;
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        window.open(DataService.downloadAttachment(item[view.column]));
-                    };
-                    break;
-                case ViewType.ATTACHMENT:
-                    obj.type = "link";
-                    obj.className = "text-center";
-                    obj.format = (item: any) => {
-                        if (item[view.column]) {
-                            return `<i class='fa fa-window-restore' aria-hidden='true'></i>`;
-                        } else {
-                            return "";
-                        }
-                    };
-                    obj.click = (item) => {
-                        window.open(DataService.previewAttachment(item[view.column]));
-                    };
-                    break;
-                case ViewType.TAB_VIEW:
-                    obj.type = "link";
-                    obj.className = "text-center";
-                    obj.format = (item: any) => {
-                        return `<i class='fa fa-adjust' aria-hidden='true'></i>`;
-                    };
-                    obj.click = (item) => {
-                        this.modal.create({
-                            nzWrapClassName: "modal-lg",
-                            nzStyle: {top: "50px"},
-                            nzMaskClosable: false,
-                            nzKeyboard: true,
-                            nzFooter: null,
-                            nzTitle: view.title,
-                            nzContent: ViewTypeComponent,
-                            nzComponentParams: {
-                                value: item[eruptBuildModel.eruptModel.eruptJson.primaryKeyCol],
-                                eruptBuildModel: eruptBuildModel,
-                                view: view
-                            }
-                        });
-                    };
-                    break;
-                default:
-                    obj.width = null;
-                    break;
-            }
-            //编辑类型
-            switch (view.eruptFieldModel.eruptFieldJson.edit.type) {
-                case EditType.DATE:
-                    if (view.eruptFieldModel.eruptFieldJson.edit.dateType.type == DateEnum.DATE_TIME) {
-                        obj.width = 180;
-                    } else {
-                        obj.width = 90;
-                    }
-                    break;
-            }
-            if (view.template) {
-                obj.format = (item: any) => {
+            if (column.template) {
+                column.format = (item: any) => {
                     try {
-                        let value = item[view.column];
-                        return eval(view.template);
+                        let value = item[column.index];
+                        return eval(column.template);
                     } catch (e) {
                         console.error(e);
                         this.msg.error(e.toString());
                     }
                 };
             }
-            if (view.className) {
-                obj.className += " " + view.className;
-            }
-            if (view.width) {
-                obj.width = isNaN(Number(view.width)) ? view.width : view.width + "px";
-            }
-            cols.push(obj);
+            cols.push(column);
         }
-        console.log(cols)
         return cols;
+    }
+}
+function getLinkColumnModelOptions(
+    column: Column,
+    item: any,
+    eruptBuildModel: EruptBuildModel
+): ModalOptionsForService {
+    let modelOptions: ModalOptionsForService = {
+        nzTitle: column.title.text,
+        nzMaskClosable: true,
+        nzKeyboard: true,
+        nzFooter: null,
+        nzContent: ViewTypeComponent,
+        nzComponentParams: {
+            value: item[column.index],
+            view: column,
+        },
+    };
+    switch (column.link.viewType) {
+        case ViewType.LINK_DIALOG:
+            modelOptions.nzWrapClassName = 'modal-lg modal-body-nopadding';
+            modelOptions.nzStyle = { top: '20px' };
+            modelOptions.nzMaskClosable = false;
+            column.link.icon = '';
+            break;
+        case ViewType.QR_CODE:
+            modelOptions.nzWrapClassName = 'modal-sm';
+            column.link.icon = '';
+            break;
+        case ViewType.MARKDOWN:
+            modelOptions.nzWrapClassName = 'modal-lg';
+            modelOptions.nzStyle = { top: '24px' };
+            modelOptions.nzBodyStyle = { padding: '0' };
+            modelOptions.nzContent = MarkdownComponent;
+            column.link.icon = '';
+            break;
+        case ViewType.CODE:
+            modelOptions.nzWrapClassName = 'modal-lg';
+            modelOptions.nzBodyStyle = { padding: '0' };
+            modelOptions.nzContent = CodeEditorComponent;
+            modelOptions.nzComponentParams.height = 500;
+            modelOptions.nzComponentParams.readonly = true;
+            modelOptions.nzComponentParams.language = column.link.language;
+            modelOptions.nzComponentParams.edit = { $value: item[column.index] };
+            break;
+        case ViewType.MAP:
+            modelOptions.nzWrapClassName = 'modal-lg';
+            modelOptions.nzBodyStyle = { padding: '0' };
+            break;
+        case ViewType.IMAGE:
+            column.width = '90px';
+            column.className += ' p-sm';
+            modelOptions.nzWrapClassName = 'modal-lg';
+            modelOptions.nzStyle = { top: '50px' };
+            break;
+        case ViewType.HTML:
+            modelOptions.nzWrapClassName = 'modal-lg';
+            modelOptions.nzStyle = { top: '50px' };
+            modelOptions.nzBodyStyle = { padding: '0' };
+            break;
+        case ViewType.MOBILE_HTML:
+            modelOptions.nzWrapClassName = 'modal-xs';
+            break;
+        case ViewType.SWF:
+            modelOptions.nzWrapClassName = 'modal-lg modal-body-nopadding';
+            modelOptions.nzStyle = { top: '40px' };
+            break;
+        case ViewType.IMAGE_BASE64:
+            modelOptions.nzWrapClassName = 'modal-lg';
+            modelOptions.nzStyle = { top: '50px', textAlign: 'center' };
+            break;
+        case ViewType.ATTACHMENT_DIALOG:
+            modelOptions.nzWrapClassName = 'modal-lg modal-body-nopadding';
+            modelOptions.nzStyle = { top: '30px' };
+            break;
+        case ViewType.TAB_VIEW:
+            modelOptions.nzWrapClassName = 'modal-lg';
+            modelOptions.nzStyle = { top: '50px' };
+            modelOptions.nzComponentParams.value = item[eruptBuildModel.eruptModel.eruptJson.primaryKeyCol];
+            modelOptions.nzComponentParams.eruptBuildModel = eruptBuildModel;
+
+            break;
+        default:
+            column.width = null;
+            break;
+    }
+    return modelOptions;
+}
+
+function getLinkColumnIcon(column: Column) {
+    if (column.link.icon) return column.link.icon;
+    switch (column.link.viewType) {
+        case ViewType.LINK_DIALOG:
+            return 'fa-dot-circle-o';
+        case ViewType.QR_CODE:
+            return 'fa-qrcode';
+        case ViewType.MARKDOWN:
+            return 'fa-file-text';
+        case ViewType.CODE:
+            return 'fa-code';
+        case ViewType.MAP:
+            return 'fa-map';
+        case ViewType.HTML:
+            return 'fa-file-text';
+        case ViewType.MOBILE_HTML:
+            return 'fa-file-text';
+        case ViewType.SWF:
+            return 'fa-file-image-o';
+        case ViewType.ATTACHMENT:
+            return 'fa-window-restore';
+        case ViewType.ATTACHMENT_DIALOG:
+            return 'fa-dot-circle-o';
+        case ViewType.DOWNLOAD:
+            return 'fa-download';
+        case ViewType.TAB_VIEW:
+            return 'fa-adjust';
+        default:
+            return 'fa-link';
     }
 }

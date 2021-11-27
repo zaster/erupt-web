@@ -1,30 +1,29 @@
-import {Edit, EruptFieldModel, VL} from "../model/erupt-field.model";
-import {EruptModel, Tree} from "../model/erupt.model";
-import {DateEnum, EditType} from "../model/erupt.enum";
-import {NzMessageService, NzModalService, UploadFile} from "ng-zorro-antd";
-import {deepCopy} from "@delon/util";
-import {Inject, Injectable} from "@angular/core";
-import {EruptBuildModel} from "../model/erupt-build.model";
-import {DataService} from "@shared/service/data.service";
-import {DatePipe} from "@angular/common";
+import { Edit, EruptFieldModel, VL } from '../model/erupt-field.model';
+import { EruptModel, Tree } from '../model/erupt.model';
+import { DateEnum, EditType, ViewType } from '../model/erupt.enum';
+import { NzMessageService, NzModalService, UploadFile } from 'ng-zorro-antd';
+import { deepCopy } from '@delon/util';
+import { Inject, Injectable } from '@angular/core';
+import { EruptBuildModel } from '../model/erupt-build.model';
+import { DataService } from '@shared/service/data.service';
+import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
-import {QueryCondition} from "../model/erupt.vo";
-import {isNotNull} from "@shared/util/erupt.util";
-
+import { QueryCondition } from '../model/erupt.vo';
+import { isNotNull } from '@shared/util/erupt.util';
+import { STColumn, STData, STColumnBadge, STColumnBadgeValue, STColumnTag } from '@delon/abc';
 @Injectable()
 export class DataHandlerService {
-
     constructor(
         @Inject(NzModalService) private modal: NzModalService,
-        @Inject(NzMessageService) private msg: NzMessageService) {
-    }
+        @Inject(NzMessageService) private msg: NzMessageService
+    ) {}
 
     initErupt(em: EruptBuildModel) {
         this.buildErupt(em.eruptModel);
         em.eruptModel.eruptJson.power = em.power;
         if (em.tabErupts) {
             for (let key in em.tabErupts) {
-                if ("eruptName" in em.tabErupts[key].eruptModel) {
+                if ('eruptName' in em.tabErupts[key].eruptModel) {
                     this.initErupt(em.tabErupts[key]);
                 }
             }
@@ -44,54 +43,53 @@ export class DataHandlerService {
     buildErupt(eruptModel: EruptModel) {
         eruptModel.tableColumns = [];
         eruptModel.eruptFieldModelMap = new Map<String, EruptFieldModel>();
-        eruptModel.eruptFieldModels.forEach(field => {
-            if (!field.eruptFieldJson.edit) {
-                return;
-            }
-            if (field.choiceList) {
-                field.choiceMap = new Map<String, VL>();
-                for (let vl of field.choiceList) {
-                    field.choiceMap.set(vl.value, vl);
+        eruptModel.eruptFieldModels.forEach((field) => {
+            if (field.eruptFieldJson.edit) {
+                if (field.choiceList) {
+                    field.choiceMap = new Map<String, VL>();
+                    for (let vl of field.choiceList) {
+                        field.choiceMap.set(vl.value, vl);
+                    }
+                }
+                field.eruptFieldJson.edit.$value = field.value;
+                eruptModel.eruptFieldModelMap.set(field.fieldName, field);
+                switch (field.eruptFieldJson.edit.type) {
+                    case EditType.INPUT:
+                        const inputType = field.eruptFieldJson.edit.inputType;
+                        if (inputType.prefix.length > 0) {
+                            inputType.prefixValue = inputType.prefix[0].value;
+                        }
+                        if (inputType.suffix.length > 0) {
+                            inputType.suffixValue = inputType.suffix[0].value;
+                        }
+                        break;
+                    case EditType.SLIDER:
+                        const markPoints = field.eruptFieldJson.edit.sliderType.markPoints;
+                        const marks = (field.eruptFieldJson.edit.sliderType.marks = {});
+                        if (markPoints.length > 0) {
+                            markPoints.forEach((m) => {
+                                marks[m] = '';
+                            });
+                        }
+                        break;
                 }
             }
-            field.eruptFieldJson.edit.$value = field.value;
-            eruptModel.eruptFieldModelMap.set(field.fieldName, field);
-            switch (field.eruptFieldJson.edit.type) {
-                case EditType.INPUT:
-                    const inputType = field.eruptFieldJson.edit.inputType;
-                    if (inputType.prefix.length > 0) {
-                        inputType.prefixValue = inputType.prefix[0].value;
-                    }
-                    if (inputType.suffix.length > 0) {
-                        inputType.suffixValue = inputType.suffix[0].value;
-                    }
-                    break;
-                case EditType.SLIDER:
-                    const markPoints = field.eruptFieldJson.edit.sliderType.markPoints;
-                    const marks = field.eruptFieldJson.edit.sliderType.marks = {};
-                    if (markPoints.length > 0) {
-                        markPoints.forEach(m => {
-                            marks[m] = "";
-                        });
-                    }
-                    break;
-            }
+
             //生成columns
-            field.eruptFieldJson.views.forEach(view => {
-                if (view.column) {
+            (field.eruptFieldJson.columns ? field.eruptFieldJson.columns : []).forEach((column) => {
+                if (column.index) {
                     //修复表格显示子类属性时无法正确检索到属性值的缺陷
-                    view.column = field.fieldName + "." + view.column;
+                    column.index = field.fieldName + '.' + column.index;
                 } else {
-                    view.column = field.fieldName;
+                    column.index = field.fieldName;
                 }
                 const deepField = <EruptFieldModel>deepCopy(field);
-                deepField.eruptFieldJson.views = null;
-                view.eruptFieldModel = deepField;
-                eruptModel.tableColumns.push(view);
+                deepField.eruptFieldJson.columns = null;
+                column.eruptFieldModel = deepField;
+                eruptModel.tableColumns.push(column);
             });
         });
     }
-
 
     buildSearchErupt(eruptBuildModel: EruptBuildModel): EruptModel {
         let copyErupt = <EruptModel>deepCopy(eruptBuildModel.eruptModel);
@@ -114,7 +112,7 @@ export class DataHandlerService {
                 searchFieldModels.push(field);
             }
         });
-        copyErupt.mode = "search";
+        copyErupt.mode = 'search';
         copyErupt.eruptFieldModels = searchFieldModels;
         copyErupt.eruptFieldModelMap = searchFieldModelsMap;
         return copyErupt;
@@ -125,7 +123,7 @@ export class DataHandlerService {
         for (let field of eruptModel.eruptFieldModels) {
             if (field.eruptFieldJson.edit.notNull) {
                 if (!field.eruptFieldJson.edit.$value) {
-                    this.msg.error(field.eruptFieldJson.edit.title + "必填！");
+                    this.msg.error(field.eruptFieldJson.edit.title + '必填！');
                     return false;
                 }
             }
@@ -142,12 +140,12 @@ export class DataHandlerService {
 
     dataTreeToZorroTree(nodes: Tree[], expandLevel: number) {
         const tempNodes = [];
-        nodes.forEach(node => {
+        nodes.forEach((node) => {
             let option: any = {
                 key: node.id,
                 title: node.label,
                 data: node.data,
-                expanded: node.level <= expandLevel
+                expanded: node.level <= expandLevel,
             };
             if (node.children && node.children.length > 0) {
                 tempNodes.push(option);
@@ -165,17 +163,17 @@ export class DataHandlerService {
         for (let key in obj) {
             queryCondition.push({
                 key: key,
-                value: obj[key]
+                value: obj[key],
             });
         }
         return queryCondition;
     }
 
-    private datePipe: DatePipe = new DatePipe("zh-cn");
+    private datePipe: DatePipe = new DatePipe('zh-cn');
 
     searchEruptToObject(eruptBuildModel: EruptBuildModel): object {
         const obj = this.eruptValueToObject(eruptBuildModel);
-        eruptBuildModel.eruptModel.eruptFieldModels.forEach(field => {
+        eruptBuildModel.eruptModel.eruptFieldModels.forEach((field) => {
             const edit = field.eruptFieldJson.edit;
             if (edit.search.value) {
                 if (edit.search.vague) {
@@ -197,11 +195,15 @@ export class DataHandlerService {
                         case EditType.DATE:
                             if (edit.$value) {
                                 if (edit.dateType.type == DateEnum.DATE) {
-                                    obj[field.fieldName] = [this.datePipe.transform(edit.$value[0], "yyyy-MM-dd 00:00:00"),
-                                        this.datePipe.transform(edit.$value[1], "yyyy-MM-dd 23:59:59")];
+                                    obj[field.fieldName] = [
+                                        this.datePipe.transform(edit.$value[0], 'yyyy-MM-dd 00:00:00'),
+                                        this.datePipe.transform(edit.$value[1], 'yyyy-MM-dd 23:59:59'),
+                                    ];
                                 } else if (edit.dateType.type == DateEnum.DATE_TIME) {
-                                    obj[field.fieldName] = [this.datePipe.transform(edit.$value[0], "yyyy-MM-dd HH:mm:ss"),
-                                        this.datePipe.transform(edit.$value[1], "yyyy-MM-dd HH:mm:ss")];
+                                    obj[field.fieldName] = [
+                                        this.datePipe.transform(edit.$value[0], 'yyyy-MM-dd HH:mm:ss'),
+                                        this.datePipe.transform(edit.$value[1], 'yyyy-MM-dd HH:mm:ss'),
+                                    ];
                                 }
                             }
                             break;
@@ -220,22 +222,22 @@ export class DataHandlerService {
         let format = null;
         switch (edit.dateType.type) {
             case DateEnum.DATE:
-                format = "yyyy-MM-dd";
+                format = 'yyyy-MM-dd';
                 break;
             case DateEnum.DATE_TIME:
-                format = "yyyy-MM-dd HH:mm:ss";
+                format = 'yyyy-MM-dd HH:mm:ss';
                 break;
             case DateEnum.MONTH:
-                format = "yyyy-MM";
+                format = 'yyyy-MM';
                 break;
             case DateEnum.WEEK:
-                format = "yyyy-ww";
+                format = 'yyyy-ww';
                 break;
             case DateEnum.YEAR:
-                format = "yyyy";
+                format = 'yyyy';
                 break;
             case DateEnum.TIME:
-                format = "HH:mm:ss";
+                format = 'HH:mm:ss';
                 break;
         }
         return this.datePipe.transform(date, format);
@@ -244,7 +246,7 @@ export class DataHandlerService {
     //将eruptModel中的内容拼接成后台需要的json格式
     eruptValueToObject(eruptBuildModel: EruptBuildModel): object {
         const eruptData: any = {};
-        eruptBuildModel.eruptModel.eruptFieldModels.forEach(field => {
+        eruptBuildModel.eruptModel.eruptFieldModels.forEach((field) => {
             const edit = field.eruptFieldJson.edit;
             if (edit) {
                 switch (edit.type) {
@@ -252,7 +254,8 @@ export class DataHandlerService {
                         if (edit.$value) {
                             const inputType = edit.inputType;
                             if (inputType.prefixValue || inputType.suffixValue) {
-                                eruptData[field.fieldName] = (inputType.prefixValue || "") + edit.$value + (inputType.suffixValue || "");
+                                eruptData[field.fieldName] =
+                                    (inputType.prefixValue || '') + edit.$value + (inputType.suffixValue || '');
                             } else {
                                 eruptData[field.fieldName] = edit.$value;
                             }
@@ -292,9 +295,9 @@ export class DataHandlerService {
                     case EditType.CHECKBOX:
                         if (edit.$value) {
                             let ids = [];
-                            (<any[]>edit.$value).forEach(val => {
+                            (<any[]>edit.$value).forEach((val) => {
                                 const obj = {};
-                                obj["id"] = val;
+                                obj['id'] = val;
                                 ids.push(obj);
                             });
                             eruptData[field.fieldName] = ids;
@@ -303,9 +306,11 @@ export class DataHandlerService {
                     case EditType.TAB_TREE:
                         if (edit.$value) {
                             let ids = [];
-                            (<any[]>edit.$value).forEach(val => {
+                            (<any[]>edit.$value).forEach((val) => {
                                 const obj = {};
-                                obj[eruptBuildModel.tabErupts[field.fieldName].eruptModel.eruptJson.primaryKeyCol] = val;
+                                obj[
+                                    eruptBuildModel.tabErupts[field.fieldName].eruptModel.eruptJson.primaryKeyCol
+                                ] = val;
                                 ids.push(obj);
                             });
                             eruptData[field.fieldName] = ids;
@@ -314,7 +319,7 @@ export class DataHandlerService {
                     case EditType.TAB_TABLE_REFER:
                         if (edit.$value) {
                             let ids = [];
-                            (<any[]>edit.$value).forEach(val => {
+                            (<any[]>edit.$value).forEach((val) => {
                                 const obj = {};
                                 let pkc = eruptBuildModel.tabErupts[field.fieldName].eruptModel.eruptJson.primaryKeyCol;
                                 obj[pkc] = val[pkc];
@@ -331,7 +336,7 @@ export class DataHandlerService {
                     case EditType.ATTACHMENT:
                         if (edit.$viewValue) {
                             const $value: string[] = [];
-                            (<UploadFile[]>edit.$viewValue).forEach(val => {
+                            (<UploadFile[]>edit.$viewValue).forEach((val) => {
                                 $value.push(val.response.data);
                             });
                             eruptData[field.fieldName] = $value.join(edit.attachmentType.fileSeparator);
@@ -349,7 +354,7 @@ export class DataHandlerService {
                                 }
                                 eruptData[field.fieldName] = [
                                     this.dateFormat(edit.$value[0], edit),
-                                    this.dateFormat(edit.$value[1], edit)
+                                    this.dateFormat(edit.$value[1], edit),
                                 ];
                             } else {
                                 eruptData[field.fieldName] = this.dateFormat(edit.$value, edit);
@@ -376,7 +381,7 @@ export class DataHandlerService {
         if (eruptBuildModel.combineErupts) {
             for (let key in eruptBuildModel.combineErupts) {
                 eruptData[key] = this.eruptValueToObject({
-                    eruptModel: eruptBuildModel.combineErupts[key]
+                    eruptModel: eruptBuildModel.combineErupts[key],
                 });
             }
         }
@@ -385,16 +390,16 @@ export class DataHandlerService {
 
     eruptValueToTableValue(eruptBuildModel: EruptBuildModel) {
         const eruptData: any = {};
-        eruptBuildModel.eruptModel.eruptFieldModels.forEach(field => {
+        eruptBuildModel.eruptModel.eruptFieldModels.forEach((field) => {
             const edit = field.eruptFieldJson.edit;
             switch (edit.type) {
                 case EditType.REFERENCE_TREE:
-                    eruptData[field.fieldName + "_" + edit.referenceTreeType.id] = edit.$value;
-                    eruptData[field.fieldName + "_" + edit.referenceTreeType.label] = edit.$viewValue;
+                    eruptData[field.fieldName][edit.referenceTreeType.id] = edit.$value;
+                    eruptData[field.fieldName][edit.referenceTreeType.label] = edit.$viewValue;
                     break;
                 case EditType.REFERENCE_TABLE:
-                    eruptData[field.fieldName + "_" + edit.referenceTableType.id] = edit.$value;
-                    eruptData[field.fieldName + "_" + edit.referenceTableType.label] = edit.$viewValue;
+                    eruptData[field.fieldName][edit.referenceTableType.id] = edit.$value;
+                    eruptData[field.fieldName][edit.referenceTableType.label] = edit.$viewValue;
                     break;
                 default:
                     eruptData[field.fieldName] = edit.$value;
@@ -405,18 +410,22 @@ export class DataHandlerService {
 
     eruptObjectToTableValue(eruptBuildModel: EruptBuildModel, obj: object): any {
         const eruptData: any = {};
-        eruptBuildModel.eruptModel.eruptFieldModels.forEach(field => {
+        eruptBuildModel.eruptModel.eruptFieldModels.forEach((field) => {
             if (obj[field.fieldName] != undefined) {
                 const edit = field.eruptFieldJson.edit;
                 switch (edit.type) {
                     case EditType.REFERENCE_TREE:
-                        eruptData[field.fieldName + "_" + edit.referenceTreeType.id] = obj[field.fieldName][edit.referenceTreeType.id];
-                        eruptData[field.fieldName + "_" + edit.referenceTreeType.label] = obj[field.fieldName][edit.referenceTreeType.label];
+                        eruptData[field.fieldName][edit.referenceTreeType.id] =
+                            obj[field.fieldName][edit.referenceTreeType.id];
+                        eruptData[field.fieldName][edit.referenceTreeType.label] =
+                            obj[field.fieldName][edit.referenceTreeType.label];
                         obj[field.fieldName] = null;
                         break;
                     case EditType.REFERENCE_TABLE:
-                        eruptData[field.fieldName + "_" + edit.referenceTableType.id] = obj[field.fieldName][edit.referenceTableType.id];
-                        eruptData[field.fieldName + "_" + edit.referenceTableType.label] = obj[field.fieldName][edit.referenceTableType.label];
+                        eruptData[field.fieldName][edit.referenceTableType.id] =
+                            obj[field.fieldName][edit.referenceTableType.id];
+                        eruptData[field.fieldName][edit.referenceTableType.label] =
+                            obj[field.fieldName][edit.referenceTableType.label];
                         obj[field.fieldName] = null;
                         break;
                     default:
@@ -426,7 +435,6 @@ export class DataHandlerService {
         });
         return eruptData;
     }
-
 
     //将后台数据转化成前端可视格式
     objectToEruptValue(object: any, eruptBuild: EruptBuildModel) {
@@ -469,16 +477,16 @@ export class DataHandlerService {
                                     edit.$value = moment(object[field.fieldName]).toDate();
                                     break;
                                 case DateEnum.TIME:
-                                    edit.$value = moment(object[field.fieldName], "HH:mm:ss").toDate();
+                                    edit.$value = moment(object[field.fieldName], 'HH:mm:ss').toDate();
                                     break;
                                 case DateEnum.WEEK:
-                                    edit.$value = moment(object[field.fieldName], "YYYY-ww").toDate();
+                                    edit.$value = moment(object[field.fieldName], 'YYYY-ww').toDate();
                                     break;
                                 case DateEnum.MONTH:
-                                    edit.$value = moment(object[field.fieldName], "YYYY-MM").toDate();
+                                    edit.$value = moment(object[field.fieldName], 'YYYY-MM').toDate();
                                     break;
                                 case DateEnum.YEAR:
-                                    edit.$value = moment(object[field.fieldName], "YYYY").toDate();
+                                    edit.$value = moment(object[field.fieldName], 'YYYY').toDate();
                                     break;
                             }
                         }
@@ -506,17 +514,18 @@ export class DataHandlerService {
                     case EditType.ATTACHMENT:
                         edit.$viewValue = [];
                         if (object[field.fieldName]) {
-                            (<string>object[field.fieldName]).split(edit.attachmentType.fileSeparator)
-                                .forEach(str => {
+                            (<string>object[field.fieldName])
+                                .split(edit.attachmentType.fileSeparator)
+                                .forEach((str) => {
                                     (<UploadFile[]>edit.$viewValue).push({
                                         uid: str,
                                         name: str,
                                         size: 1,
-                                        type: "",
+                                        type: '',
                                         url: DataService.previewAttachment(str),
                                         response: {
-                                            data: str
-                                        }
+                                            data: str,
+                                        },
                                     });
                                 });
                             edit.$value = object[field.fieldName];
@@ -548,31 +557,29 @@ export class DataHandlerService {
         }
         if (eruptBuild.combineErupts) {
             for (let key in eruptBuild.combineErupts) {
-                this.objectToEruptValue(object[key], {eruptModel: eruptBuild.combineErupts[key]});
+                this.objectToEruptValue(object[key], { eruptModel: eruptBuild.combineErupts[key] });
             }
         }
-
     }
-
 
     loadEruptDefaultValue(eruptBuildModel: EruptBuildModel) {
         this.emptyEruptValue(eruptBuildModel);
         const obj = {};
-        eruptBuildModel.eruptModel.eruptFieldModels.forEach(ef => {
+        eruptBuildModel.eruptModel.eruptFieldModels.forEach((ef) => {
             if (ef.value) {
                 obj[ef.fieldName] = ef.value;
             }
         });
-        this.objectToEruptValue(obj, {eruptModel: eruptBuildModel.eruptModel});
+        this.objectToEruptValue(obj, { eruptModel: eruptBuildModel.eruptModel });
         for (let key in eruptBuildModel.combineErupts) {
             this.loadEruptDefaultValue({
-                eruptModel: eruptBuildModel.combineErupts[key]
+                eruptModel: eruptBuildModel.combineErupts[key],
             });
         }
     }
 
     emptyEruptValue(eruptBuildModel: EruptBuildModel) {
-        eruptBuildModel.eruptModel.eruptFieldModels.forEach(ef => {
+        eruptBuildModel.eruptModel.eruptFieldModels.forEach((ef) => {
             if (!ef.eruptFieldJson.edit) {
                 return;
             }
@@ -583,9 +590,9 @@ export class DataHandlerService {
             ef.eruptFieldJson.edit.$value = null;
             switch (ef.eruptFieldJson.edit.type) {
                 case EditType.CHOICE:
-                    if (eruptBuildModel.eruptModel.mode === "search") {
+                    if (eruptBuildModel.eruptModel.mode === 'search') {
                         if (ef.eruptFieldJson.edit.choiceType.vl) {
-                            ef.eruptFieldJson.edit.choiceType.vl.forEach(v => {
+                            ef.eruptFieldJson.edit.choiceType.vl.forEach((v) => {
                                 v.$viewValue = false;
                             });
                         }
@@ -606,10 +613,8 @@ export class DataHandlerService {
         });
         for (let key in eruptBuildModel.combineErupts) {
             this.emptyEruptValue({
-                eruptModel: eruptBuildModel.combineErupts[key]
+                eruptModel: eruptBuildModel.combineErupts[key],
             });
         }
     }
-
-
 }

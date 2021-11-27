@@ -1,4 +1,4 @@
-import {Edit, EruptFieldModel, View} from "./erupt-field.model";
+import {Edit, EruptFieldModel, Column} from "./erupt-field.model";
 import {OperationMode, OperationType} from "./erupt.enum";
 
 
@@ -8,7 +8,7 @@ export interface EruptModel {
     eruptName: string;
     //# customer prop
     eruptFieldModelMap?: Map<String, EruptFieldModel>;
-    tableColumns?: View[];
+    tableColumns?: Column[];
     mode?: "edit" | "search";
 }
 

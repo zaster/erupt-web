@@ -56,7 +56,7 @@ export class TabTableComponent implements OnInit {
             this.tabErupt.eruptFieldModel.eruptFieldJson.edit.$value = [];
         }
         if (this.onlyRead) {
-            this.column = this.uiBuildService.viewToAlainTableConfig(this.tabErupt.eruptBuildModel, false, true);
+            this.column = this.uiBuildService.viewToAlainTableConfig(this.tabErupt.eruptBuildModel, false);
         } else {
             const viewValue: STColumn[] = [];
             viewValue.push({
@@ -67,7 +67,7 @@ export class TabTableComponent implements OnInit {
                 className: "text-center",
                 index: this.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol
             });
-            viewValue.push(...this.uiBuildService.viewToAlainTableConfig(this.tabErupt.eruptBuildModel, false, true));
+            viewValue.push(...this.uiBuildService.viewToAlainTableConfig(this.tabErupt.eruptBuildModel, false));
             let operators: STColumnButton[] = [];
             if (this.mode == "add") {
                 operators.push({

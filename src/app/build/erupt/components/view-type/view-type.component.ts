@@ -1,20 +1,19 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from "@angular/core";
-import {View} from "../../model/erupt-field.model";
-import {EditType, ViewType} from "../../model/erupt.enum";
-import {DataService} from "@shared/service/data.service";
-import {NzCarouselComponent} from "ng-zorro-antd";
-import {EruptBuildModel} from "../../model/erupt-build.model";
-import {DataHandlerService} from "../../service/data-handler.service";
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Column } from '../../model/erupt-field.model';
+import { EditType, ViewType } from '../../model/erupt.enum';
+import { DataService } from '@shared/service/data.service';
+import { NzCarouselComponent } from 'ng-zorro-antd';
+import { EruptBuildModel } from '../../model/erupt-build.model';
+import { DataHandlerService } from '../../service/data-handler.service';
 
 @Component({
-    selector: "erupt-view-type",
-    templateUrl: "./view-type.component.html",
-    styleUrls: ["./view-type.component.less"],
-    styles: []
+    selector: 'erupt-view-type',
+    templateUrl: './view-type.component.html',
+    styleUrls: ['./view-type.component.less'],
+    styles: [],
 })
 export class ViewTypeComponent implements OnInit, AfterViewInit {
-
-    @Input() view: View;
+    @Input() view: Column;
 
     @Input() value: any;
 
@@ -32,8 +31,7 @@ export class ViewTypeComponent implements OnInit, AfterViewInit {
 
     viewType = ViewType;
 
-    constructor(private dataService: DataService, private dataHandler: DataHandlerService) {
-    }
+    constructor(private dataService: DataService, private dataHandler: DataHandlerService) {}
 
     ngOnInit() {
         if (this.value) {
@@ -44,7 +42,7 @@ export class ViewTypeComponent implements OnInit, AfterViewInit {
                     this.paths.push(DataService.previewAttachment(path));
                 }
             } else {
-                let _paths = (<string>this.value).split("|");
+                let _paths = (<string>this.value).split('|');
                 for (let path of _paths) {
                     this.paths.push(DataService.previewAttachment(path));
                 }
@@ -57,10 +55,12 @@ export class ViewTypeComponent implements OnInit, AfterViewInit {
         }
         if (this.view.viewType === ViewType.TAB_VIEW) {
             this.loading = true;
-            this.dataService.queryEruptDataById(this.eruptBuildModel.eruptModel.eruptName, this.value).subscribe(data => {
-                this.dataHandler.objectToEruptValue(data, this.eruptBuildModel);
-                this.loading = false;
-            });
+            this.dataService
+                .queryEruptDataById(this.eruptBuildModel.eruptModel.eruptName, this.value)
+                .subscribe((data) => {
+                    this.dataHandler.objectToEruptValue(data, this.eruptBuildModel);
+                    this.loading = false;
+                });
         }
     }
 
@@ -70,7 +70,7 @@ export class ViewTypeComponent implements OnInit, AfterViewInit {
         }, 200);
     }
 
-    @ViewChild("carousel", {static: false}) carouselComponent: NzCarouselComponent;
+    @ViewChild('carousel', { static: false }) carouselComponent: NzCarouselComponent;
 
     currIndex: number = 0;
 
@@ -78,5 +78,4 @@ export class ViewTypeComponent implements OnInit, AfterViewInit {
         this.carouselComponent.goTo(index);
         this.currIndex = index;
     }
-
 }

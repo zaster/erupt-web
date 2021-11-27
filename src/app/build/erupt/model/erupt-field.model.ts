@@ -1,5 +1,15 @@
-import {AttachmentEnum, ChoiceEnum, DateEnum, EditType, HtmlEditTypeEnum, PickerMode, TabEnum, ViewType} from "./erupt.enum";
-
+import { STColumn, STColumnBadge, STColumnTag, STColumnTitle, STColumnYn } from '@delon/abc';
+import * as internal from 'assert';
+import {
+    AttachmentEnum,
+    ChoiceEnum,
+    DateEnum,
+    EditType,
+    HtmlEditTypeEnum,
+    PickerMode,
+    TabEnum,
+    ViewType,
+} from './erupt.enum';
 
 export interface EruptFieldModel {
     fieldName: string;
@@ -10,34 +20,33 @@ export interface EruptFieldModel {
     value?: any;
 }
 
-
 //field detail
 export interface EruptField {
-    views?: View[];
+    columns?: Column[];
     edit?: Edit;
 }
 
-export interface View {
-    className: string;
-    column: string;
-    title: string;
-    width: string;
-    desc: string;
-    show: boolean;
-    viewType: ViewType;
-    template: string;
-    sortable: boolean;
-    //extra
+export interface Column extends STColumn {
+    title: STColumnTitle;
+    index: string;
+    show?: boolean;
+    template?: string;
+    link?: LinkModel;
     eruptFieldModel?: EruptFieldModel;
 }
-
+export interface LinkModel {
+    language: any;
+    icon?: string;
+    className?: 'text-center';
+    viewType?: ViewType;
+}
 export interface Edit {
     title: string;
     notNull: boolean;
     desc: string;
     type: EditType;
     show: boolean;
-    showBy: { dependField: string, expr: string };
+    showBy: { dependField: string; expr: string };
     readOnly: Readonly;
     placeHolder: string;
     search: Search;
@@ -130,17 +139,14 @@ interface ChoiceType {
     anewFetch: boolean;
 }
 
-
 interface TagsType {
     allowExtension: boolean;
     joinSeparator: string;
 }
 
-
 export interface TabType {
     type: TabEnum;
 }
-
 
 interface SliderType {
     min: number;
