@@ -1,6 +1,5 @@
-import {Edit, EruptFieldModel, View} from "./erupt-field.model";
-import {OperationEruptMode, OperationMode, OperationType} from "./erupt.enum";
-
+import { Edit, EruptFieldModel, Column } from './erupt-field.model';
+import { OperationEruptMode, OperationMode, OperationType } from './erupt.enum';
 
 export interface EruptModel {
     eruptFieldModels: EruptFieldModel[];
@@ -8,8 +7,8 @@ export interface EruptModel {
     eruptName: string;
     //# customer prop
     eruptFieldModelMap?: Map<String, EruptFieldModel>;
-    tableColumns?: View[];
-    mode?: "edit" | "search";
+    tableColumns?: Column[];
+    mode?: 'edit' | 'search';
 }
 
 export interface Erupt {
@@ -33,7 +32,7 @@ export interface Drill {
     icon: string;
     column: string;
     link: Link;
-    power:Power;
+    power: Power;
 }
 
 export interface Tree {
@@ -57,7 +56,6 @@ export interface Link {
     linkErupt: string;
 }
 
-
 export interface RowOperation {
     eruptMode: OperationEruptMode;
     code: string;
@@ -68,7 +66,6 @@ export interface RowOperation {
     tip: string;
     ifExpr: string;
 }
-
 
 interface CodeAndEdit {
     edit: Edit;
