@@ -1,24 +1,24 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/core';
-import {EruptModel} from "../../model/erupt.model";
-import {DataService} from "@shared/service/data.service";
-import {DataHandlerService} from "../../service/data-handler.service";
-import {NzFormatEmitEvent} from "ng-zorro-antd";
-import {ALAIN_I18N_TOKEN, SettingsService} from "@delon/theme";
-import {I18NService} from "@core";
+import { Component, EventEmitter, Inject, Input, OnInit, Output } from '@angular/core';
+import { EruptModel } from '../../model/erupt.model';
+import { DataService } from '@shared/service/data.service';
+import { DataHandlerService } from '../../service/data-handler.service';
+import { NzFormatEmitEvent } from 'ng-zorro-antd';
+import { ALAIN_I18N_TOKEN, SettingsService } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
     selector: 'layout-tree',
     templateUrl: './layout-tree.component.html',
-    styles: []
+    styles: [],
 })
 export class LayoutTreeComponent implements OnInit {
-
-    constructor(private data: DataService,
-                public settingSrv: SettingsService,
-                public settingService: SettingsService,
-                @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-                private dataHandler: DataHandlerService) {
-    }
+    constructor(
+        private data: DataService,
+        public settingSrv: SettingsService,
+        public settingService: SettingsService,
+        @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+        private dataHandler: DataHandlerService
+    ) {}
 
     @Input() eruptModel: EruptModel;
 
@@ -32,10 +32,17 @@ export class LayoutTreeComponent implements OnInit {
 
     ngOnInit() {
         this.treeLoading = true;
-        this.data.queryDependTreeData(this.eruptModel.eruptName).subscribe(data => {
+        this.data.queryDependTreeData(this.eruptModel.eruptName).subscribe((data) => {
             let eruptFieldModel = this.eruptModel.eruptFieldModelMap.get(this.eruptModel.eruptJson.linkTree.field);
-            if (eruptFieldModel && eruptFieldModel.eruptFieldJson.edit && eruptFieldModel.eruptFieldJson.edit.referenceTreeType) {
-                this.list = this.dataHandler.dataTreeToZorroTree(data, eruptFieldModel.eruptFieldJson.edit.referenceTreeType.expandLevel);
+            if (
+                eruptFieldModel &&
+                eruptFieldModel.eruptFieldJson.edit &&
+                eruptFieldModel.eruptFieldJson.edit.referenceTreeType
+            ) {
+                this.list = this.dataHandler.dataTreeToZorroTree(
+                    data,
+                    eruptFieldModel.eruptFieldJson.edit.referenceTreeType.expandLevel
+                );
             } else {
                 this.list = this.dataHandler.dataTreeToZorroTree(data, this.eruptModel.eruptJson.tree.expandLevel);
             }
@@ -43,7 +50,7 @@ export class LayoutTreeComponent implements OnInit {
                 this.list.unshift({
                     key: null,
                     title: this.i18n.fanyi('global.all'),
-                    isLeaf: true
+                    isLeaf: true,
                 });
             }
             this.treeLoading = false;
@@ -60,6 +67,7 @@ export class LayoutTreeComponent implements OnInit {
             this.trigger.emit(null);
         } else {
             let dt = this.eruptModel.eruptJson.linkTree;
+            console.log(dt);
             if (!event.node.origin.selected && !dt.dependNode) {
                 this.trigger.emit(null);
             } else {
@@ -71,5 +79,4 @@ export class LayoutTreeComponent implements OnInit {
         //     this.dataHandler.objectToEruptValue(data, this.eruptBuildModel);
         // });
     }
-
 }

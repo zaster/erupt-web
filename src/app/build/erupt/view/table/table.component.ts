@@ -78,6 +78,7 @@ export class TableComponent implements OnInit {
 
     @Input() set drill(drill: { erupt: string; code: string; parent: any; val: any; power: Power }) {
         this._drill = drill;
+        console.log(drill);
         this.init(
             this.dataService.getEruptBuild(drill.erupt),
             {
@@ -90,7 +91,7 @@ export class TableComponent implements OnInit {
                     '/' +
                     drill.val[drill.parent.eruptJson.primaryKeyCol],
                 header: {
-                    erupt: drill.parent.parent.eruptName,
+                    erupt: drill.parent.eruptName,
                 },
             },
             (eb: EruptBuildModel) => {
@@ -212,6 +213,13 @@ export class TableComponent implements OnInit {
             fixed: 'left',
             className: 'text-center left-sticky-checkbox',
             index: this.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol,
+        });
+        _columns.push({
+            title: '序号',
+            width: 30,
+            type: 'no',
+            className: 'text-center',
+            fixed: 'left',
         });
         let viewCols = this.uiBuildService.viewToAlainTableConfig(this.eruptBuildModel, true);
         for (let viewCol of viewCols) {
@@ -706,6 +714,7 @@ export class TableComponent implements OnInit {
     }
 
     clickTreeNode(event) {
+        console.log(event);
         this.showTable = true;
         this.eruptBuildModel.eruptModel.eruptJson.linkTree.value = event;
         this.searchErupt.eruptJson.linkTree.value = event;

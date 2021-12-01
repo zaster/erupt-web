@@ -2,20 +2,15 @@
  * 进一步对基础模块的导入提炼
  * 有关模块注册指导原则请参考：https://github.com/ng-alain/ng-alain/issues/180
  */
-import {
-    NgModule,
-    Optional,
-    SkipSelf,
-    ModuleWithProviders
-} from "@angular/core";
-import {throwIfAlreadyLoaded} from "@core/module-import-guard";
+import { NgModule, Optional, SkipSelf, ModuleWithProviders } from '@angular/core';
+import { throwIfAlreadyLoaded } from '@core/module-import-guard';
 
-import {AlainThemeModule} from "@delon/theme";
-import {DelonABCModule, STConfig} from "@delon/abc";
-import {DelonChartModule} from "@delon/chart";
-import {DelonAuthModule} from "@delon/auth";
-import {DelonCacheModule} from "@delon/cache";
-import {DelonUtilModule} from "@delon/util";
+import { AlainThemeModule } from '@delon/theme';
+import { DelonABCModule, STConfig } from '@delon/abc';
+import { DelonChartModule } from '@delon/chart';
+import { DelonAuthModule } from '@delon/auth';
+import { DelonCacheModule } from '@delon/cache';
+import { DelonUtilModule } from '@delon/util';
 
 // #endregion
 
@@ -31,46 +26,51 @@ import {DelonUtilModule} from "@delon/util";
  *  </section>
  *  ```
  */
-import {RouteReuseStrategy} from "@angular/router";
-import {ReuseTabService, ReuseTabStrategy} from "@delon/abc/reuse-tab";
+import { RouteReuseStrategy } from '@angular/router';
+import { ReuseTabService, ReuseTabStrategy } from '@delon/abc/reuse-tab';
 
 let REUSETAB_PROVIDES = [
     {
         provide: RouteReuseStrategy,
         useClass: ReuseTabStrategy,
-        deps: [ReuseTabService]
-    }
+        deps: [ReuseTabService],
+    },
 ];
 // #endregion
 
 // #region global config functions
 
-import {PageHeaderConfig} from "@delon/abc";
+import { PageHeaderConfig } from '@delon/abc';
 
 export function fnPageHeaderConfig(): PageHeaderConfig {
     return Object.assign(new PageHeaderConfig());
 }
 
-import {DelonAuthConfig} from "@delon/auth";
-import {WindowModel} from "@shared/model/window.model";
+import { DelonAuthConfig } from '@delon/auth';
+import { WindowModel } from '@shared/model/window.model';
 
 export function fnDelonAuthConfig(): DelonAuthConfig {
     return Object.assign(new DelonAuthConfig(), <DelonAuthConfig>{
-        login_url: "/passport/login"
+        login_url: '/passport/login',
     });
 }
 
 export function fnSTConfig(): STConfig {
     return Object.assign(new STConfig(), <STConfig>{
-        modal: {size: "lg"}
+        size: 'small',
+        sortReName: {
+            ascend: 'asc',
+            descend: 'desc',
+        },
+        modal: { size: 'lg' },
     });
 }
 
 const GLOBAL_CONFIG_PROVIDES = [
     // TIPS：@delon/abc 有大量的全局配置信息，例如设置所有 `st` 的页码默认为 `20` 行
-    {provide: STConfig, useFactory: fnSTConfig},
-    {provide: PageHeaderConfig, useFactory: fnPageHeaderConfig},
-    {provide: DelonAuthConfig, useFactory: fnDelonAuthConfig}
+    { provide: STConfig, useFactory: fnSTConfig },
+    { provide: PageHeaderConfig, useFactory: fnPageHeaderConfig },
+    { provide: DelonAuthConfig, useFactory: fnDelonAuthConfig },
 ];
 
 // #endregion
@@ -82,22 +82,22 @@ const GLOBAL_CONFIG_PROVIDES = [
         DelonChartModule,
         DelonAuthModule,
         DelonCacheModule,
-        DelonUtilModule
-    ]
+        DelonUtilModule,
+    ],
 })
 export class DelonModule {
     constructor(
         @Optional()
         @SkipSelf()
-            parentModule: DelonModule
+        parentModule: DelonModule
     ) {
-        throwIfAlreadyLoaded(parentModule, "DelonModule");
+        throwIfAlreadyLoaded(parentModule, 'DelonModule');
     }
 
     static forRoot(): ModuleWithProviders {
         return {
             ngModule: DelonModule,
-            providers: [...REUSETAB_PROVIDES, ...GLOBAL_CONFIG_PROVIDES]
+            providers: [...REUSETAB_PROVIDES, ...GLOBAL_CONFIG_PROVIDES],
         };
     }
 }
