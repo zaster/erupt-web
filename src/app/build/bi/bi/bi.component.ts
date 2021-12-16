@@ -1,24 +1,20 @@
-import {Component, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import {Bi, DimType} from "../model/bi.model";
-import {NzMessageService} from "ng-zorro-antd";
-import {STColumn} from "@delon/abc/table/table.interfaces";
-import {BiDataService} from "../service/data.service";
-import {ActivatedRoute} from "@angular/router";
-import {Subscription} from "rxjs";
-import {STComponent} from "@delon/abc";
-import {ChartComponent} from "../chart/chart.component";
-import {HandlerService} from "../service/handler.service";
-import {SettingsService} from "@delon/theme";
-import {isNotNull, isNull} from "@shared/util/erupt.util";
+import { Component, Inject, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Bi, DimType } from '../model/bi.model';
+import { BiDataService } from '../service/data.service';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { ChartComponent } from '../chart/chart.component';
+import { HandlerService } from '../service/handler.service';
+import { SettingsService } from '@delon/theme';
+import { isNotNull, isNull } from '@shared/util/erupt.util';
 
 @Component({
     selector: 'app-bi',
     templateUrl: './bi.component.html',
-    styleUrls: ["./bi.component.less"],
-    styles: []
+    styleUrls: ['./bi.component.less'],
+    styles: [],
 })
 export class BiComponent implements OnInit, OnDestroy {
-
     bi: Bi;
 
     name: string;
@@ -35,7 +31,7 @@ export class BiComponent implements OnInit, OnDestroy {
 
     hideCondition: boolean = false;
 
-    @ViewChild("st", {static: false}) st: STComponent;
+    @ViewChild('st', { static: false }) st: STComponent;
 
     @ViewChildren('biChart') biCharts: QueryList<ChartComponent>;
 
@@ -50,22 +46,22 @@ export class BiComponent implements OnInit, OnDestroy {
 
     timer: NodeJS.Timer;
 
-    constructor(private dataService: BiDataService,
-                public route: ActivatedRoute,
-                private handlerService: HandlerService,
-                public settingSrv: SettingsService,
-                @Inject(NzMessageService)
-                private msg: NzMessageService
-    ) {
-    }
+    constructor(
+        private dataService: BiDataService,
+        public route: ActivatedRoute,
+        private handlerService: HandlerService,
+        public settingSrv: SettingsService,
+        @Inject(NzMessageService)
+        private msg: NzMessageService
+    ) {}
 
     ngOnInit() {
-        this.router$ = this.route.params.subscribe(params => {
+        this.router$ = this.route.params.subscribe((params) => {
             this.timer && clearInterval(this.timer);
             this.name = params.name;
             this.columns = [];
             this.data = null;
-            this.dataService.getBiBuild(this.name).subscribe(res => {
+            this.dataService.getBiBuild(this.name).subscribe((res) => {
                 this.bi = res;
                 for (let dimension of res.dimensions) {
                     if (dimension.type === DimType.NUMBER_RANGE) {
@@ -96,20 +92,20 @@ export class BiComponent implements OnInit, OnDestroy {
             return;
         }
         if (updateChart) {
-            this.biCharts.forEach(chart => chart.update(chartLoading));
+            this.biCharts.forEach((chart) => chart.update(chartLoading));
         }
         if (this.bi.table) {
             this.querying = true;
             this.index = pageIndex;
-            this.dataService.getBiData(this.bi.code, pageIndex, pageSize, param).subscribe(res => {
+            this.dataService.getBiData(this.bi.code, pageIndex, pageSize, param).subscribe((res) => {
                 this.haveNotNull = false;
                 this.querying = false;
                 this.total = res.total;
                 this.columns = [];
                 if (!res.columns) {
                     this.columns.push({
-                        title: "暂无数据",
-                        className: "text-center"
+                        title: '暂无数据',
+                        className: 'text-center',
                     });
                     this.data = [];
                 } else {
@@ -117,18 +113,18 @@ export class BiComponent implements OnInit, OnDestroy {
                         title: 'No',
                         type: 'no',
                         width: '82px',
-                        className: "text-center",
-                        fixed: "left",
+                        className: 'text-center',
+                        fixed: 'left',
                     });
                     for (let column of res.columns) {
                         let col = {
                             title: column.name,
                             index: column.name,
-                            className: "text-center",
+                            className: 'text-center',
                             show: true,
                             iif: () => {
                                 return col.show;
-                            }
+                            },
                         };
                         this.columns.push(col);
                     }
@@ -167,5 +163,4 @@ export class BiComponent implements OnInit, OnDestroy {
         this.router$.unsubscribe();
         this.timer && clearInterval(this.timer);
     }
-
 }

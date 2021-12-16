@@ -1,4 +1,4 @@
-import { Edit, EruptFieldModel, Column } from './erupt-field.model';
+import { Edit, EruptFieldModel, Column, Action } from './erupt-field.model';
 import { OperationEruptMode, OperationMode, OperationType } from './erupt.enum';
 
 export interface EruptModel {
@@ -12,6 +12,7 @@ export interface EruptModel {
 }
 
 export interface Erupt {
+    actions: Action[];
     primaryKeyCol: string;
     power: Power;
     tree: Tree;
@@ -65,6 +66,7 @@ export interface RowOperation {
     type: OperationType;
     tip: string;
     ifExpr: string;
+    show?: boolean;
 }
 
 interface CodeAndEdit {
@@ -81,4 +83,5 @@ export interface Power {
     viewDetails: boolean;
     importable: boolean;
     export: boolean;
+    ifExpr: string;
 }

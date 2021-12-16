@@ -1,21 +1,31 @@
-import {Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
-import {EditType, Scene} from "../../model/erupt.enum";
-import {ALAIN_I18N_TOKEN, SettingsService} from "@delon/theme";
-import {EruptBuildModel} from "../../model/erupt-build.model";
-import {DataHandlerService} from "../../service/data-handler.service";
-import {EruptFieldModel} from "../../model/erupt-field.model";
-import {NzMessageService, NzModalService} from "ng-zorro-antd";
-import {EditTypeComponent} from "../../components/edit-type/edit-type.component";
-import {DataService} from "@shared/service/data.service";
-import {I18NService} from "@core";
+import {
+    AfterViewInit,
+    Component,
+    EventEmitter,
+    Inject,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    ViewChild,
+} from '@angular/core';
+import { EditType, Scene } from '../../model/erupt.enum';
+import { ALAIN_I18N_TOKEN, SettingsService } from '@delon/theme';
+import { EruptBuildModel } from '../../model/erupt-build.model';
+import { DataHandlerService } from '../../service/data-handler.service';
+import { EruptFieldModel } from '../../model/erupt-field.model';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { EditTypeComponent } from '../../components/edit-type/edit-type.component';
+import { DataService } from '@shared/service/data.service';
+import { I18NService } from '@core';
+import { colRules } from '@shared/model/util.model';
 
 @Component({
-    selector: "erupt-edit",
-    templateUrl: "./edit.component.html",
-    styleUrls: ["./edit.component.less"]
+    selector: 'erupt-edit',
+    templateUrl: './edit.component.html',
+    styleUrls: ['./edit.component.less'],
 })
 export class EditComponent implements OnInit, OnDestroy {
-
     loading = false;
 
     editType = EditType;
@@ -30,7 +40,9 @@ export class EditComponent implements OnInit, OnDestroy {
 
     @Input() readonly: boolean = false;
 
-    @ViewChild("eruptEdit", {static: false}) eruptEdit: EditTypeComponent;
+    @Input() col1 = colRules[3];
+
+    @ViewChild('eruptEdit', { static: false }) eruptEdit: EditTypeComponent;
 
     eruptFieldModelMap: Map<String, EruptFieldModel>;
 
@@ -42,24 +54,25 @@ export class EditComponent implements OnInit, OnDestroy {
         private dataService: DataService,
         private settingSrv: SettingsService,
         @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-        private dataHandlerService: DataHandlerService) {
-
-    }
+        private dataHandlerService: DataHandlerService
+    ) {}
 
     ngOnInit() {
         this.dataHandlerService.emptyEruptValue(this.eruptBuildModel);
         if (this.behavior == Scene.ADD) {
             this.loading = true;
-            this.dataService.getInitValue(this.eruptBuildModel.eruptModel.eruptName).subscribe(data => {
+            this.dataService.getInitValue(this.eruptBuildModel.eruptModel.eruptName).subscribe((data) => {
                 this.dataHandlerService.objectToEruptValue(data, this.eruptBuildModel);
                 this.loading = false;
             });
         } else {
             this.loading = true;
-            this.dataService.queryEruptDataById(this.eruptBuildModel.eruptModel.eruptName, this.id).subscribe(data => {
-                this.dataHandlerService.objectToEruptValue(data, this.eruptBuildModel);
-                this.loading = false;
-            });
+            this.dataService
+                .queryEruptDataById(this.eruptBuildModel.eruptModel.eruptName, this.id)
+                .subscribe((data) => {
+                    this.dataHandlerService.objectToEruptValue(data, this.eruptBuildModel);
+                    this.loading = false;
+                });
         }
         this.eruptFieldModelMap = this.eruptBuildModel.eruptModel.eruptFieldModelMap;
     }
@@ -83,8 +96,5 @@ export class EditComponent implements OnInit, OnDestroy {
         } else return this.eruptEdit.eruptEditValidate();
     }
 
-    ngOnDestroy(): void {
-    }
-
-
+    ngOnDestroy(): void {}
 }

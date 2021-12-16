@@ -37,6 +37,7 @@ export class UiBuildService {
      */
     viewToAlainTableConfig(eruptBuildModel: EruptBuildModel, lineData: boolean): STColumn[] {
         let cols: STColumn[] = [];
+
         const columns = eruptBuildModel.eruptModel.tableColumns;
         for (let column of columns) {
             let titleWidth = column.title.text.length * 14 + 22;

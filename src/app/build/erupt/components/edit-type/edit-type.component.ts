@@ -1,39 +1,48 @@
-import {Component, DoCheck, EventEmitter, Inject, Input, KeyValueDiffers, OnDestroy, OnInit, Output} from "@angular/core";
-import {EruptFieldModel} from "../../model/erupt-field.model";
-import {AttachmentEnum, ChoiceEnum, DateEnum, EditType, HtmlEditTypeEnum, Scene} from "../../model/erupt.enum";
-import {DataService} from "@shared/service/data.service";
-import {TreeSelectComponent} from "../tree-select/tree-select.component";
-import {NzMessageService, NzModalService, UploadFile} from "ng-zorro-antd";
-import {EruptModel} from "../../model/erupt.model";
-import {colRules} from "@shared/model/util.model";
-import {ReferenceTableComponent} from "../reference-table/reference-table.component";
-import {EruptBuildModel} from "../../model/erupt-build.model";
-import {EruptApiModel, Status} from "../../model/erupt-api.model";
-import {IframeHeight} from "@shared/util/window.util";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {ALAIN_I18N_TOKEN} from "@delon/theme";
-import {I18NService} from "@core";
+import {
+    Component,
+    DoCheck,
+    EventEmitter,
+    Inject,
+    Input,
+    KeyValueDiffers,
+    OnDestroy,
+    OnInit,
+    Output,
+} from '@angular/core';
+import { EruptFieldModel } from '../../model/erupt-field.model';
+import { AttachmentEnum, ChoiceEnum, DateEnum, EditType, HtmlEditTypeEnum, Scene } from '../../model/erupt.enum';
+import { DataService } from '@shared/service/data.service';
+import { TreeSelectComponent } from '../tree-select/tree-select.component';
+import { NzMessageService, NzModalService, UploadFile } from 'ng-zorro-antd';
+import { EruptModel } from '../../model/erupt.model';
+import { colRules } from '@shared/model/util.model';
+import { ReferenceTableComponent } from '../reference-table/reference-table.component';
+import { EruptBuildModel } from '../../model/erupt-build.model';
+import { EruptApiModel, Status } from '../../model/erupt-api.model';
+import { IframeHeight } from '@shared/util/window.util';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { ALAIN_I18N_TOKEN } from '@delon/theme';
+import { I18NService } from '@core';
 
 @Component({
-    selector: "erupt-edit-type",
-    templateUrl: "./edit-type.component.html",
-    styleUrls: ["./edit-type.component.less"]
+    selector: 'erupt-edit-type',
+    templateUrl: './edit-type.component.html',
+    styleUrls: ['./edit-type.component.less'],
 })
 export class EditTypeComponent implements OnInit, OnDestroy, DoCheck {
-
     @Input() loading: boolean = false;
 
     //important
     @Input() eruptBuildModel: EruptBuildModel;
 
     //UI
-    @Input() col = colRules[3];
+    @Input() col = colRules[1];
 
     //UI
-    @Input() size: "large" | "small" | "default" = "large";
+    @Input() size: 'large' | 'small' | 'default' = 'large';
 
     //UI
-    @Input() layout: "horizontal" | "vertical" = "vertical";
+    @Input() layout: 'horizontal' | 'vertical' = 'vertical';
 
     //Behavior
     @Input() mode: Scene | null;
@@ -61,13 +70,14 @@ export class EditTypeComponent implements OnInit, OnDestroy, DoCheck {
 
     uploadFilesStatus: { [key: string]: boolean } = {};
 
-    constructor(public dataService: DataService,
-                private differs: KeyValueDiffers,
-                @Inject(NzModalService) private modal: NzModalService,
-                @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-                @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService,
-                @Inject(NzMessageService) private msg: NzMessageService) {
-    }
+    constructor(
+        public dataService: DataService,
+        private differs: KeyValueDiffers,
+        @Inject(NzModalService) private modal: NzModalService,
+        @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+        @Inject(DA_SERVICE_TOKEN) public tokenService: ITokenService,
+        @Inject(NzMessageService) private msg: NzMessageService
+    ) {}
 
     ngOnInit() {
         this.eruptModel = this.eruptBuildModel.eruptModel;
@@ -108,7 +118,7 @@ export class EditTypeComponent implements OnInit, OnDestroy, DoCheck {
                 let edit = this.eruptModel.eruptFieldModelMap.get(showBy.dependField).eruptFieldJson.edit;
                 if (edit.$beforeValue != edit.$value) {
                     edit.$beforeValue = edit.$value;
-                    this.showByFieldModels.forEach(m => {
+                    this.showByFieldModels.forEach((m) => {
                         this.showByCheck(m);
                     });
                 }
@@ -122,14 +132,12 @@ export class EditTypeComponent implements OnInit, OnDestroy, DoCheck {
         model.eruptFieldJson.edit.show = !!eval(showBy.expr);
     }
 
-    ngOnDestroy(): void {
-
-    }
+    ngOnDestroy(): void {}
 
     eruptEditValidate(): boolean {
         for (let key in this.uploadFilesStatus) {
             if (!this.uploadFilesStatus[key]) {
-                this.msg.warning("附件上传中请稍后");
+                this.msg.warning('附件上传中请稍后');
                 return false;
             }
         }
@@ -142,26 +150,25 @@ export class EditTypeComponent implements OnInit, OnDestroy, DoCheck {
         }
     }
 
-    upLoadNzChange({file, fileList}, field: EruptFieldModel) {
+    upLoadNzChange({ file, fileList }, field: EruptFieldModel) {
         const status = file.status;
-        if (file.status === "uploading") {
+        if (file.status === 'uploading') {
             this.uploadFilesStatus[file.uid] = false;
         }
-        if (status === "done") {
+        if (status === 'done') {
             this.uploadFilesStatus[file.uid] = true;
             if ((<EruptApiModel>file.response).status === Status.ERROR) {
                 this.modal.error({
-                    nzTitle: "ERROR",
-                    nzContent: file.response.message
+                    nzTitle: 'ERROR',
+                    nzContent: file.response.message,
                 });
                 field.eruptFieldJson.edit.$viewValue.pop();
             }
-        } else if (status === "error") {
+        } else if (status === 'error') {
             this.uploadFilesStatus[file.uid] = true;
             this.msg.error(`${file.name} 上传失败`);
         }
     }
-
 
     previewImageHandler = (file: UploadFile) => {
         if (file.url) {
@@ -171,7 +178,6 @@ export class EditTypeComponent implements OnInit, OnDestroy, DoCheck {
         }
     };
 
-
     createRefTreeModal(field: EruptFieldModel) {
         let depend = field.eruptFieldJson.edit.referenceTreeType.dependField;
         let dependVal = null;
@@ -180,26 +186,27 @@ export class EditTypeComponent implements OnInit, OnDestroy, DoCheck {
             if (dependField.eruptFieldJson.edit.$value) {
                 dependVal = dependField.eruptFieldJson.edit.$value;
             } else {
-                this.msg.warning("请先选择" + dependField.eruptFieldJson.edit.title);
+                this.msg.warning('请先选择' + dependField.eruptFieldJson.edit.title);
                 return;
             }
         }
         this.modal.create({
-            nzWrapClassName: "modal-xs",
+            nzWrapClassName: 'modal-xs',
             nzKeyboard: true,
-            nzStyle: {top: "30px"},
+            nzStyle: { top: '30px' },
             nzTitle: field.eruptFieldJson.edit.title,
-            nzCancelText: this.i18n.fanyi("global.close") + "（ESC）",
+            nzCancelText: this.i18n.fanyi('global.close') + '（ESC）',
             nzContent: TreeSelectComponent,
             nzComponentParams: {
                 parentEruptName: this.parentEruptName,
                 eruptModel: this.eruptModel,
                 eruptField: field,
-                dependVal: dependVal
-            }, nzOnOk: () => {
+                dependVal: dependVal,
+            },
+            nzOnOk: () => {
                 const tempVal = field.eruptFieldJson.edit.$tempValue;
                 if (!tempVal) {
-                    this.msg.warning("请选中一条数据");
+                    this.msg.warning('请选中一条数据');
                     return false;
                 }
                 if (tempVal.id != field.eruptFieldJson.edit.$value) {
@@ -208,7 +215,7 @@ export class EditTypeComponent implements OnInit, OnDestroy, DoCheck {
                 field.eruptFieldJson.edit.$viewValue = tempVal.label;
                 field.eruptFieldJson.edit.$value = tempVal.id;
                 field.eruptFieldJson.edit.$tempValue = null;
-            }
+            },
         });
     }
 
@@ -216,41 +223,43 @@ export class EditTypeComponent implements OnInit, OnDestroy, DoCheck {
         let edit = field.eruptFieldJson.edit;
         let dependVal: string;
         if (edit.referenceTableType.dependField) {
-            const dependField: EruptFieldModel = this.eruptModel.eruptFieldModelMap.get(edit.referenceTableType.dependField);
+            const dependField: EruptFieldModel = this.eruptModel.eruptFieldModelMap.get(
+                edit.referenceTableType.dependField
+            );
             if (dependField.eruptFieldJson.edit.$value) {
                 dependVal = dependField.eruptFieldJson.edit.$value;
             } else {
-                this.msg.warning("请先选择" + dependField.eruptFieldJson.edit.title);
+                this.msg.warning('请先选择' + dependField.eruptFieldJson.edit.title);
                 return;
             }
         }
         let model = this.modal.create({
-            nzWrapClassName: "modal-xxl",
+            nzWrapClassName: 'modal-xxl',
             nzKeyboard: true,
-            nzStyle: {top: "24px"},
-            nzBodyStyle: {padding: "16px"},
+            nzStyle: { top: '24px' },
+            nzBodyStyle: { padding: '16px' },
             nzTitle: edit.title,
-            nzCancelText: this.i18n.fanyi("global.close") + "（ESC）",
+            nzCancelText: this.i18n.fanyi('global.close') + '（ESC）',
             nzContent: ReferenceTableComponent,
             nzComponentParams: {
                 eruptBuild: this.eruptBuildModel,
                 eruptField: field,
                 parentEruptName: this.parentEruptName,
-                dependVal: dependVal
-            }, nzOnOk: () => {
+                dependVal: dependVal,
+            },
+            nzOnOk: () => {
                 let radioValue = edit.$tempValue;
                 if (!radioValue) {
-                    this.msg.warning("请选中一条数据");
+                    this.msg.warning('请选中一条数据');
                     return false;
                 }
                 if (radioValue[edit.referenceTableType.id] != field.eruptFieldJson.edit.$value) {
                     this.clearReferValue(field);
                 }
                 edit.$value = radioValue[edit.referenceTableType.id];
-                edit.$viewValue = radioValue[edit.referenceTableType.label
-                    .replace(".", "_")] || '-----';
+                edit.$viewValue = radioValue[edit.referenceTableType.label] || '-----';
                 edit.$tempValue = radioValue;
-            }
+            },
         });
     }
 
@@ -273,25 +282,29 @@ export class EditTypeComponent implements OnInit, OnDestroy, DoCheck {
         }
     }
 
-
     changeTagAll($event, field: EruptFieldModel) {
         for (let vl of field.choiceList) {
             vl.$viewValue = $event;
         }
     }
 
-
     onAutoCompleteInput(event, fieldModel: EruptFieldModel) {
         let edit = fieldModel.eruptFieldJson.edit;
         if (edit.$value && edit.autoCompleteType.triggerLength <= edit.$value.toString().trim().length) {
-            this.dataService.findAutoCompleteValue(this.eruptModel.eruptName, fieldModel.fieldName, edit.$value, this.parentEruptName).subscribe(res => {
-                edit.autoCompleteType.items = res;
-            });
+            this.dataService
+                .findAutoCompleteValue(
+                    this.eruptModel.eruptName,
+                    fieldModel.fieldName,
+                    edit.$value,
+                    this.parentEruptName
+                )
+                .subscribe((res) => {
+                    edit.autoCompleteType.items = res;
+                });
         } else {
             edit.autoCompleteType.items = [];
         }
     }
 
     iframeHeight = IframeHeight;
-
 }

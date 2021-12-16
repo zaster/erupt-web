@@ -1,5 +1,5 @@
-import { STColumn, STColumnBadge, STColumnTag, STColumnTitle, STColumnYn } from '@delon/abc';
 import * as internal from 'assert';
+import { EruptBuildModel } from './erupt-build.model';
 import {
     AttachmentEnum,
     ChoiceEnum,
@@ -7,9 +7,12 @@ import {
     EditType,
     HtmlEditTypeEnum,
     PickerMode,
+    SelectMode,
     TabEnum,
     ViewType,
 } from './erupt.enum';
+import { Power } from './erupt.model';
+import { Relation, QueryCondition } from './erupt.vo';
 
 export interface EruptFieldModel {
     fieldName: string;
@@ -34,6 +37,25 @@ export interface Column extends STColumn {
     link?: LinkModel;
     eruptFieldModel?: EruptFieldModel;
 }
+
+export interface Action extends STColumnButton {
+    code?: string;
+    ifExpr?: string;
+    power: Power;
+    relations: Relation[];
+    contentType?: 'table' | 'form' | 'importx' | 'tpl' | 'none';
+    contentErupt?: EruptBuildModel;
+    selectMode?: 'checkbox' | 'radio';
+    formMode?: 'edit' | 'add';
+    buttons?: ModalButton[];
+    tpl?: any;
+    rowMode?: 'single' | 'multi' | 'none';
+}
+
+export interface ModalButton extends ModalButtonOptions {
+    code?: string;
+}
+
 export interface LinkModel {
     language: any;
     icon?: string;

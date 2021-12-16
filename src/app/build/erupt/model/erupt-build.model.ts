@@ -1,10 +1,11 @@
-import {EruptModel, Power} from "./erupt.model";
-import {EruptFieldModel} from "./erupt-field.model";
+import { EruptModel, Power } from './erupt.model';
+import { EruptFieldModel } from './erupt-field.model';
 
 export interface EruptBuildModel {
     eruptModel: EruptModel;
     power?: Power;
     tabErupts?: { [key: string]: EruptBuildModel };
+    actionErupts?: { [key: string]: EruptBuildModel };
     combineErupts?: { [key: string]: EruptModel };
     referenceErupts?: { [key: string]: EruptModel };
     operationErupts?: { [key: string]: EruptModel };

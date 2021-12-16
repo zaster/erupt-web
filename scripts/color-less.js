@@ -8,9 +8,7 @@ const allLessPath = path.join(root, '_all.less');
 const target = path.join(root, 'src/assets/alain-default.less');
 
 const content = `
-@import 'node_modules/@delon/theme/styles/index';
-@import 'node_modules/@delon/theme/styles/layout/default/index';
-@import 'node_modules/@delon/theme/styles/layout/fullscreen/index';
+@import 'node_modules/@delon/theme/index';
 @import 'node_modules/@delon/abc/index';
 @import 'node_modules/@delon/chart/index';
 

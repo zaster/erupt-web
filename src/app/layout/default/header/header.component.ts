@@ -1,20 +1,17 @@
-import {Component, Inject, OnInit} from "@angular/core";
-import {SettingsService} from "@delon/theme";
-import * as screenfull from "screenfull";
-import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
-import {CustomerTool, WindowModel} from "@shared/model/window.model";
-import {CacheService} from "@delon/cache";
-import {Router} from "@angular/router";
+import { Component, Inject, OnInit } from '@angular/core';
+import { SettingsService } from '@delon/theme';
+import * as screenfull from 'screenfull';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { CustomerTool, WindowModel } from '@shared/model/window.model';
+import { CacheService } from '@delon/cache';
+import { Router } from '@angular/router';
 
 @Component({
-    selector: "layout-header",
-    templateUrl: "./header.component.html",
-    styleUrls: [
-        "./header.component.less"
-    ]
+    selector: 'layout-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.less'],
 })
 export class HeaderComponent implements OnInit {
-
     searchToggleStatus: boolean;
 
     isFullScreen: boolean = false;
@@ -29,8 +26,6 @@ export class HeaderComponent implements OnInit {
 
     r_tools: CustomerTool[] = WindowModel.r_tools;
 
-
-
     drawerVisible: boolean = false;
 
     open() {
@@ -41,21 +36,22 @@ export class HeaderComponent implements OnInit {
         this.drawerVisible = false;
     }
 
-    constructor(public settings: SettingsService,
-                private router: Router,
-                @Inject(DA_SERVICE_TOKEN)
-                private tokenService: ITokenService,
-                private cacheService: CacheService) {
-    }
+    constructor(
+        public settings: SettingsService,
+        private router: Router,
+        @Inject(DA_SERVICE_TOKEN)
+        private tokenService: ITokenService,
+        private cacheService: CacheService
+    ) {}
 
     ngOnInit() {
-        this.r_tools.forEach(tool => {
+        this.r_tools.forEach((tool) => {
             tool.load && tool.load();
         });
     }
 
     toggleCollapsedSidebar() {
-        this.settings.setLayout("collapsed", !this.settings.layout.collapsed);
+        this.settings.setLayout('collapsed', !this.settings.layout.collapsed);
     }
 
     searchToggleChange() {
@@ -78,5 +74,4 @@ export class HeaderComponent implements OnInit {
         this.router.navigateByUrl(this.settings.user.indexPath);
         return false;
     }
-
 }

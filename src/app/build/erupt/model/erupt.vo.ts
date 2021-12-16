@@ -3,8 +3,12 @@ export interface QueryCondition {
     value: any;
 }
 
+export interface Relation extends QueryCondition {
+    recordKey: string;
+}
+
 export enum Expression {
-    EQ = "EQ",
-    RANGE = "RANGE",
-    IN = "IN"
+    EQ = 'EQ',
+    RANGE = 'RANGE',
+    IN = 'IN',
 }

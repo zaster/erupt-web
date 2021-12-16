@@ -1,45 +1,45 @@
-import {Component, Inject} from "@angular/core";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
-import {NzMessageService, NzModalService} from "ng-zorro-antd";
-import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
-import {DataService} from "@shared/service/data.service";
-import {SettingsService} from "@delon/theme";
-import {Status} from "../../build/erupt/model/erupt-api.model";
+import { Component, Inject } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { DA_SERVICE_TOKEN, TokenService } from '@delon/auth';
+import { DataService } from '@shared/service/data.service';
+import { SettingsService } from '@delon/theme';
+import { Status } from '../../build/erupt/model/erupt-api.model';
 
 @Component({
-    selector: "app-change-pwd",
-    templateUrl: "./change-pwd.component.html",
-    styleUrls: ["./change-pwd.component.less"],
-    styles: []
+    selector: 'app-change-pwd',
+    templateUrl: './change-pwd.component.html',
+    styleUrls: ['./change-pwd.component.less'],
+    styles: [],
 })
 export class ChangePwdComponent {
-
     form: FormGroup;
-    error = "";
+    error = '';
     type = 0;
     loading = false;
     visible = false;
-    status = "pool";
+    status = 'pool';
     progress = 0;
     passwordProgressMap = {
-        ok: "success",
-        pass: "normal",
-        pool: "exception"
+        ok: 'success',
+        pass: 'normal',
+        pool: 'exception',
     };
 
-    constructor(fb: FormBuilder,
-                public router: Router,
-                public msg: NzMessageService,
-                public modal: NzModalService,
-                public data: DataService,
-                public settingsService: SettingsService,
-                @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService
+    constructor(
+        fb: FormBuilder,
+        public router: Router,
+        public msg: NzMessageService,
+        public modal: NzModalService,
+        public data: DataService,
+        public settingsService: SettingsService,
+        @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService
     ) {
         this.form = fb.group({
             pwd: [null, [Validators.required]],
             newPwd: [null, [Validators.required, Validators.minLength(6), ChangePwdComponent.checkPassword.bind(this)]],
-            newPwd2: [null, [Validators.required, ChangePwdComponent.passwordEquar]]
+            newPwd2: [null, [Validators.required, ChangePwdComponent.passwordEquar]],
         });
     }
 
@@ -47,19 +47,17 @@ export class ChangePwdComponent {
         if (!control) return null;
         const self: any = this;
         self.visible = !!control.value;
-        if (control.value && control.value.length > 9) self.status = "ok";
-        else if (control.value && control.value.length > 5) self.status = "pass";
-        else self.status = "pool";
+        if (control.value && control.value.length > 9) self.status = 'ok';
+        else if (control.value && control.value.length > 5) self.status = 'pass';
+        else self.status = 'pool';
 
-        if (self.visible)
-            self.progress =
-                control.value.length * 10 > 100 ? 100 : control.value.length * 10;
+        if (self.visible) self.progress = control.value.length * 10 > 100 ? 100 : control.value.length * 10;
     }
 
     static passwordEquar(control: FormControl) {
         if (!control || !control.parent) return null;
-        if (control.value !== control.parent.get("newPwd").value) {
-            return {equar: true};
+        if (control.value !== control.parent.get('newPwd').value) {
+            return { equar: true };
         }
         return null;
     }
@@ -88,11 +86,12 @@ export class ChangePwdComponent {
         }
         if (this.form.invalid) return;
         this.loading = true;
-        this.data.changePwd(this.tokenService.get().account, this.pwd.value, this.newPwd.value, this.newPwd2.value)
-            .subscribe(api => {
+        this.data
+            .changePwd(this.tokenService.get().account, this.pwd.value, this.newPwd.value, this.newPwd2.value)
+            .subscribe((api) => {
                 this.loading = false;
                 if (api.status == Status.SUCCESS) {
-                    this.msg.success("密码修改成功");
+                    this.msg.success('密码修改成功');
                     this.modal.closeAll();
                     for (const i in this.form.controls) {
                         this.form.controls[i].markAsDirty();
@@ -104,5 +103,4 @@ export class ChangePwdComponent {
                 }
             });
     }
-
 }
