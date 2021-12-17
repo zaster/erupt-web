@@ -33,7 +33,7 @@ export class BiComponent implements OnInit, OnDestroy {
 
     hideCondition: boolean = false;
 
-    @ViewChild('st', { static: false }) st: STComponent;
+    @ViewChild('st') st: STComponent;
 
     @ViewChildren('biChart') biCharts: QueryList<ChartComponent>;
 
