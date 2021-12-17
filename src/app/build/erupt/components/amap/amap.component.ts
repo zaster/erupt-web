@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { LazyService } from '@delon/util';
 import { WindowModel } from '@shared/model/window.model';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { isObject } from 'util';
 import { MapType } from '../../model/erupt-field.model';
 
@@ -83,7 +83,7 @@ export class AmapComponent implements OnInit {
                 });
                 this.map = map;
                 this.mouseTool = new AMap.MouseTool(map);
-                AMap.plugin('AMap.Geolocation', function() {
+                AMap.plugin('AMap.Geolocation', function () {
                     let geolocation = new AMap.Geolocation({
                         timeout: 10000, //超过10秒后停止定位，默认：5s
                         buttonPosition: 'RB', //定位按钮的停靠位置
@@ -91,18 +91,18 @@ export class AmapComponent implements OnInit {
                     });
                     map.addControl(geolocation);
                 });
-                AMap.plugin(['AMap.ControlBar'], function() {
+                AMap.plugin(['AMap.ControlBar'], function () {
                     // 添加 3D 罗盘控制
                     map.addControl(new AMap.ControlBar());
                 });
                 let that = this;
 
                 function complete() {
-                    AMap.plugin('AMap.Autocomplete', function() {
+                    AMap.plugin('AMap.Autocomplete', function () {
                         let autoComplete = new AMap.Autocomplete({
                             city: '',
                         });
-                        autoComplete.search(that.tipInput.nativeElement.value, function(status, result) {
+                        autoComplete.search(that.tipInput.nativeElement.value, function (status, result) {
                             if (status == 'complete') {
                                 let tips = [];
                                 if (result.tips) {

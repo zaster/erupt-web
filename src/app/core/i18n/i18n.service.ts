@@ -10,7 +10,6 @@ import ngKO from '@angular/common/locales/ko';
 import ngJA from '@angular/common/locales/ja';
 import ngZhTw from '@angular/common/locales/zh-Hant-HK';
 
-import { NzI18nService, en_US, zh_CN, ko_KR, ja_JP, zh_TW } from 'ng-zorro-antd';
 import { enUS as df_en, ja as df_ja, zhCN as df_zh_cn, zhTW as df_zh_tw } from 'date-fns/locale';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -22,8 +21,13 @@ import {
     SettingsService,
     ko_KR as delonKoKR,
     zh_CN as delonZhCn,
+    en_US,
+    ja_JP,
+    zh_CN,
+    zh_TW,
 } from '@delon/theme';
 import { EruptAppData } from '@core/startup/erupt-app.data';
+import { NzI18nService } from 'ng-zorro-antd/i18n';
 
 interface LangData {
     text: string;

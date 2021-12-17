@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, NgZone, Inject, ChangeDetectorRef } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { NzMessageService } from 'ng-zorro-antd';
 import { LazyService, copy, deepCopy } from '@delon/util';
 import { SettingsService } from '@delon/theme';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 const ALAINDEFAULTVAR = 'alain-default-vars';
 const DEFAULT_COLORS = [
@@ -239,7 +239,7 @@ export class SettingDrawerComponent {
     private loadLess(): Promise<void> {
         if (this.loadedLess) return Promise.resolve();
         return this.lazy
-            .loadStyle('./assets/alain-default.less' /* , "stylesheet/less" */)
+            .loadStyle('./assets/color.less' /* , "stylesheet/less" */)
             .then(() => {
                 const lessConfigNode = this.doc.createElement('script');
                 lessConfigNode.innerHTML = `

@@ -1,5 +1,5 @@
-import {Inject, Injectable, Injector} from "@angular/core";
-import {Router} from "@angular/router";
+import { Inject, Injectable, Injector } from '@angular/core';
+import { Router } from '@angular/router';
 import {
     HttpErrorResponse,
     HttpHandler,
@@ -9,38 +9,40 @@ import {
     HttpRequest,
     HttpResponse,
     HttpSentEvent,
-    HttpUserEvent
-} from "@angular/common/http";
-import {Observable, of, throwError} from "rxjs";
-import {catchError, mergeMap} from "rxjs/operators";
-import {NzMessageService, NzModalService, NzNotificationService} from "ng-zorro-antd";
-import {_HttpClient, ALAIN_I18N_TOKEN} from "@delon/theme";
-import {environment} from "@env/environment";
-import {EruptApiModel, PromptWay, Status} from "../../build/erupt/model/erupt-api.model";
-import {CacheService} from "@delon/cache";
-import {GlobalKeys} from "@shared/model/erupt-const";
-import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
-import {I18NService} from "@core/i18n/i18n.service";
+    HttpUserEvent,
+} from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, mergeMap } from 'rxjs/operators';
+import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
+import { environment } from '@env/environment';
+import { EruptApiModel, PromptWay, Status } from '../../build/erupt/model/erupt-api.model';
+import { CacheService } from '@delon/cache';
+import { GlobalKeys } from '@shared/model/erupt-const';
+import { DA_SERVICE_TOKEN, TokenService } from '@delon/auth';
+import { I18NService } from '@core/i18n/i18n.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 /**
  * 默认HTTP拦截器，其注册细节见 `app.module.ts`
  */
 @Injectable()
 export class DefaultInterceptor implements HttpInterceptor {
-    constructor(private injector: Injector,
-                @Inject(NzModalService)
-                private modal: NzModalService,
-                @Inject(NzNotificationService)
-                private notify: NzNotificationService,
-                @Inject(NzMessageService)
-                private msg: NzMessageService,
-                @Inject(DA_SERVICE_TOKEN)
-                private tokenService: TokenService,
-                private router: Router,
-                @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-                private cacheService: CacheService) {
-    }
-
+    constructor(
+        private injector: Injector,
+        @Inject(NzModalService)
+        private modal: NzModalService,
+        @Inject(NzNotificationService)
+        private notify: NzNotificationService,
+        @Inject(NzMessageService)
+        private msg: NzMessageService,
+        @Inject(DA_SERVICE_TOKEN)
+        private tokenService: TokenService,
+        private router: Router,
+        @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+        private cacheService: CacheService
+    ) {}
 
     private goTo(url: string) {
         setTimeout(() => this.injector.get(Router).navigateByUrl(url));
@@ -60,7 +62,7 @@ export class DefaultInterceptor implements HttpInterceptor {
                 if (event instanceof HttpResponse) {
                     const body: any = event.body;
                     //如果返回对象为EruptApi
-                    if ("status" in body && "message" in body && "errorIntercept" in body) {
+                    if ('status' in body && 'message' in body && 'errorIntercept' in body) {
                         let eruptApiBody = <EruptApiModel>body;
                         if (eruptApiBody.message) {
                             switch (eruptApiBody.promptWay) {
@@ -70,22 +72,22 @@ export class DefaultInterceptor implements HttpInterceptor {
                                     switch (eruptApiBody.status) {
                                         case Status.INFO:
                                             this.modal.info({
-                                                nzTitle: eruptApiBody.message
+                                                nzTitle: eruptApiBody.message,
                                             });
                                             break;
                                         case Status.SUCCESS:
                                             this.modal.success({
-                                                nzTitle: eruptApiBody.message
+                                                nzTitle: eruptApiBody.message,
                                             });
                                             break;
                                         case Status.WARNING:
                                             this.modal.warning({
-                                                nzTitle: eruptApiBody.message
+                                                nzTitle: eruptApiBody.message,
                                             });
                                             break;
                                         case Status.ERROR:
                                             this.modal.error({
-                                                nzTitle: eruptApiBody.message
+                                                nzTitle: eruptApiBody.message,
                                             });
                                             break;
                                     }
@@ -109,32 +111,16 @@ export class DefaultInterceptor implements HttpInterceptor {
                                 case PromptWay.NOTIFY:
                                     switch (eruptApiBody.status) {
                                         case Status.INFO:
-                                            this.notify.info(
-                                                eruptApiBody.message,
-                                                null,
-                                                {nzDuration: 0}
-                                            );
+                                            this.notify.info(eruptApiBody.message, null, { nzDuration: 0 });
                                             break;
                                         case Status.SUCCESS:
-                                            this.notify.success(
-                                                eruptApiBody.message,
-                                                null,
-                                                {nzDuration: 0}
-                                            );
+                                            this.notify.success(eruptApiBody.message, null, { nzDuration: 0 });
                                             break;
                                         case Status.WARNING:
-                                            this.notify.warning(
-                                                eruptApiBody.message,
-                                                null,
-                                                {nzDuration: 0}
-                                            );
+                                            this.notify.warning(eruptApiBody.message, null, { nzDuration: 0 });
                                             break;
                                         case Status.ERROR:
-                                            this.notify.error(
-                                                eruptApiBody.message,
-                                                null,
-                                                {nzDuration: 0}
-                                            );
+                                            this.notify.error(eruptApiBody.message, null, { nzDuration: 0 });
                                             break;
                                     }
                                     break;
@@ -150,40 +136,40 @@ export class DefaultInterceptor implements HttpInterceptor {
                 }
                 break;
             case 401: // 未登录状态码)
-                if (this.router.url !== "/passport/login") {
+                if (this.router.url !== '/passport/login') {
                     this.cacheService.set(GlobalKeys.loginBackPath, this.router.url);
                 }
-                if (event.url.indexOf("erupt-api/menu") !== -1) {
-                    this.goTo("/passport/login");
+                if (event.url.indexOf('erupt-api/menu') !== -1) {
+                    this.goTo('/passport/login');
                     this.modal.closeAll();
                     this.tokenService.clear();
                 } else {
                     if (this.tokenService.get().token) {
                         this.modal.confirm({
-                            nzTitle: this.i18n.fanyi("login_expire.tip"),
-                            nzOkText: this.i18n.fanyi("login_expire.retry"),
+                            nzTitle: this.i18n.fanyi('login_expire.tip'),
+                            nzOkText: this.i18n.fanyi('login_expire.retry'),
                             nzOnOk: () => {
-                                this.goTo("/passport/login");
+                                this.goTo('/passport/login');
                                 this.modal.closeAll();
                             },
                             nzOnCancel: () => {
                                 this.modal.closeAll();
-                            }
+                            },
                         });
                     } else {
-                        this.goTo("/passport/login");
+                        this.goTo('/passport/login');
                     }
                 }
                 break;
             case 404:
-                this.goTo("/layout/404");
+                this.goTo('/layout/404');
                 break;
             case 403: //无权限
-                if (event.url.indexOf("/erupt-api/build/") != -1) {
-                    this.goTo("/layout/403");
+                if (event.url.indexOf('/erupt-api/build/') != -1) {
+                    this.goTo('/layout/403');
                 } else {
                     this.modal.warning({
-                        nzTitle: this.i18n.fanyi("none_permission")
+                        nzTitle: this.i18n.fanyi('none_permission'),
                     });
                 }
                 break;
@@ -191,17 +177,19 @@ export class DefaultInterceptor implements HttpInterceptor {
                 event = <HttpErrorResponse>event;
                 this.modal.error({
                     nzTitle: 'Error',
-                    nzContent: event.error.message
+                    nzContent: event.error.message,
                 });
                 Object.assign(event, {
-                    status: 200, ok: true, body: {
-                        status: Status.ERROR
-                    }
+                    status: 200,
+                    ok: true,
+                    body: {
+                        status: Status.ERROR,
+                    },
                 });
                 return of(new HttpResponse(event));
             default:
                 if (event instanceof HttpErrorResponse) {
-                    console.warn("未可知错误，大部分是由于后端无响应或无效配置引起", event);
+                    console.warn('未可知错误，大部分是由于后端无响应或无效配置引起', event);
                     this.msg.error(event.message);
                 }
                 break;
@@ -212,14 +200,10 @@ export class DefaultInterceptor implements HttpInterceptor {
     intercept(
         req: HttpRequest<any>,
         next: HttpHandler
-    ): Observable<| HttpSentEvent
-        | HttpHeaderResponse
-        | HttpProgressEvent
-        | HttpResponse<any>
-        | HttpUserEvent<any>> {
+    ): Observable<HttpSentEvent | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
         // 统一加上服务端前缀
         let url = req.url;
-        if (!url.startsWith("https://") && !url.startsWith("http://") && !url.startsWith("//")) {
+        if (!url.startsWith('https://') && !url.startsWith('http://') && !url.startsWith('//')) {
             url = environment.SERVER_URL + url;
         }
         // 对话框的方式出现登录页
@@ -248,13 +232,12 @@ export class DefaultInterceptor implements HttpInterceptor {
         // }
 
         const newReq = req.clone({
-            url: url
+            url: url,
         });
         return next.handle(newReq).pipe(
             mergeMap((event: any) => {
                 // 允许统一对请求错误处理，这是因为一个请求若是业务上错误的情况下其HTTP请求的状态是200的情况下需要
-                if (event instanceof HttpResponse && event.status === 200)
-                    return this.handleData(event);
+                if (event instanceof HttpResponse && event.status === 200) return this.handleData(event);
                 // 若一切都正常，则后续操作
                 return of(event);
             }),

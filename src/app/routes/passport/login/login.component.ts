@@ -2,9 +2,7 @@ import { ALAIN_I18N_TOKEN, SettingsService } from '@delon/theme';
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { DA_SERVICE_TOKEN, SocialService, TokenService } from '@delon/auth';
-import { ReuseTabService } from '@delon/abc';
 import { DataService } from '@shared/service/data.service';
 import { CacheService } from '@delon/cache';
 import { GlobalKeys } from '@shared/model/erupt-const';
@@ -13,6 +11,9 @@ import { WindowModel } from '@shared/model/window.model';
 import { generateMenuPath } from '@shared/util/erupt.util';
 import { EruptAppData } from '@core/startup/erupt-app.data';
 import { I18NService } from '@core';
+import { ReuseTabService } from '@delon/abc/reuse-tab';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
     selector: 'passport-login',

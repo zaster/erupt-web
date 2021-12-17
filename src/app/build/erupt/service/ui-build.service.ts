@@ -1,15 +1,16 @@
 import { EruptBuildModel } from '../model/erupt-build.model';
-import { STColumn, STData, STColumnBadge, STColumnBadgeValue, STColumnSource } from '@delon/abc';
 import { DateEnum, EditType, ViewType } from '../model/erupt.enum';
 import { ViewTypeComponent } from '../components/view-type/view-type.component';
 import { MarkdownComponent } from '../components/markdown/markdown.component';
 import { CodeEditorComponent } from '../components/code-editor/code-editor.component';
 import { DataService } from '@shared/service/data.service';
 import { Inject, Injectable } from '@angular/core';
-import { ModalOptions, NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { XSTColumn, VL } from '../model/erupt-field.model';
+import { STColumnBadge, STColumn } from '@delon/abc/st';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService, ModalOptions } from 'ng-zorro-antd/modal';
 
 @Injectable()
 export class UiBuildService {

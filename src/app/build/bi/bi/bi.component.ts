@@ -7,8 +7,8 @@ import { ChartComponent } from '../chart/chart.component';
 import { HandlerService } from '../service/handler.service';
 import { SettingsService } from '@delon/theme';
 import { isNotNull, isNull } from '@shared/util/erupt.util';
-import { STColumn, STComponent } from '@delon/abc';
-import { NzMessageService } from 'ng-zorro-antd';
+import { STColumn, STComponent } from '@delon/abc/st';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
     selector: 'app-bi',

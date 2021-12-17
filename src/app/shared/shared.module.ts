@@ -5,9 +5,6 @@ import { RouterModule } from '@angular/router';
 
 // delon
 import { AlainThemeModule } from '@delon/theme';
-import { DelonABCModule } from '@delon/abc';
-// #region third libs
-import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { SafeUrlPipe } from '@shared/pipe/safe-url.pipe';
 import { DataService } from '@shared/service/data.service';
 import { RipperDirective } from './directive/ripper.directive';
@@ -18,7 +15,6 @@ import { EruptIframeComponent } from '@shared/component/iframe.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { I18nComponent } from '@shared/component/i18n.component';
 
-const THIRD_MODULES = [NgZorroAntdModule];
 // #endregion
 
 // #region your componets & directives
@@ -41,9 +37,7 @@ const DIRECTIVES = [];
         RouterModule,
         ReactiveFormsModule,
         AlainThemeModule.forChild(),
-        DelonABCModule,
         // third libs
-        ...THIRD_MODULES,
     ],
     declarations: [
         // your components
@@ -59,11 +53,9 @@ const DIRECTIVES = [];
         ReactiveFormsModule,
         RouterModule,
         AlainThemeModule,
-        DelonABCModule,
         // i18n
         TranslateModule,
         // third libs
-        ...THIRD_MODULES,
         // your components
         ...COMPONENTS,
         ...DIRECTIVES,

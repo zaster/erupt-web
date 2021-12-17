@@ -1,11 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { DA_SERVICE_TOKEN, TokenService } from '@delon/auth';
 import { DataService } from '@shared/service/data.service';
 import { SettingsService } from '@delon/theme';
 import { Status } from '../../build/erupt/model/erupt-api.model';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
     selector: 'app-change-pwd',

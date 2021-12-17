@@ -1,7 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '@shared/service/data.service';
 import { ActivatedRoute } from '@angular/router';
-import { NzFormatEmitEvent, NzMessageService, NzModalService, NzTreeBaseService } from 'ng-zorro-antd';
 import { DataHandlerService } from '../../service/data-handler.service';
 import { EruptBuildModel } from '../../model/erupt-build.model';
 import { Subscription } from 'rxjs';
@@ -9,6 +8,9 @@ import { Status } from '../../model/erupt-api.model';
 import { colRules } from '@shared/model/util.model';
 import { ALAIN_I18N_TOKEN, SettingsService } from '@delon/theme';
 import { I18NService } from '@core';
+import { NzTreeBaseService, NzFormatEmitEvent } from 'ng-zorro-antd/core/tree';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
     selector: 'erupt-tree',
@@ -194,7 +196,7 @@ export class TreeComponent implements OnInit, OnDestroy {
                 nzOnOk: () => {
                     this.dataService
                         .deleteEruptData(this.eruptBuildModel.eruptModel.eruptName, nzTreeNode.origin.key)
-                        .subscribe(function(res) {
+                        .subscribe(function (res) {
                             if (res.status == Status.SUCCESS) {
                                 that.fetchTreeData();
                                 that.msg.success(that.i18n.fanyi('global.delete.success'));

@@ -1,6 +1,6 @@
-import { STColumn, STColumnButton, STColumnTitle } from '@delon/abc';
+import { STColumn, STColumnTitle, STColumnButton } from '@delon/abc/st';
 import * as internal from 'assert';
-import { ModalButtonOptions } from 'ng-zorro-antd';
+import { ModalButtonOptions } from 'ng-zorro-antd/modal';
 import { EruptBuildModel } from './erupt-build.model';
 import {
     AttachmentEnum,
@@ -32,6 +32,7 @@ export interface EruptField {
 }
 
 export interface XSTColumn extends STColumn {
+    viewType?: ViewType;
     title: STColumnTitle;
     index: string;
     show?: boolean;

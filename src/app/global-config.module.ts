@@ -2,17 +2,22 @@ import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core
 // import { STWidgetRegistry } from '@delon/abc/st';
 import { SharedModule } from '@shared/shared.module';
 import { AlainConfig, ALAIN_CONFIG, DelonUtilModule } from '@delon/util';
+import { STModule } from '@delon/abc/st';
+import { SEModule } from '@delon/abc/se';
+import { NoticeIconModule } from '@delon/abc/notice-icon';
 import { AlainThemeModule } from '@delon/theme';
-import { STModule } from '@delon/abc';
 import { DelonAuthModule } from '@delon/auth';
 import { DelonCacheModule } from '@delon/cache';
 import { DelonChartModule } from '@delon/chart';
 import { RouteReuseStrategy } from '@angular/router';
-import { ReuseTabService, ReuseTabStrategy } from '@delon/abc/reuse-tab';
+import { ReuseTabModule, ReuseTabService, ReuseTabStrategy } from '@delon/abc/reuse-tab';
 import { NzConfig, NZ_CONFIG } from 'ng-zorro-antd/core/config';
-
+import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzCarouselModule } from 'ng-zorro-antd/carousel';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { throwIfAlreadyLoaded } from '@core';
-import { NZ_DATE_LOCALE } from 'ng-zorro-antd';
 
 // Please refer to: https://ng-alain.com/docs/global-config
 // #region NG-ALAIN Config
@@ -36,6 +41,15 @@ const alainModules: any[] = [
     DelonAuthModule,
     DelonCacheModule,
     DelonUtilModule,
+    STModule,
+    SEModule,
+    NzMessageModule,
+    NzModalModule,
+    ReuseTabModule,
+    NoticeIconModule,
+    NzNotificationModule,
+    NzUploadModule,
+    NzCarouselModule,
 ];
 const alainProvides = [
     { provide: ALAIN_CONFIG, useValue: alainConfig },

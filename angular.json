@@ -20,7 +20,6 @@
             "aot": true,
             "outputPath": "/Users/ecgwela/Projects/erupt_source/erupt/erupt-web/src/main/resources/public",
             "index": "src/index.html",
-            "es5BrowserSupport": true,
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
@@ -71,6 +70,21 @@
             "scripts": [
               "node_modules/moment/min/moment.min.js",
               "node_modules/qrious/dist/qrious.min.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "@angularclass/hmr",
+              "@ant-design/colors",
+              "@antv/adjust",
+              "@antv/attr",
+              "@antv/component",
+              "@antv/g-base",
+              "@antv/g-canvas",
+              "@antv/g-math",
+              "@antv/g-svg",
+              "@antv/path-util",
+              "@antv/util",
+              "file-saver",
+              "hammerjs"
             ]
           },
           "configurations": {

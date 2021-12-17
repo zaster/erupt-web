@@ -1,26 +1,23 @@
-import {Component, OnInit} from '@angular/core';
-import {NzModalService} from "ng-zorro-antd";
+import { Component, OnInit } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
-    styles: []
+    styles: [],
 })
 export class HomeComponent implements OnInit {
-
     url: string;
 
     spin: boolean = true;
 
-    constructor(private modal: NzModalService) {
-    }
+    constructor(private modal: NzModalService) {}
 
     ngOnInit() {
-        this.url = "home.html";
+        this.url = 'home.html';
     }
 
     iframeLoad() {
         this.spin = false;
     }
-
 }

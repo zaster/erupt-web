@@ -12,8 +12,9 @@ import { EditType, Scene, SelectMode } from '../../model/erupt.enum';
 import { UiBuildService } from '../../service/ui-build.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { STColumn, STColumnButton, STComponent } from '@delon/abc';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { STColumn, STColumnButton, STComponent } from '@delon/abc/st';
 
 @Component({
     selector: 'tab-table',
@@ -101,8 +102,8 @@ export class TabTableComponent implements OnInit {
                                 if (result.status == Status.SUCCESS) {
                                     let $value = this.tabErupt.eruptFieldModel.eruptFieldJson.edit.$value;
                                     $value.forEach((val, index) => {
-                                        let tabPrimaryKeyCol = this.tabErupt.eruptBuildModel.eruptModel.eruptJson
-                                            .primaryKeyCol;
+                                        let tabPrimaryKeyCol =
+                                            this.tabErupt.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol;
                                         if (record[tabPrimaryKeyCol] == val[tabPrimaryKeyCol]) {
                                             $value[index] = obj;
                                         }
