@@ -7,18 +7,19 @@
             <nz-alert *ngIf="error" [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg"></nz-alert>
             <!--账号-->
             <nz-form-item>
-                <nz-form-control>
+                <nz-form-control [nzErrorTip]="'login.validate.account'|translate"
+                    >
                     <nz-input-group nzSize="large" nzPrefixIcon="anticon anticon-user">
                         <input nz-input formControlName="userName" [placeholder]="'login.account'|translate">
                     </nz-input-group>
-                    <nz-form-explain *ngIf="userName.dirty && userName.errors">
+<!--                     <nz-form-explain *ngIf="userName.dirty && userName.errors">
                         {{'login.validate.account'|translate}}
-                    </nz-form-explain>
+                    </nz-form-explain> -->
                 </nz-form-control>
             </nz-form-item>
             <!--密码-->
             <nz-form-item>
-                <nz-form-control>
+                <nz-form-control [nzErrorTip]="'login.validate.pwd'|translate">
                     <nz-input-group nzSize="large" nzPrefixIcon="anticon anticon-lock" [nzAddOnAfter]="controlPwd">
                         <input nz-input [type]="passwordType" formControlName="password"
                                [placeholder]="'login.pwd'|translate">
@@ -29,9 +30,9 @@
                         <i class="fa fa-eye point" [hidden]="passwordType=='password'"
                            (click)="passwordType='password'"></i>
                     </ng-template>
-                    <nz-form-explain *ngIf="password.dirty && password.errors">
+<!--                     <nz-form-explain *ngIf="password.dirty && password.errors">
                         {{'login.validate.pwd'|translate}}
-                    </nz-form-explain>
+                    </nz-form-explain> -->
                 </nz-form-control>
             </nz-form-item>
             <!--图形验证码-->

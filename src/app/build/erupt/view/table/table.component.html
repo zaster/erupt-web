@@ -123,8 +123,8 @@
                                 <ng-container>
                                     <nz-divider nzType="vertical" class="hidden-mobile"></nz-divider>
                                     <button nz-button nzType="default" nz-popover
-                                            [(nzVisible)]="showColCtrl" [nzContent]="tableColumnCtrl"
-                                            nzTrigger="click" class="mb-sm hidden-mobile">
+                                            [(nzVisible)]="showColCtrl" [nzPopoverContent]="tableColumnCtrl"
+                                            nzPopoverTrigger="click" class="mb-sm hidden-mobile">
                                         <i nz-icon nzType="table" nzTheme="outline"></i>{{'table.col.ctrl'|translate}}
                                     </button>
                                     <ng-template #tableColumnCtrl>
