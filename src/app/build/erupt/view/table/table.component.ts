@@ -7,13 +7,7 @@ import { EditTypeComponent } from '../../components/edit-type/edit-type.componen
 import { EditComponent } from '../edit/edit.component';
 import { STChange, STChangeType, STColumn, STColumnButton, STComponent, STData } from '@delon/abc';
 import { ActivatedRoute, RouterLinkWithHref } from '@angular/router';
-import {
-    ModalButtonOptions,
-    ModalOptions,
-    ModalOptionsForService,
-    NzMessageService,
-    NzModalService,
-} from 'ng-zorro-antd';
+import { ModalButtonOptions, ModalOptions, NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { DA_SERVICE_TOKEN, TokenService } from '@delon/auth';
 import { EruptBuildModel } from '../../model/erupt-build.model';
 import { OperationEruptMode, OperationMode, OperationType, RestPath, Scene, SelectMode } from '../../model/erupt.enum';
@@ -553,7 +547,7 @@ export class TableComponent implements OnInit {
 
         if (!action.contentErupt) action.contentErupt = this.eruptBuildModel;
         const size = action.contentType === 'table' || action.contentErupt.tabErupts ? 'modal-xxl' : 'modal-lg';
-        const options: ModalOptionsForService = {
+        const options: ModalOptions = {
             nzKeyboard: true,
             nzTitle: '' + action.text,
             nzStyle: { top: '60px' },
@@ -681,9 +675,6 @@ export class TableComponent implements OnInit {
                 nzStyle: { top: '20px' },
                 // nzWrapClassName: "modal-xxl",
                 nzWrapClassName: 'modal-lg',
-                nzBodyStyle: {
-                    padding: 0,
-                },
                 nzFooter: null,
                 nzContent: EruptIframeComponent,
                 nzComponentParams: {
@@ -735,13 +726,13 @@ export class TableComponent implements OnInit {
                         nzCancelText: this.i18n.fanyi('global.close'),
                         nzWrapClassName: 'modal-lg',
                         nzOnOk: async () => {
-                            modal.getInstance().nzCancelDisabled = true;
+                            modal.updateConfig({ nzCancelDisabled: true });
                             let eruptValue = this.dataHandler.eruptValueToObject({ eruptModel: operationErupt });
                             let res = await this.dataService
                                 .execOperatorFun(eruptModel.eruptName, ro.code, ids, eruptValue)
                                 .toPromise()
                                 .then((res) => res);
-                            modal.getInstance().nzCancelDisabled = false;
+                            modal.updateConfig({ nzCancelDisabled: false });
                             this.selectedRows = [];
                             if (res.status === Status.SUCCESS) {
                                 this.st.reload();
@@ -768,7 +759,7 @@ export class TableComponent implements OnInit {
                         nzCancelText: '关闭',
                         nzWrapClassName: 'modal-xxl',
                         nzOnOk: async () => {
-                            modal.getInstance().nzCancelDisabled = true;
+                            modal.updateConfig({ nzCancelDisabled: true });
                             const sids = [];
 
                             const sRows = modal.getContentComponent().selectedRows;
@@ -787,7 +778,7 @@ export class TableComponent implements OnInit {
                                 .execOperatorFun(eruptModel.eruptName, ro.code, sids, this._drill)
                                 .toPromise()
                                 .then((res) => res);
-                            modal.getInstance().nzCancelDisabled = false;
+                            modal.updateConfig({ nzCancelDisabled: false });
                             this.selectedRows = [];
                             if (res.status === Status.SUCCESS) {
                                 this.st.reload();

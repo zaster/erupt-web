@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { Column } from '../../model/erupt-field.model';
+import { XSTColumn } from '../../model/erupt-field.model';
 import { EditType, ViewType } from '../../model/erupt.enum';
 import { DataService } from '@shared/service/data.service';
 import { NzCarouselComponent } from 'ng-zorro-antd';
@@ -13,7 +13,7 @@ import { DataHandlerService } from '../../service/data-handler.service';
     styles: [],
 })
 export class ViewTypeComponent implements OnInit, AfterViewInit {
-    @Input() view: Column;
+    @Input() view: XSTColumn;
 
     @Input() value: any;
 

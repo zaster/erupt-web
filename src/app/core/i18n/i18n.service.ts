@@ -1,32 +1,29 @@
 // 请参考：https://ng-alain.com/docs/i18n
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
-import {registerLocaleData} from '@angular/common';
+import { registerLocaleData } from '@angular/common';
 import ngZh from '@angular/common/locales/zh';
 import ngEn from '@angular/common/locales/en';
 import ngKO from '@angular/common/locales/ko';
 import ngJA from '@angular/common/locales/ja';
 import ngZhTw from '@angular/common/locales/zh-Hant-HK';
 
-import {NzI18nService, en_US, zh_CN, ko_KR, ja_JP, zh_TW} from 'ng-zorro-antd';
-import * as df_en from 'date-fns/locale/en';
-import * as df_zh_cn from 'date-fns/locale/zh_cn';
-import * as df_ko from 'date-fns/locale/ko';
-import * as df_zh_tw from 'date-fns/locale/zh_tw';
-import * as df_ja from 'date-fns/locale/ja';
+import { NzI18nService, en_US, zh_CN, ko_KR, ja_JP, zh_TW } from 'ng-zorro-antd';
+import { enUS as df_en, ja as df_ja, zhCN as df_zh_cn, zhTW as df_zh_tw } from 'date-fns/locale';
 
-import {TranslateService} from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import {
-    AlainI18NService, DelonLocaleService,
+    AlainI18NService,
+    DelonLocaleService,
     en_US as delonEnUS,
     en_US as delonZhTw,
     SettingsService,
     ko_KR as delonKoKR,
     zh_CN as delonZhCn,
 } from '@delon/theme';
-import {EruptAppData} from "@core/startup/erupt-app.data";
+import { EruptAppData } from '@core/startup/erupt-app.data';
 
 interface LangData {
     text: string;
@@ -81,27 +78,25 @@ const LANGS: { [key: string]: LangData } = {
     },
 };
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class I18NService implements AlainI18NService {
-
     private _default = DEFAULT;
 
     private change$ = new BehaviorSubject<string | null>(null);
 
-
-    private _langs = Object.keys(LANGS).map(code => {
+    private _langs = Object.keys(LANGS).map((code) => {
         const item = LANGS[code];
-        return {code, text: item.text, abbr: item.abbr};
+        return { code, text: item.text, abbr: item.abbr };
     });
 
     constructor(
         settings: SettingsService,
         private nzI18nService: NzI18nService,
         private delonLocaleService: DelonLocaleService,
-        private translate: TranslateService,
+        private translate: TranslateService
     ) {
         // `@ngx-translate/core` 预先知道支持哪些语言
-        const lans = this._langs.map(item => item.code);
+        const lans = this._langs.map((item) => item.code);
         translate.addLangs(lans);
         let defaultLan;
         if (EruptAppData.get() && EruptAppData.get().locales && EruptAppData.get().locales.length > 0) {
@@ -125,7 +120,7 @@ export class I18NService implements AlainI18NService {
     }
 
     get change(): Observable<string> {
-        return this.change$.asObservable().pipe(filter(w => w != null)) as Observable<string>;
+        return this.change$.asObservable().pipe(filter((w) => w != null)) as Observable<string>;
     }
 
     use(lang: string): void {

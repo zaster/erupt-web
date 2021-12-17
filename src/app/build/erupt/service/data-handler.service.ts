@@ -41,6 +41,7 @@ export class DataHandlerService {
     }
 
     buildErupt(eruptModel: EruptModel) {
+        console.log('build erupt');
         eruptModel.tableColumns = [];
         eruptModel.eruptFieldModelMap = new Map<String, EruptFieldModel>();
         eruptModel.eruptFieldModels.forEach((field) => {
