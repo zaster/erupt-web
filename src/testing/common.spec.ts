@@ -1,6 +1,6 @@
 // from: https://github.com/angular/angular/issues/12409
 
-import {TestBed, async, TestModuleMetadata} from '@angular/core/testing';
+import { TestBed, TestModuleMetadata, waitForAsync } from '@angular/core/testing';
 import {Type, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientModule, HttpClient} from '@angular/common/http';
