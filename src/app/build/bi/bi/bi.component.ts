@@ -48,6 +48,8 @@ export class BiComponent implements OnInit, OnDestroy {
 
     timer: NodeJS.Timer;
 
+    downloading: boolean = false;
+
     constructor(
         private dataService: BiDataService,
         public route: ActivatedRoute,
@@ -158,7 +160,10 @@ export class BiComponent implements OnInit, OnDestroy {
         if (!param) {
             return;
         }
-        this.dataService.exportExcel(this.bi.id, this.bi.code, param);
+        this.downloading = true;
+        this.dataService.exportExcel(this.bi.id, this.bi.code, param, () => {
+            this.downloading = false;
+        });
     }
 
     ngOnDestroy(): void {

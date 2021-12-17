@@ -12,6 +12,8 @@ import { EditType, Scene, SelectMode } from '../../model/erupt.enum';
 import { UiBuildService } from '../../service/ui-build.service';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { STColumn, STColumnButton, STComponent } from '@delon/abc';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 
 @Component({
     selector: 'tab-table',
@@ -50,7 +52,8 @@ export class TabTableComponent implements OnInit {
 
     ngOnInit() {
         this.stConfig.stPage.front = true;
-        if (!this.tabErupt.eruptFieldModel.eruptFieldJson.edit.$value) {
+        if (this.tabErupt.eruptFieldModel.eruptFieldJson.edit.$value) {
+        } else {
             this.tabErupt.eruptFieldModel.eruptFieldJson.edit.$value = [];
         }
         if (this.onlyRead) {
@@ -98,8 +101,8 @@ export class TabTableComponent implements OnInit {
                                 if (result.status == Status.SUCCESS) {
                                     let $value = this.tabErupt.eruptFieldModel.eruptFieldJson.edit.$value;
                                     $value.forEach((val, index) => {
-                                        let tabPrimaryKeyCol =
-                                            this.tabErupt.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol;
+                                        let tabPrimaryKeyCol = this.tabErupt.eruptBuildModel.eruptModel.eruptJson
+                                            .primaryKeyCol;
                                         if (record[tabPrimaryKeyCol] == val[tabPrimaryKeyCol]) {
                                             $value[index] = obj;
                                         }
@@ -250,6 +253,16 @@ export class TabTableComponent implements OnInit {
                 this.st.reload();
             },
         });
+    }
+
+    objToLine(obj: any) {
+        for (let key in obj) {
+            if (typeof obj[key] === 'object') {
+                for (let ii in <any>obj[key]) {
+                    obj[key + '_' + ii] = obj[key][ii];
+                }
+            }
+        }
     }
 
     selectTableItem(event) {

@@ -85,3 +85,14 @@ export interface Power {
     export: boolean;
     ifExpr: string;
 }
+
+export interface Row {
+    color: string;
+    columns: Column[];
+}
+
+export interface Column {
+    style: string;
+    value: string;
+    colspan: number;
+}

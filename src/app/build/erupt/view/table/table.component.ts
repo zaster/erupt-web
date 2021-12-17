@@ -83,6 +83,7 @@ export class TableComponent implements OnInit {
     selectMode: SelectMode = SelectMode.checkbox;
 
     showTable: boolean = true;
+    downloading: boolean = false;
 
     _drill: { erupt: string; code: string; parent: EruptBuildModel; val: STData };
 
@@ -386,6 +387,8 @@ export class TableComponent implements OnInit {
                 let text = '';
                 if (ro.icon) {
                     text = `<i class=\"${ro.icon}\"></i>`;
+                } else {
+                    text = ro.title;
                 }
                 tableOperators.push({
                     type: 'link',
@@ -394,6 +397,7 @@ export class TableComponent implements OnInit {
                     click: (record: any, modal: any) => {
                         that.createOperator(ro, record);
                     },
+                    iifBehavior: 'disabled',
                     iif: (item) => {
                         if (ro.ifExpr) {
                             let depend = this._drill ? this._drill : null;
@@ -649,7 +653,7 @@ export class TableComponent implements OnInit {
     }
 
     /**
-     *  自定义功能触发
+     * 自定义功能触发
      * @param rowOperation 行按钮对象
      * @param data 数据（单个执行时使用）
      */
@@ -996,8 +1000,12 @@ export class TableComponent implements OnInit {
                 })
             );
         }
+        // this._drill.val
         //导出接口
-        this.dataService.downloadExcel(this.eruptBuildModel.eruptModel.eruptName, condition);
+        this.downloading = true;
+        this.dataService.downloadExcel(this.eruptBuildModel.eruptModel.eruptName, condition, () => {
+            this.downloading = false;
+        });
     }
 
     clickTreeNode(event) {
