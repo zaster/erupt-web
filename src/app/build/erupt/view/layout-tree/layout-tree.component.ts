@@ -68,7 +68,6 @@ export class LayoutTreeComponent implements OnInit {
             this.trigger.emit(null);
         } else {
             let dt = this.eruptModel.eruptJson.linkTree;
-            console.log(dt);
             if (!event.node.origin.selected && !dt.dependNode) {
                 this.trigger.emit(null);
             } else {

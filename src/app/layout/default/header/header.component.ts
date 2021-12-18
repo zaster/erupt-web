@@ -45,6 +45,7 @@ export class HeaderComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        console.log('init head');
         this.r_tools.forEach((tool) => {
             tool.load && tool.load();
         });

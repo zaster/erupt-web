@@ -41,12 +41,12 @@ export class CodeEditorComponent implements OnInit {
         //     event.setValue(this.value || '');
         // }
         this.codeEditorEvent = event;
-        this.nzCodeEditorService.updateDefaultOption({ theme: this.dark ? 'vs-dark' : 'vs', readOnly: this.readonly });
+        //this.nzCodeEditorService.updateDefaultOption({ theme: this.dark ? 'vs-dark' : 'vs', readOnly: this.readonly });
     }
 
     switchChange(bool) {
         this.dark = bool;
         this.cacheService.set(codeEditorDarkKey, bool);
-        this.nzCodeEditorService.updateDefaultOption({ theme: bool ? 'vs-dark' : 'vs' });
+        //this.nzCodeEditorService.updateDefaultOption({ theme: bool ? 'vs-dark' : 'vs' });
     }
 }

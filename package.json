@@ -65,7 +65,7 @@
     "font-awesome": "^4.7.0",
     "intl": "^1.2.5",
     "moment": "^2.24.0",
-    "monaco-editor": "^0.14.0",
+    "monaco-editor": "^0.31.1",
     "ng-zorro-antd": "^11.4.2",
     "ngx-ueditor": "^10.0.0",
     "qrious": "^4.0.2",

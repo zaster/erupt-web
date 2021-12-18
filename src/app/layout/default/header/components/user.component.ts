@@ -10,7 +10,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 @Component({
     selector: 'header-user',
     template: `
-        <nz-dropdown nzPlacement="bottomRight">
+        <a nz-dropdown nzPlacement="bottomRight">
             <div class="alain-default__nav-item d-flex align-items-center px-sm" nz-dropdown>
                 <nz-avatar
                     [nzText]="settings.user.name && settings.user.name.substr(0, 1)"
@@ -27,7 +27,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
                     <i nz-icon nzType="logout" nzTheme="outline" class="mr-sm"></i>{{ 'global.logout' | translate }}
                 </div>
             </div>
-        </nz-dropdown>
+        </a>
     `,
 })
 export class HeaderUserComponent {

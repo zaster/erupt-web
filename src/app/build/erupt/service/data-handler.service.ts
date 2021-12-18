@@ -20,6 +20,7 @@ export class DataHandlerService {
     ) {}
 
     initErupt(em: EruptBuildModel) {
+        console.log('init erupt');
         this.buildErupt(em.eruptModel);
         em.eruptModel.eruptJson.power = em.power;
         if (em.tabErupts) {

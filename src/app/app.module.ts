@@ -28,6 +28,9 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
+import { CommonModule } from '@angular/common';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 const LANG = {
     abbr: 'zh',
@@ -99,6 +102,9 @@ const APP_INIT_PROVIDES = [
         SharedModule,
         LayoutModule,
         RoutesModule,
+        CommonModule,
+        NzAvatarModule,
+        NzSpinModule,
         ...GLOBAL_THIRD_MODULES,
         ...I18NSERVICE_MODULES,
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

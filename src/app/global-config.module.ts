@@ -16,6 +16,13 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { CommonModule } from '@angular/common';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { throwIfAlreadyLoaded } from '@core';
 
@@ -34,7 +41,18 @@ const alainConfig: AlainConfig = {
     pageHeader: { homeI18n: 'home' },
     auth: { login_url: '/passport/login' },
 };
-
+const zorroModules: any[] = [
+    NzMessageModule,
+    NzModalModule,
+    NzNotificationModule,
+    NzUploadModule,
+    NzCarouselModule,
+    NzSpinModule,
+    NzMenuModule,
+    NzButtonModule,
+    NzAvatarModule,
+    NzTabsModule,
+];
 const alainModules: any[] = [
     AlainThemeModule.forRoot(),
     DelonChartModule,
@@ -43,13 +61,9 @@ const alainModules: any[] = [
     DelonUtilModule,
     STModule,
     SEModule,
-    NzMessageModule,
-    NzModalModule,
+
     ReuseTabModule,
     NoticeIconModule,
-    NzNotificationModule,
-    NzUploadModule,
-    NzCarouselModule,
 ];
 const alainProvides = [
     { provide: ALAIN_CONFIG, useValue: alainConfig },
@@ -95,7 +109,7 @@ const zorroProvides = [{ provide: NZ_CONFIG, useValue: ngZorroConfig }];
 // #endregion
 
 @NgModule({
-    imports: [...alainModules],
+    imports: [...zorroModules, ...alainModules],
 })
 export class GlobalConfigModule {
     constructor(@Optional() @SkipSelf() parentModule: GlobalConfigModule) {

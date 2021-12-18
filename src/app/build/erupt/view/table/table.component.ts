@@ -581,7 +581,6 @@ export class TableComponent implements OnInit {
             buttons.forEach((button) => {
                 footer.push(this.createModalActionButton(action, button, record));
             });
-            console.log(footer);
             options.nzFooter = footer;
         }
         if (action.contentType === 'none') {

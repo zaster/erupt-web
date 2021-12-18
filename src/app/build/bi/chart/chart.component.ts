@@ -24,7 +24,7 @@ import { Bi, Chart, ChartType } from '../model/bi.model';
 import { BiDataService } from '../service/data.service';
 import { HandlerService } from '../service/handler.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { Line, Waterfall, Area, Pie, Rose, Funnel, Radar, Scatter, WordCloud, Heatmap } from '@antv/g2plot';
+import { Line, Waterfall, Area, Pie, Rose, Funnel, Radar, Scatter, WordCloud, Heatmap, Plot } from '@antv/g2plot';
 
 @Component({
     selector: 'bi-chart',
@@ -38,7 +38,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 
     @Output() buildDimParam = new EventEmitter();
 
-    plot: BasePlot;
+    plot: Plot<any>;
 
     chartType = ChartType;
 
@@ -86,7 +86,7 @@ export class ChartComponent implements OnInit, OnDestroy {
                     if (this.chart.loading) {
                         this.chart.loading = false;
                     }
-                    this.plot.changeData(data, true);
+                    this.plot.changeData(data);
                 });
         } else {
             this.init();
@@ -133,7 +133,7 @@ export class ChartComponent implements OnInit, OnDestroy {
         if (this.chart.chartOption) {
             Object.assign(props, JSON.parse(this.chart.chartOption));
         }
-        switch (this.chart.type) {
+        /*  switch (this.chart.type) {
             case ChartType.Line:
                 this.plot = new Line(
                     element,
@@ -303,7 +303,7 @@ export class ChartComponent implements OnInit, OnDestroy {
                 break;
             case ChartType.DensityHeatmap:
                 break;
-        }
+        } */
         this.plot && this.plot.render();
     }
 }
