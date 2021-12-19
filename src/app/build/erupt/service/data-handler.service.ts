@@ -98,6 +98,7 @@ export class DataHandlerService {
         let copyErupt = <EruptModel>deepCopy(eruptBuildModel.eruptModel);
         const searchFieldModels = [];
         const searchFieldModelsMap: Map<String, EruptFieldModel> = new Map();
+        console.log('build search erupt');
         copyErupt.eruptFieldModels.forEach((field) => {
             if (!field.eruptFieldJson.edit) {
                 return;

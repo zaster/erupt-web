@@ -182,7 +182,9 @@ export class TableComponent implements OnInit {
         );
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        console.log('in table');
+    }
 
     init(
         observable: Observable<EruptBuildModel>,
