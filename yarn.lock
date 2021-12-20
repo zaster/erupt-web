@@ -131,6 +131,13 @@
   optionalDependencies:
     parse5 "^5.0.0"
 
+"@angular/cdk@^9.0.0":
+  version "9.2.4"
+  resolved "https://registry.npmmirror.com/@angular/cdk/download/@angular/cdk-9.2.4.tgz#8413958bd275e4c34be3b96f56444671dd30ba93"
+  integrity sha1-hBOVi9J15MNL47lvVkRGcd0wupM=
+  optionalDependencies:
+    parse5 "^5.0.0"
+
 "@angular/cli@~9.1.15":
   version "9.1.15"
   resolved "https://registry.npmmirror.com/@angular/cli/download/@angular/cli-9.1.15.tgz#c9834c31c6ec5659b7483af44daf652bffc5c4e3"
@@ -239,6 +246,13 @@
   dependencies:
     "@ant-design/colors" "^3.1.0"
     tslib "^1.9.0"
+
+"@ant-design/icons-angular@^9.0.0":
+  version "9.0.1"
+  resolved "https://registry.npmmirror.com/@ant-design/icons-angular/download/@ant-design/icons-angular-9.0.1.tgz#5ac8bec5bc34d23120820c93f8511b59aa117bc5"
+  integrity sha1-Wsi+xbw00jEgggyT+FEbWaoRe8U=
+  dependencies:
+    "@ant-design/colors" "^3.1.0"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.16.0", "@babel/code-frame@^7.8.3":
   version "7.16.0"
@@ -3616,6 +3630,11 @@ date-fns@^1.27.2, date-fns@^1.30.1:
   version "1.30.1"
   resolved "https://registry.npmmirror.com/date-fns/download/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha1-LnG/CxGRU9u0zE6I2epaz7UNwFw=
+
+date-fns@^2.10.0:
+  version "2.27.0"
+  resolved "https://registry.npmmirror.com/date-fns/download/date-fns-2.27.0.tgz#e1ff3c3ddbbab8a2eaadbb6106be2929a5a2d92b"
+  integrity sha512-sj+J0Mo2p2X1e306MHq282WS4/A8Pz/95GIFcsPNMPMZVI3EUrAdSv90al1k+p74WGLCruMXk23bfEDZa71X9Q==
 
 date-format@^2.0.0:
   version "2.1.0"
@@ -7815,6 +7834,17 @@ ng-zorro-antd@^8.5.2:
     date-fns "^1.30.1"
     tslib "^1.9.0"
 
+ng-zorro-antd@^9.3.0:
+  version "9.3.0"
+  resolved "https://registry.npmmirror.com/ng-zorro-antd/download/ng-zorro-antd-9.3.0.tgz#f80dbe2715e578c475728773449442f0099f152c"
+  integrity sha1-+A2+JxXleMR1codzRJRC8AmfFSw=
+  dependencies:
+    "@angular/cdk" "^9.0.0"
+    "@ant-design/icons-angular" "^9.0.0"
+    date-fns "^2.10.0"
+    resize-observer-polyfill "^1.5.1"
+    tslib "^1.10.0"
+
 ngx-countdown@^8.0.0:
   version "8.0.4"
   resolved "https://registry.nlark.com/ngx-countdown/download/ngx-countdown-8.0.4.tgz#a44b1efb0e2e4979bd885778a22506107a9710ec"
@@ -10000,6 +10030,11 @@ requires-port@^1.0.0:
   resolved "https://registry.nlark.com/requires-port/download/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
+resize-observer-polyfill@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.nlark.com/resize-observer-polyfill/download/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha1-DpAg3T0hAkRY1OvSfiPkAmmBBGQ=
+
 resolve-cwd@^2.0.0:
   version "2.0.0"
   resolved "https://registry.nlark.com/resolve-cwd/download/resolve-cwd-2.0.0.tgz#00a9f7387556e27038eae232caa372a6a59b665a"
@@ -10178,10 +10213,17 @@ rxjs@^5.5.6:
   dependencies:
     symbol-observable "1.0.1"
 
-rxjs@^6.3.3, rxjs@^6.5.3, rxjs@~6.6.7:
+rxjs@^6.3.3, rxjs@^6.5.3:
   version "6.6.7"
   resolved "https://registry.npmmirror.com/rxjs/download/rxjs-6.6.7.tgz?cache=0&sync_timestamp=1633554533803&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Frxjs%2Fdownload%2Frxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
   integrity sha1-kKwBisq/SRv2UEQjXVhjxNq4BMk=
+  dependencies:
+    tslib "^1.9.0"
+
+rxjs@~6.5.3:
+  version "6.5.5"
+  resolved "https://registry.npmmirror.com/rxjs/download/rxjs-6.5.5.tgz?cache=0&sync_timestamp=1633554533803&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Frxjs%2Fdownload%2Frxjs-6.5.5.tgz#c5c884e3094c8cfee31bf27eb87e54ccfc87f9ec"
+  integrity sha1-xciE4wlMjP7jG/J+uH5UzPyH+ew=
   dependencies:
     tslib "^1.9.0"
 

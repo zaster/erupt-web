@@ -322,13 +322,13 @@
                                     </nz-input-group>
                                     <ng-template #refBtn>
                                         <ng-container *ngIf="field.eruptFieldJson.edit.$value">
-                                            <i nz-icon nzType="close-circle" theme="fill" class="point"
+                                            <i nz-icon nzType="close-circle" nzTheme="fill" class="point"
                                                (click)="isReadonly(field)||clearReferValue(field)"></i>
                                         </ng-container>
                                         <ng-container *ngIf="!field.eruptFieldJson.edit.$value">
                                             <i nz-icon
                                                (click)="isReadonly(field)||createRefTreeModal(field)"
-                                               nzType="database" theme="fill" class="point"></i>
+                                               nzType="database" nzTheme="fill" class="point"></i>
                                         </ng-container>
                                     </ng-template>
                                 </se>
@@ -357,13 +357,13 @@
                                     </nz-input-group>
                                     <ng-template #refBtn>
                                         <ng-container *ngIf="field.eruptFieldJson.edit.$value">
-                                            <i nz-icon nzType="close-circle" theme="fill" class="point"
+                                            <i nz-icon nzType="close-circle" nzTheme="fill" class="point"
                                                (click)="isReadonly(field)||clearReferValue(field)"></i>
                                         </ng-container>
                                         <ng-container *ngIf="!field.eruptFieldJson.edit.$value">
                                             <i nz-icon
                                                (click)="isReadonly(field)||createRefTableModal(field)"
-                                               nzType="database" theme="fill" class="point"></i>
+                                               nzType="database" nzTheme="fill" class="point"></i>
                                         </ng-container>
                                     </ng-template>
                                 </se>
