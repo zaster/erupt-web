@@ -55,7 +55,7 @@ export class TableComponent implements OnInit {
         @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService
     ) {}
 
-    @ViewChild('st', { static: false })
+    @ViewChild('st')
     st: STComponent;
 
     operationMode = OperationMode;

@@ -31,7 +31,7 @@ export class TabTableComponent implements OnInit {
 
     @Input() mode: 'refer-add' | 'add' = 'add';
 
-    @ViewChild('st', { static: false }) st: STComponent;
+    @ViewChild('st') st: STComponent;
 
     @Input() onlyRead: boolean = false;
 

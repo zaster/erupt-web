@@ -10,13 +10,14 @@
       "prefix": "app",
       "schematics": {
         "@schematics/angular:component": {
-          "styleext": "less"
+          "style": "less"
         }
       },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "/Users/ecgwela/Projects/erupt_source/erupt/erupt-web/src/main/resources/public",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -91,12 +92,22 @@
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "serviceWorker": true,
               "ngswConfigPath": "ngsw-config.json"
             },
             "hmr": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -204,19 +215,19 @@
     },
     "@schematics/angular:module": {
       "routing": true,
-      "spec": false
+      "skipTests": true
     },
     "@schematics/angular:component": {
-      "spec": false,
+      "skipTests": true,
       "flat": false,
       "inlineStyle": true,
       "inlineTemplate": false
     },
     "@schematics/angular:directive": {
-      "spec": false
+      "skipTests": true
     },
     "@schematics/angular:service": {
-      "spec": false
+      "skipTests": true
     }
   }
 }
