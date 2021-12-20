@@ -1,30 +1,37 @@
-import {DOCUMENT} from '@angular/common';
-import {ChangeDetectionStrategy, Component, Inject, Input} from '@angular/core';
-import {ALAIN_I18N_TOKEN, SettingsService} from '@delon/theme';
-import {InputBoolean} from '@delon/util';
+import { DOCUMENT } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
+import { ALAIN_I18N_TOKEN, SettingsService } from '@delon/theme';
+import { InputBoolean } from '@delon/util';
 
-import {I18NService} from '@core';
+import { I18NService } from '@core';
 
 @Component({
     selector: 'header-i18n',
     template: `
-        <div *ngIf="showLangText" nz-dropdown [nzDropdownMenu]="langMenu" nzPlacement="bottomRight" class="alain-default__nav-item">
+        <div
+            *ngIf="showLangText"
+            nz-dropdown
+            [nzDropdownMenu]="langMenu"
+            nzPlacement="bottomRight"
+            class="alain-default__nav-item"
+        >
             <i nz-icon nzType="global" nzTheme="outline"></i>
         </div>
-        <i *ngIf="!showLangText"
-           nz-dropdown
-           [nzDropdownMenu]="langMenu"
-           nzPlacement="bottomRight"
-           nz-icon
-           nzType="global"
+        <i
+            *ngIf="!showLangText"
+            nz-dropdown
+            [nzDropdownMenu]="langMenu"
+            nzPlacement="bottomRight"
+            nz-icon
+            nzType="global"
         ></i>
         <nz-dropdown-menu #langMenu="nzDropdownMenu">
             <ul nz-menu>
                 <li
-                        nz-menu-item
-                        *ngFor="let item of langs"
-                        [nzSelected]="item.code === curLangCode"
-                        (click)="change(item.code)"
+                    nz-menu-item
+                    *ngFor="let item of langs"
+                    [nzSelected]="item.code === curLangCode"
+                    (click)="change(item.code)"
                 >
                     <span role="img" [attr.aria-label]="item.text" class="pr-xs">{{ item.abbr }}</span>
                     {{ item.text }}
@@ -49,9 +56,8 @@ export class I18nComponent {
     constructor(
         private settings: SettingsService,
         @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
-        @Inject(DOCUMENT) private doc: any,
-    ) {
-    }
+        @Inject(DOCUMENT) private doc: any
+    ) {}
 
     change(lang: string) {
         const spinEl = this.doc.createElement('div');

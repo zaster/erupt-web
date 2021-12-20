@@ -6,7 +6,7 @@ import { MarkdownComponent } from '../components/markdown/markdown.component';
 import { CodeEditorComponent } from '../components/code-editor/code-editor.component';
 import { DataService } from '@shared/service/data.service';
 import { Inject, Injectable } from '@angular/core';
-import { ModalOptionsForService, NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { ModalOptions, NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
 import { Column, VL } from '../model/erupt-field.model';
@@ -107,12 +107,8 @@ export class UiBuildService {
         return cols;
     }
 }
-function getLinkColumnModelOptions(
-    column: Column,
-    item: any,
-    eruptBuildModel: EruptBuildModel
-): ModalOptionsForService {
-    let modelOptions: ModalOptionsForService = {
+function getLinkColumnModelOptions(column: Column, item: any, eruptBuildModel: EruptBuildModel): ModalOptions {
+    let modelOptions: ModalOptions = {
         nzTitle: column.title.text,
         nzMaskClosable: true,
         nzKeyboard: true,

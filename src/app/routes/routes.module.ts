@@ -1,18 +1,17 @@
-import {NgModule} from "@angular/core";
+import { NgModule } from '@angular/core';
 
-import {SharedModule} from "@shared/shared.module";
-import {RouteRoutingModule} from "./routes-routing.module";
+import { SharedModule } from '@shared/shared.module';
+import { RouteRoutingModule } from './routes-routing.module';
 // passport pages
-import {UserLoginComponent} from "./passport/login/login.component";
+import { UserLoginComponent } from './passport/login/login.component';
 // single pages
-import {Exception403Component} from "./exception/403.component";
-import {Exception404Component} from "./exception/404.component";
-import {Exception500Component} from "./exception/500.component";
-import {ChangePwdComponent} from "./change-pwd/change-pwd.component";
-import {HomeComponent} from './home/home.component';
-import {SiteComponent} from "./site/site.component";
-import {FillComponent} from './fill/fill.component';
-
+import { Exception403Component } from './exception/403.component';
+import { Exception404Component } from './exception/404.component';
+import { Exception500Component } from './exception/500.component';
+import { ChangePwdComponent } from './change-pwd/change-pwd.component';
+import { HomeComponent } from './home/home.component';
+import { SiteComponent } from './site/site.component';
+import { FillComponent } from './fill/fill.component';
 
 const COMPONENTS = [
     // passport pages
@@ -22,21 +21,12 @@ const COMPONENTS = [
     Exception404Component,
     Exception500Component,
     ChangePwdComponent,
-    SiteComponent
+    SiteComponent,
 ];
-const COMPONENTS_NOROUNT = [
-    UserLoginComponent
-];
+const COMPONENTS_NOROUNT = [UserLoginComponent];
 
 @NgModule({
     imports: [SharedModule, RouteRoutingModule],
-    declarations: [
-        ...COMPONENTS,
-        ...COMPONENTS_NOROUNT,
-        HomeComponent,
-        FillComponent
-    ],
-    entryComponents: [COMPONENTS_NOROUNT, ChangePwdComponent]
+    declarations: [...COMPONENTS, ...COMPONENTS_NOROUNT, HomeComponent, FillComponent],
 })
-export class RoutesModule {
-}
+export class RoutesModule {}

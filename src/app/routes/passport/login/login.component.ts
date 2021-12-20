@@ -44,11 +44,9 @@ export class UserLoginComponent implements OnDestroy, OnInit, AfterViewInit {
         private data: DataService,
         private router: Router,
         public msg: NzMessageService,
-        private modalSrv: NzModalService,
         private settingsService: SettingsService,
-        private socialService: SocialService,
-        private dataService: DataService,
         @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
+
         @Optional()
         @Inject(ReuseTabService)
         private reuseTabService: ReuseTabService,
@@ -64,7 +62,9 @@ export class UserLoginComponent implements OnDestroy, OnInit, AfterViewInit {
         });
     }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        console.log('init login');
+    }
 
     ngAfterViewInit(): void {
         if (EruptAppData.get().verifyCodeCount <= 0) {
