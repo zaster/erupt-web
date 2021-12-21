@@ -53,7 +53,8 @@ export class TabTableComponent implements OnInit {
 
     ngOnInit() {
         this.stConfig.stPage.front = true;
-        if (!this.tabErupt.eruptFieldModel.eruptFieldJson.edit.$value) {
+        if (this.tabErupt.eruptFieldModel.eruptFieldJson.edit.$value) {
+        } else {
             this.tabErupt.eruptFieldModel.eruptFieldJson.edit.$value = [];
         }
         if (this.onlyRead) {
@@ -253,6 +254,16 @@ export class TabTableComponent implements OnInit {
                 this.st.reload();
             },
         });
+    }
+
+    objToLine(obj: any) {
+        for (let key in obj) {
+            if (typeof obj[key] === 'object') {
+                for (let ii in <any>obj[key]) {
+                    obj[key + '_' + ii] = obj[key][ii];
+                }
+            }
+        }
     }
 
     selectTableItem(event) {

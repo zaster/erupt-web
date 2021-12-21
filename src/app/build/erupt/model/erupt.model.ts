@@ -1,4 +1,4 @@
-import { Edit, EruptFieldModel, Column, Action } from './erupt-field.model';
+import { Edit, EruptFieldModel, XSTColumn, Action } from './erupt-field.model';
 import { OperationEruptMode, OperationMode, OperationType } from './erupt.enum';
 
 export interface EruptModel {
@@ -7,7 +7,7 @@ export interface EruptModel {
     eruptName: string;
     //# customer prop
     eruptFieldModelMap?: Map<String, EruptFieldModel>;
-    tableColumns?: Column[];
+    tableColumns?: XSTColumn[];
     mode?: 'edit' | 'search';
 }
 
@@ -84,4 +84,15 @@ export interface Power {
     importable: boolean;
     export: boolean;
     ifExpr: string;
+}
+
+export interface Row {
+    color: string;
+    columns: Column[];
+}
+
+export interface Column {
+    style: string;
+    value: string;
+    colspan: number;
 }

@@ -1,6 +1,5 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { IframeHeight } from '@shared/util/window.util';
-
 @Component({
     selector: 'erupt-iframe',
     template: `
@@ -8,7 +7,7 @@ import { IframeHeight } from '@shared/util/window.util';
             <iframe
                 [src]="url | safeUrl"
                 style="width: 100%;border: 0;display: block"
-                [ngStyle]="{ height: height }"
+                [ngStyle]="style"
                 (load)="iframeHeight($event)"
             >
             </iframe>
@@ -20,6 +19,8 @@ export class EruptIframeComponent implements OnInit, OnChanges {
     @Input() url: string;
 
     @Input() height: string;
+
+    @Input() style: object = {};
 
     spin: boolean = true;
 

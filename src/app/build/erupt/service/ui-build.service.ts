@@ -2,7 +2,7 @@ import { EruptBuildModel } from '../model/erupt-build.model';
 
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core';
-import { Column, VL } from '../model/erupt-field.model';
+import { XSTColumn, VL } from '../model/erupt-field.model';
 import { Injectable, Inject } from '@angular/core';
 import { STColumnBadge, STColumn } from '@delon/abc/st';
 import { DataService } from '@shared/service/data.service';
@@ -109,7 +109,7 @@ export class UiBuildService {
         return cols;
     }
 }
-function getLinkColumnModelOptions(column: Column, item: any, eruptBuildModel: EruptBuildModel): ModalOptions {
+function getLinkColumnModelOptions(column: XSTColumn, item: any, eruptBuildModel: EruptBuildModel): ModalOptions {
     let modelOptions: ModalOptions = {
         nzTitle: column.title.text,
         nzMaskClosable: true,
@@ -192,7 +192,7 @@ function getLinkColumnModelOptions(column: Column, item: any, eruptBuildModel: E
     return modelOptions;
 }
 
-function getLinkColumnIcon(column: Column) {
+function getLinkColumnIcon(column: XSTColumn) {
     if (column.link.icon) return column.link.icon;
     switch (column.link.viewType) {
         case ViewType.LINK_DIALOG:

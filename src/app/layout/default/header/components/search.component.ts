@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { MenuService } from '@delon/theme';
 import { Menu } from '@delon/theme/src/services/menu/interface';
 import { MenuVo } from '@shared/model/erupt-menu';
-import { TranslateModule } from '@ngx-translate/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
@@ -18,7 +17,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
                 (focus)="qFocus()"
                 (blur)="qBlur()"
                 (input)="onInput($event)"
-                [placeholder]="'global.search.hint'"
+                [placeholder]="'global.search.hint' | translate"
                 [nzAutocomplete]="auto"
                 style="padding-left: 32px"
             />

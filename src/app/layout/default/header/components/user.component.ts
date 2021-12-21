@@ -21,10 +21,10 @@ import { NzModalService } from 'ng-zorro-antd/modal';
             </div>
             <div nz-menu class="width-sm">
                 <div nz-menu-item (click)="changePwd()">
-                    <i nz-icon nzType="edit" nzTheme="fill" class="mr-sm"></i>{{ 'global.reset_pwd' }}
+                    <i nz-icon nzType="edit" nzTheme="fill" class="mr-sm"></i>{{ 'global.reset_pwd' | translate }}
                 </div>
                 <div nz-menu-item (click)="logout()">
-                    <i nz-icon nzType="logout" nzTheme="outline" class="mr-sm"></i>{{ 'global.logout' }}
+                    <i nz-icon nzType="logout" nzTheme="outline" class="mr-sm"></i>{{ 'global.logout' | translate }}
                 </div>
             </div>
         </a>

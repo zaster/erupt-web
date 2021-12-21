@@ -26,11 +26,12 @@ export interface EruptFieldModel {
 
 //field detail
 export interface EruptField {
-    columns?: Column[];
+    columns?: XSTColumn[];
     edit?: Edit;
 }
 
-export interface Column extends STColumn {
+export interface XSTColumn extends STColumn {
+    viewType?: ViewType;
     title: STColumnTitle;
     index: string;
     show?: boolean;

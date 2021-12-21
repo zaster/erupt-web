@@ -204,7 +204,6 @@ export class DefaultInterceptor implements HttpInterceptor {
     ): Observable<HttpSentEvent | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
         // 统一加上服务端前缀
         let url = req.url;
-        console.log('start route');
         if (!url.startsWith('https://') && !url.startsWith('http://') && !url.startsWith('//')) {
             url = environment.SERVER_URL + url;
         }

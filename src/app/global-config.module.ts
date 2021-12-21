@@ -5,7 +5,7 @@ import { AlainConfig, ALAIN_CONFIG } from '@delon/util';
 import { throwIfAlreadyLoaded } from '@core';
 
 import { RouteReuseStrategy } from '@angular/router';
-import { ReuseTabStrategy, ReuseTabService } from '@delon/abc';
+import { ReuseTabStrategy, ReuseTabService } from '@delon/abc/reuse-tab';
 
 // Please refer to: https://ng-alain.com/docs/global-config
 // #region NG-ALAIN Config

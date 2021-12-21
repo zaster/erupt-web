@@ -112,7 +112,6 @@ export class StartupService {
                                 langData[key] = extra[key];
                             }
                         }
-                        console.log('init translate ');
                         this.translate.setTranslation(this.i18n.defaultLang, langData);
                         this.translate.setDefaultLang(this.i18n.defaultLang);
                     },

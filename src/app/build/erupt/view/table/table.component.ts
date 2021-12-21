@@ -18,9 +18,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { EruptIframeComponent } from '@shared/component/iframe.component';
 import { UiBuildService } from '../../service/ui-build.service';
 import { I18NService } from '@core';
-import { isDate } from 'util';
 import { QueryCondition } from '../../model/erupt.vo';
-import { ExpectedConditions } from 'protractor';
 import { colRules } from '@shared/model/util.model';
 import { ActivatedRoute } from '@angular/router';
 import { STComponent, STColumn, STData, STColumnButton, STChange } from '@delon/abc/st';
@@ -78,6 +76,7 @@ export class TableComponent implements OnInit {
     selectMode: SelectMode = SelectMode.checkbox;
 
     showTable: boolean = true;
+    downloading: boolean = false;
 
     _drill: { erupt: string; code: string; parent: EruptBuildModel; val: STData };
 
@@ -181,7 +180,9 @@ export class TableComponent implements OnInit {
         );
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        console.log('in table');
+    }
 
     init(
         observable: Observable<EruptBuildModel>,
@@ -192,6 +193,7 @@ export class TableComponent implements OnInit {
         },
         callback?: Function
     ) {
+        console.log('init table');
         this.selectedRows = [];
         this.showTable = true;
         this.adding = false;
@@ -258,7 +260,7 @@ export class TableComponent implements OnInit {
         let viewCols = this.uiBuildService.viewToAlainTableConfig(this.eruptBuildModel, true);
         for (let viewCol of viewCols) {
             viewCol.iif = () => {
-                return viewCol.show;
+                return true;
             };
         }
         _columns.push(...viewCols);
@@ -381,6 +383,8 @@ export class TableComponent implements OnInit {
                 let text = '';
                 if (ro.icon) {
                     text = `<i class=\"${ro.icon}\"></i>`;
+                } else {
+                    text = ro.title;
                 }
                 tableOperators.push({
                     type: 'link',
@@ -389,6 +393,7 @@ export class TableComponent implements OnInit {
                     click: (record: any, modal: any) => {
                         that.createOperator(ro, record);
                     },
+                    iifBehavior: 'disabled',
                     iif: (item) => {
                         if (ro.ifExpr) {
                             let depend = this._drill ? this._drill : null;
@@ -576,7 +581,6 @@ export class TableComponent implements OnInit {
             buttons.forEach((button) => {
                 footer.push(this.createModalActionButton(action, button, record));
             });
-            console.log(footer);
             options.nzFooter = footer;
         }
         if (action.contentType === 'none') {
@@ -644,7 +648,7 @@ export class TableComponent implements OnInit {
     }
 
     /**
-     *  自定义功能触发
+     * 自定义功能触发
      * @param rowOperation 行按钮对象
      * @param data 数据（单个执行时使用）
      */
@@ -988,8 +992,12 @@ export class TableComponent implements OnInit {
                 })
             );
         }
+        // this._drill.val
         //导出接口
-        this.dataService.downloadExcel(this.eruptBuildModel.eruptModel.eruptName, condition);
+        this.downloading = true;
+        this.dataService.downloadExcel(this.eruptBuildModel.eruptModel.eruptName, condition, () => {
+            this.downloading = false;
+        });
     }
 
     clickTreeNode(event) {

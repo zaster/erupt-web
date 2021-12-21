@@ -1,7 +1,6 @@
 import { Edit, EruptFieldModel, VL } from '../model/erupt-field.model';
 import { EruptModel, Tree } from '../model/erupt.model';
 import { DateEnum, EditType, ViewType } from '../model/erupt.enum';
-
 import { deepCopy } from '@delon/util';
 import { Inject, Injectable } from '@angular/core';
 import { EruptBuildModel } from '../model/erupt-build.model';
@@ -21,6 +20,7 @@ export class DataHandlerService {
     ) {}
 
     initErupt(em: EruptBuildModel) {
+        console.log('init erupt');
         this.buildErupt(em.eruptModel);
         em.eruptModel.eruptJson.power = em.power;
         if (em.tabErupts) {
@@ -43,6 +43,7 @@ export class DataHandlerService {
     }
 
     buildErupt(eruptModel: EruptModel) {
+        console.log('build erupt');
         eruptModel.tableColumns = [];
         eruptModel.eruptFieldModelMap = new Map<String, EruptFieldModel>();
         eruptModel.eruptFieldModels.forEach((field) => {
@@ -97,6 +98,7 @@ export class DataHandlerService {
         let copyErupt = <EruptModel>deepCopy(eruptBuildModel.eruptModel);
         const searchFieldModels = [];
         const searchFieldModelsMap: Map<String, EruptFieldModel> = new Map();
+        console.log('build search erupt');
         copyErupt.eruptFieldModels.forEach((field) => {
             if (!field.eruptFieldJson.edit) {
                 return;

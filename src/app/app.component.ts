@@ -27,10 +27,8 @@ export class AppComponent implements OnInit {
     beforeMatch = null;
 
     ngOnInit() {
-        console.log('init');
         const eruptRouterEvent = window['eruptRouterEvent'];
         if (!this.tokenService.get().token) {
-            console.log('no token');
             this.tokenService.set({ token: '@', time: new Date() });
         }
         this.router.events.pipe(filter((evt) => evt instanceof NavigationEnd)).subscribe((res) => {
@@ -39,18 +37,14 @@ export class AppComponent implements OnInit {
             //页面生命周期函数核心逻辑
             if (eruptRouterEvent) {
                 let url: string = res['url'];
-                console.log(url);
                 url = url.substring(0, url.indexOf('?') === -1 ? url.length : url.indexOf('?'));
                 let paths = url.split('/');
                 let match = paths[paths.length - 1];
-                console.log(this.beforeMatch);
                 if (this.beforeMatch) {
                     if (eruptRouterEvent.$) {
                         eruptRouterEvent.$.unload && eruptRouterEvent.$.unload(res);
                     }
                     let beforeEvent = eruptRouterEvent[this.beforeMatch];
-                    console.log('beforeEvent');
-                    console.log(beforeEvent);
                     beforeEvent && beforeEvent.unload && beforeEvent.unload(res);
                 }
                 if (eruptRouterEvent.$) {
