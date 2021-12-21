@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { NzMessageService } from 'ng-zorro-antd';
-import { NoticeItem, NoticeIconList } from '@delon/abc';
+import { NoticeItem, NoticeIconList } from '@delon/abc/notice-icon';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import {} from 'ng-zorro-antd/notification';
 
 /**
  * 菜单通知

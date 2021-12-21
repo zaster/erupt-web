@@ -1,8 +1,8 @@
 import { Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { Bi, Chart, ChartType } from '../model/bi.model';
 import { BiDataService } from '../service/data.service';
-import { NzMessageService } from 'ng-zorro-antd';
 import { HandlerService } from '../service/handler.service';
 
 @Component({

@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { ALAIN_I18N_TOKEN, SettingsService } from '@delon/theme';
-import { ReuseTabService } from '@delon/abc';
-import { bootloader } from '@angularclass/hmr';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { I18NService } from '@core';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { ReuseTabService } from '@delon/abc/reuse-tab';
 
 @Component({
     selector: 'erupt-settings',

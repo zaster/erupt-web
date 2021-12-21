@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import { ALAIN_I18N_TOKEN, SettingsService } from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { DataService } from '@shared/service/data.service';
-import { NzModalService } from 'ng-zorro-antd';
 import { ChangePwdComponent } from '../../../../routes/change-pwd/change-pwd.component';
 import { I18NService } from '@core';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
     selector: 'header-user',

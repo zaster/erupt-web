@@ -1,11 +1,11 @@
 import { Component, HostBinding, Input, ElementRef, AfterViewInit, Inject } from '@angular/core';
 import { DataService } from '@shared/service/data.service';
 import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd';
 import { MenuService } from '@delon/theme';
 import { Menu } from '@delon/theme/src/services/menu/interface';
 import { MenuVo } from '@shared/model/erupt-menu';
 import { TranslateModule } from '@ngx-translate/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
     selector: 'header-search',

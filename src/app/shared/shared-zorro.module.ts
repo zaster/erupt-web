@@ -1,10 +1,11 @@
-import { NzAutocompleteModule, NzBackTopModule, NzCascaderModule, NzTreeModule } from 'ng-zorro-antd';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzCascaderModule } from 'ng-zorro-antd/cascader';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -30,8 +31,10 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
-
+import { NzBackTopModule } from 'ng-zorro-antd/back-top';
+import { NzCarouselModule } from 'ng-zorro-antd/carousel';
 export const SHARED_ZORRO_MODULES = [
     NzButtonModule,
     NzMessageModule,
@@ -69,4 +72,5 @@ export const SHARED_ZORRO_MODULES = [
     NzCascaderModule,
     NzAutocompleteModule,
     NzBackTopModule,
+    NzCarouselModule,
 ];

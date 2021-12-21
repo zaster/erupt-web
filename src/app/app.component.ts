@@ -2,8 +2,9 @@ import { Component, ElementRef, Inject, OnInit, Renderer2 } from '@angular/core'
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { TitleService, VERSION as VERSION_ALAIN } from '@delon/theme';
-import { NzModalService, VERSION as VERSION_ZORRO } from 'ng-zorro-antd';
+import { VERSION as VERSION_ZORRO } from 'ng-zorro-antd/version';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
     selector: 'app-root',

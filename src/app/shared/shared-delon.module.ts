@@ -1,4 +1,6 @@
-import { ExceptionModule, NoticeIconModule, SidebarNavModule } from '@delon/abc';
+import { ExceptionModule } from '@delon/abc/exception';
+import { NoticeIconModule } from '@delon/abc/notice-icon';
+import { SidebarNavModule } from '@delon/abc/sidebar-nav';
 import { PageHeaderModule } from '@delon/abc/page-header';
 import { ResultModule } from '@delon/abc/result';
 import { SEModule } from '@delon/abc/se';

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { WindowModel } from '@shared/model/window.model';
-import { NzModalService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Component({
     selector: 'layout-passport',

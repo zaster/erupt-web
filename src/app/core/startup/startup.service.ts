@@ -2,12 +2,11 @@ import { Inject, Injectable } from '@angular/core';
 import { ALAIN_I18N_TOKEN, SettingsService, TitleService } from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
-import { NzIconService } from 'ng-zorro-antd';
+import { NzIconService } from 'ng-zorro-antd/icon';
 import { ICONS_AUTO } from '../../../style-icons-auto';
 import { ICONS } from '../../../style-icons';
 import { WindowModel } from '@shared/model/window.model';
 import { GlobalKeys } from '@shared/model/erupt-const';
-import { ReuseTabService } from '@delon/abc';
 import { EruptAppData } from '@core/startup/erupt-app.data';
 import { RestPath } from '../../build/erupt/model/erupt.enum';
 import { EruptAppModel } from '@shared/model/erupt-app.model';
@@ -16,6 +15,7 @@ import { HttpClient } from '@angular/common/http';
 import { zip } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError } from 'rxjs/operators';
+import { ReuseTabService } from '@delon/abc/reuse-tab';
 
 /**
  * 用于应用启动时

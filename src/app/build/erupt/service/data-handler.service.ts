@@ -1,7 +1,7 @@
 import { Edit, EruptFieldModel, VL } from '../model/erupt-field.model';
 import { EruptModel, Tree } from '../model/erupt.model';
 import { DateEnum, EditType, ViewType } from '../model/erupt.enum';
-import { NzMessageService, NzModalService, UploadFile } from 'ng-zorro-antd';
+
 import { deepCopy } from '@delon/util';
 import { Inject, Injectable } from '@angular/core';
 import { EruptBuildModel } from '../model/erupt-build.model';
@@ -10,7 +10,9 @@ import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
 import { QueryCondition } from '../model/erupt.vo';
 import { isNotNull } from '@shared/util/erupt.util';
-import { STColumn, STData, STColumnBadge, STColumnBadgeValue, STColumnTag } from '@delon/abc';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
 @Injectable()
 export class DataHandlerService {
     constructor(
@@ -308,9 +310,8 @@ export class DataHandlerService {
                             let ids = [];
                             (<any[]>edit.$value).forEach((val) => {
                                 const obj = {};
-                                obj[
-                                    eruptBuildModel.tabErupts[field.fieldName].eruptModel.eruptJson.primaryKeyCol
-                                ] = val;
+                                obj[eruptBuildModel.tabErupts[field.fieldName].eruptModel.eruptJson.primaryKeyCol] =
+                                    val;
                                 ids.push(obj);
                             });
                             eruptData[field.fieldName] = ids;
@@ -336,7 +337,7 @@ export class DataHandlerService {
                     case EditType.ATTACHMENT:
                         if (edit.$viewValue) {
                             const $value: string[] = [];
-                            (<UploadFile[]>edit.$viewValue).forEach((val) => {
+                            (<NzUploadFile[]>edit.$viewValue).forEach((val) => {
                                 $value.push(val.response.data);
                             });
                             eruptData[field.fieldName] = $value.join(edit.attachmentType.fileSeparator);
@@ -517,7 +518,7 @@ export class DataHandlerService {
                             (<string>object[field.fieldName])
                                 .split(edit.attachmentType.fileSeparator)
                                 .forEach((str) => {
-                                    (<UploadFile[]>edit.$viewValue).push({
+                                    (<NzUploadFile[]>edit.$viewValue).push({
                                         uid: str,
                                         name: str,
                                         size: 1,

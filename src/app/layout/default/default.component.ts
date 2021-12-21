@@ -19,7 +19,6 @@ import {
     RouteConfigLoadStart,
     Router,
 } from '@angular/router';
-import { NzIconService, NzMessageService } from 'ng-zorro-antd';
 import { Subscription } from 'rxjs';
 import { updateHostClass } from '@delon/util';
 import { ALAIN_I18N_TOKEN, Menu, MenuService, ScrollService, SettingsService } from '@delon/theme';
@@ -46,6 +45,8 @@ import { DA_SERVICE_TOKEN, TokenService } from '@delon/auth';
 import { generateMenuPath } from '@shared/util/erupt.util';
 import { MenuTypeEnum } from '@shared/model/erupt-menu';
 import { I18NService } from '@core';
+import { NzIconService } from 'ng-zorro-antd/icon';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 // #region icons
 
@@ -221,7 +222,7 @@ export class LayoutDefaultComponent implements OnInit, AfterViewInit, OnDestroy 
                     );
                     if (menu.link) {
                         linkEle.href = '#' + menu.link;
-                        linkEle.onclick = function() {
+                        linkEle.onclick = function () {
                             return false;
                         };
                     }

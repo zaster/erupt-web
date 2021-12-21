@@ -5,9 +5,6 @@ import { EruptModel, Power, RowOperation } from '../../model/erupt.model';
 import { ALAIN_I18N_TOKEN, DrawerHelper, ModalHelper, SettingsService } from '@delon/theme';
 import { EditTypeComponent } from '../../components/edit-type/edit-type.component';
 import { EditComponent } from '../edit/edit.component';
-import { STChange, STChangeType, STColumn, STColumnButton, STComponent, STData } from '@delon/abc';
-import { ActivatedRoute, RouterLinkWithHref } from '@angular/router';
-import { ModalButtonOptions, ModalOptions, NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { DA_SERVICE_TOKEN, TokenService } from '@delon/auth';
 import { EruptBuildModel } from '../../model/erupt-build.model';
 import { OperationEruptMode, OperationMode, OperationType, RestPath, Scene, SelectMode } from '../../model/erupt.enum';
@@ -25,6 +22,10 @@ import { isDate } from 'util';
 import { QueryCondition } from '../../model/erupt.vo';
 import { ExpectedConditions } from 'protractor';
 import { colRules } from '@shared/model/util.model';
+import { ActivatedRoute } from '@angular/router';
+import { STComponent, STColumn, STData, STColumnButton, STChange } from '@delon/abc/st';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService, ModalButtonOptions, ModalOptions } from 'ng-zorro-antd/modal';
 
 @Component({
     selector: 'erupt-table',
@@ -513,7 +514,7 @@ export class TableComponent implements OnInit {
         button.danger = true;
         button.show = button.ifExpr ? eval(button.ifExpr) : true;
         const that = this;
-        button.onClick = async function(this: ModalButtonOptions<any>, contentComponent: any) {
+        button.onClick = async function (this: ModalButtonOptions<any>, contentComponent: any) {
             that.selectedRows = [];
             const params = that.getModalOperatorExecuteParams(action, contentComponent, record);
             let res = await that.dataService

@@ -2,8 +2,10 @@ import { Component, Inject, Input, OnInit } from '@angular/core';
 import { DataService } from '@shared/service/data.service';
 import { EruptModel, RowOperation } from '../../model/erupt.model';
 import { DA_SERVICE_TOKEN, TokenService } from '@delon/auth';
-import { NzMessageService, NzModalService, UploadChangeParam, UploadFile } from 'ng-zorro-antd';
 import { EruptApiModel, Status } from '../../model/erupt-api.model';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzUploadChangeParam } from 'ng-zorro-antd/upload';
 
 @Component({
     selector: 'app-excel-import',
@@ -31,7 +33,7 @@ export class ExcelImportComponent implements OnInit {
 
     ngOnInit() {}
 
-    upLoadNzChange(param: UploadChangeParam) {
+    upLoadNzChange(param: NzUploadChangeParam) {
         const file = param.file;
         this.errorText = null;
         if (file.status === 'done') {

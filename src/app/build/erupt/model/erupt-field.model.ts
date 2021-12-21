@@ -1,6 +1,5 @@
-import { STColumn, STColumnTitle, STColumnButton } from '@delon/abc';
-import * as internal from 'assert';
-import { ModalButtonOptions } from 'ng-zorro-antd';
+import { STColumn, STColumnTitle, STColumnButton } from '@delon/abc/st';
+import { ModalButtonOptions } from 'ng-zorro-antd/modal';
 import { EruptBuildModel } from './erupt-build.model';
 import {
     AttachmentEnum,
