@@ -11,9 +11,9 @@ import { DELON_LOCALE, zh_CN as delonLang } from '@delon/theme';
 // register angular
 import { DatePipe, registerLocaleData } from '@angular/common';
 import { SimpleInterceptor } from '@delon/auth';
-import { DefaultInterceptor } from '@core/net/default.interceptor';
+import { DefaultInterceptor } from '@core';
 // #region Startup Service
-import { StartupService } from '@core/startup/startup.service';
+import { StartupService } from '@core';
 import { CoreModule } from '@core/core.module';
 import { SharedModule } from '@shared/shared.module';
 import { AppComponent } from './app.component';

@@ -24,7 +24,6 @@ export class DataService {
     public excelImport: string = RestPath.excel + '/import/';
 
     constructor(
-        private http: HttpClient,
         private _http: _HttpClient,
         @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
@@ -52,6 +51,7 @@ export class DataService {
 
     //获取验证码
     static getVerifyCodeUrl(): string {
+        console.log(RestPath.erupt + '/code-img?_t' + new Date().getTime());
         return RestPath.erupt + '/code-img?_t' + new Date().getTime();
     }
 
@@ -391,6 +391,8 @@ export class DataService {
 
     //登录
     login(account: string, pwd: string, verifyCode?: any): Observable<LoginModel> {
+        console.log('in login');
+        console.log(RestPath.erupt + '/login');
         return this._http.post(
             RestPath.erupt + '/login',
             {},

@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
             //页面生命周期函数核心逻辑
             if (eruptRouterEvent) {
                 let url: string = res['url'];
-                console.log('start route');
+                console.log(url);
                 url = url.substring(0, url.indexOf('?') === -1 ? url.length : url.indexOf('?'));
                 let paths = url.split('/');
                 let match = paths[paths.length - 1];

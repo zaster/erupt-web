@@ -13,7 +13,9 @@ import {
 } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, mergeMap } from 'rxjs/operators';
-import { NzMessageService, NzModalService, NzNotificationService } from 'ng-zorro-antd';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { _HttpClient, ALAIN_I18N_TOKEN } from '@delon/theme';
 import { environment } from '@env/environment';
 import { EruptApiModel, PromptWay, Status } from '../../build/erupt/model/erupt-api.model';
@@ -47,8 +49,9 @@ export class DefaultInterceptor implements HttpInterceptor {
     }
 
     private handleData(event: HttpResponse<any> | HttpErrorResponse): Observable<any> {
+        console.log('handle Data');
         // 可能会因为 `throw` 导出无法执行 `_HttpClient` 的 `end()` 操作
-        this.injector.get(_HttpClient).end();
+        //this.injector.get(_HttpClient).end();
         // 业务处理：一些通用操作
         switch (event.status) {
             case 200:
@@ -205,6 +208,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         if (!url.startsWith('https://') && !url.startsWith('http://') && !url.startsWith('//')) {
             url = environment.SERVER_URL + url;
         }
+        console.log('url:' + url);
         // 对话框的方式出现登录页
         // if (this.whiteApi.indexOf(url.split("erupt-api/")[1]) == -1) {
         //     let token = this.tokenService.get();

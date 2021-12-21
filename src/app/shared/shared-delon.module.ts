@@ -16,6 +16,5 @@ export const SHARED_DELON_MODULES = [
     ExceptionModule,
     NoticeIconModule,
     SidebarNavModule,
-    DelonACLModule,
     DelonFormModule,
 ];

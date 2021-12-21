@@ -93,6 +93,8 @@ export class UserLoginComponent implements OnDestroy, OnInit, AfterViewInit {
     }
 
     submit() {
+        DataService.getVerifyCodeUrl();
+        console.log('submit');
         this.error = '';
         if (this.type === 0) {
             this.userName.markAsDirty();
@@ -112,8 +114,10 @@ export class UserLoginComponent implements OnDestroy, OnInit, AfterViewInit {
                 Md5.hashStr(Md5.hashStr(this.password.value) + (new Date().getDate() + '') + this.userName.value)
             );
         }
+        console.log('request to backend');
         this.data.login(this.userName.value, pwd, this.verifyCode.value).subscribe(
             (result) => {
+                console.log('in login sub');
                 if (result.useVerifyCode) {
                     this.changeVerifyCode();
                 }

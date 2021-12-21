@@ -8,7 +8,7 @@
             <!--账号-->
             <nz-form-item>
                 <nz-form-control>
-                    <nz-input-group nzSize="large" nzPrefixIcon="anticon anticon-user">
+                    <nz-input-group nzSize="large" nzPrefixIcon="user">
                         <input nz-input formControlName="userName" [placeholder]="'login.account'|translate">
                     </nz-input-group>
                     <nz-form-explain *ngIf="userName.dirty && userName.errors">
@@ -19,7 +19,7 @@
             <!--密码-->
             <nz-form-item>
                 <nz-form-control>
-                    <nz-input-group nzSize="large" nzPrefixIcon="anticon anticon-lock" [nzAddOnAfter]="controlPwd">
+                    <nz-input-group nzSize="large" nzPrefixIcon="lock" [nzAddOnAfter]="controlPwd">
                         <input nz-input [type]="passwordType" formControlName="password"
                                [placeholder]="'login.pwd'|translate">
                     </nz-input-group>

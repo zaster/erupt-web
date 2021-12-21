@@ -2,14 +2,14 @@
     <nz-alert *ngIf="error" [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg"></nz-alert>
     <nz-form-item>
         <nz-form-control>
-            <nz-input-group class="full-width" nzSize="large" nzAddOnBeforeIcon="anticon anticon-user">
+            <nz-input-group class="full-width" nzSize="large" nzAddOnBeforeIcon="user">
                 <input nz-input [value]="settingsService.user.name" disabled="disabled">
             </nz-input-group>
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
         <nz-form-control>
-            <nz-input-group class="full-width" nzSize="large" nzAddOnBeforeIcon="anticon anticon-lock text-blue">
+            <nz-input-group class="full-width" nzSize="large" nzAddOnBeforeIcon="lock text-blue">
                 <input nz-input type="password" formControlName="pwd" placeholder="原始密码">
             </nz-input-group>
             <ng-container *ngIf="pwd.dirty && pwd.errors">
@@ -20,7 +20,7 @@
     <nz-form-item>
         <nz-form-control>
             <nz-input-group class="full-width" nzSize="large" nz-popover nzPopoverPlacement="right"
-                            [nzPopoverContent]="nzTemplate" nzAddOnBeforeIcon="anticon anticon-lock">
+                            [nzPopoverContent]="nzTemplate" nzAddOnBeforeIcon="lock">
                 <input nz-input type="password" formControlName="newPwd" placeholder="新密码（至少6位密码，区分大小写）">
             </nz-input-group>
             <nz-form-explain *ngIf="newPwd.dirty && newPwd.errors">密码至少六位</nz-form-explain>
@@ -42,7 +42,7 @@
     </nz-form-item>
     <nz-form-item>
         <nz-form-control>
-            <nz-input-group class="full-width" nzSize="large" nzAddOnBeforeIcon="anticon anticon-lock">
+            <nz-input-group class="full-width" nzSize="large" nzAddOnBeforeIcon="lock ">
                 <input nz-input type="password" formControlName="newPwd2" placeholder="确认密码">
             </nz-input-group>
             <ng-container *ngIf="newPwd2.dirty && newPwd2.errors">
