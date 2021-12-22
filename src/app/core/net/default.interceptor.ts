@@ -31,12 +31,11 @@ import { I18NService } from '@core/i18n/i18n.service';
 export class DefaultInterceptor implements HttpInterceptor {
     constructor(
         private injector: Injector,
-        @Inject(NzModalService)
-        private modal: NzModalService,
-        @Inject(NzNotificationService)
-        private notify: NzNotificationService,
         @Inject(NzMessageService)
         private msg: NzMessageService,
+        @Inject(NzModalService)
+        private modal: NzModalService,
+
         @Inject(DA_SERVICE_TOKEN)
         private tokenService: TokenService,
         private router: Router,
@@ -110,7 +109,7 @@ export class DefaultInterceptor implements HttpInterceptor {
                                     }
                                     break;
                                 case PromptWay.NOTIFY:
-                                    switch (eruptApiBody.status) {
+                                    /*  switch (eruptApiBody.status) {
                                         case Status.INFO:
                                             this.notify.info(eruptApiBody.message, null, { nzDuration: 0 });
                                             break;
@@ -123,7 +122,7 @@ export class DefaultInterceptor implements HttpInterceptor {
                                         case Status.ERROR:
                                             this.notify.error(eruptApiBody.message, null, { nzDuration: 0 });
                                             break;
-                                    }
+                                    } */
                                     break;
                             }
                         }

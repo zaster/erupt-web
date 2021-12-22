@@ -6,8 +6,8 @@ import { ResultModule } from '@delon/abc/result';
 import { SEModule } from '@delon/abc/se';
 import { STModule } from '@delon/abc/st';
 import { SVModule } from '@delon/abc/sv';
-import { DelonACLModule } from '@delon/acl';
 import { DelonFormModule } from '@delon/form';
+import { GlobalFooterModule } from '@delon/abc/global-footer';
 
 export const SHARED_DELON_MODULES = [
     STModule,

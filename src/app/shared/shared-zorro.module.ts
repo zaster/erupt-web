@@ -35,6 +35,7 @@ import { NzTreeModule } from 'ng-zorro-antd/tree';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzBackTopModule } from 'ng-zorro-antd/back-top';
 import { NzCarouselModule } from 'ng-zorro-antd/carousel';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
 export const SHARED_ZORRO_MODULES = [
     NzButtonModule,
     NzMessageModule,
@@ -73,4 +74,5 @@ export const SHARED_ZORRO_MODULES = [
     NzAutocompleteModule,
     NzBackTopModule,
     NzCarouselModule,
+    NzMenuModule,
 ];

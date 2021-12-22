@@ -141,6 +141,7 @@ export class I18NService implements AlainI18NService {
     }
     /** 默认语言 */
     get defaultLang() {
+        console.log(this._default);
         return this._default;
     }
     /** 当前语言 */

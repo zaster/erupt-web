@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
             </div>
             <div nz-menu class="wd-xl animated jello">
                 <nz-spin [nzSpinning]="loading" [nzTip]="'正在读取数据...'">
-                    <div nz-row [nzType]="'flex'" [nzJustify]="'center'" [nzAlign]="'middle'" class="app-icons">
+                    <div nz-row [nzJustify]="'center'" [nzAlign]="'middle'" class="app-icons">
                         <div nz-col [nzSpan]="6">
                             <i class="calendar bg-error text-white"></i>
                             <small>Calendar</small>

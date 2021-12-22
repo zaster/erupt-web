@@ -10,24 +10,29 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 @Component({
     selector: 'header-user',
     template: `
-        <a nz-dropdown nzPlacement="bottomRight">
-            <div class="alain-default__nav-item d-flex align-items-center px-sm" nz-dropdown>
-                <nz-avatar
-                    [nzText]="settings.user.name && settings.user.name.substr(0, 1)"
-                    nzSize="default"
-                    class="mr-sm"
-                ></nz-avatar>
-                {{ settings.user.name }}
-            </div>
-            <div nz-menu class="width-sm">
-                <div nz-menu-item (click)="changePwd()">
+        <div
+            nz-dropdown
+            class="alain-default__nav-item d-flex align-items-center px-sm"
+            [nzDropdownMenu]="menu"
+            nzPlacement="bottomRight"
+        >
+            <nz-avatar
+                [nzText]="settings.user.name && settings.user.name.substr(0, 1)"
+                nzSize="default"
+                class="mr-sm"
+            ></nz-avatar>
+            {{ settings.user.name }}
+        </div>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+                <li nz-menu-item (click)="changePwd()">
                     <i nz-icon nzType="edit" nzTheme="fill" class="mr-sm"></i>{{ 'global.reset_pwd' | translate }}
-                </div>
-                <div nz-menu-item (click)="logout()">
+                </li>
+                <li nz-menu-item (click)="logout()">
                     <i nz-icon nzType="logout" nzTheme="outline" class="mr-sm"></i>{{ 'global.logout' | translate }}
-                </div>
-            </div>
-        </a>
+                </li>
+            </ul>
+        </nz-dropdown-menu>
     `,
 })
 export class HeaderUserComponent {

@@ -229,6 +229,7 @@ export class TableComponent implements OnInit {
                     })
                 )
             )
+            // tslint:disable-next-line: no-non-null-assertion
             .concat(this.actionLink!.conditions);
         this.stConfig.req.param['condition'] = conditions;
 
