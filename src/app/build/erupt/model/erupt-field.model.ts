@@ -1,6 +1,6 @@
 import { STColumn, STColumnTitle, STColumnButton } from '@delon/abc';
 import * as internal from 'assert';
-import { ModalButtonOptions } from 'ng-zorro-antd';
+import { ModalButtonOptions, NzModalRef } from 'ng-zorro-antd';
 import { EruptBuildModel } from './erupt-build.model';
 import {
     AttachmentEnum,
@@ -51,11 +51,12 @@ export interface Action extends STColumnButton {
     formMode?: 'edit' | 'add';
     buttons?: ModalButton[];
     tpl?: any;
-    rowMode?: 'single' | 'multi' | 'none';
+    rowMode?: 'SINGLE' | 'MULTI' | 'NONE';
 }
 
 export interface ModalButton extends ModalButtonOptions {
     code?: string;
+    modalRef?: NzModalRef;
 }
 
 export interface LinkModel {

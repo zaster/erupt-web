@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '@shared/service/data.service';
-import { EruptModel, Power, RowOperation } from '../../model/erupt.model';
+import { EruptModel, Power } from '../../model/erupt.model';
 
 import { ALAIN_I18N_TOKEN, DrawerHelper, ModalHelper, SettingsService } from '@delon/theme';
 import { EditTypeComponent } from '../../components/edit-type/edit-type.component';
@@ -12,6 +12,7 @@ import {
     ModalOptions,
     ModalOptionsForService,
     NzMessageService,
+    NzModalRef,
     NzModalService,
 } from 'ng-zorro-antd';
 import { DA_SERVICE_TOKEN, TokenService } from '@delon/auth';
@@ -164,23 +165,34 @@ export class TableComponent implements OnInit {
             },
         });
     }
-
-    @Input() set actionLink(actionLink: {
+    private _actionLink: {
         fromErupt: EruptBuildModel;
         fromValue: STData;
         conditions: QueryCondition[];
         eruptName: string;
-    }) {
-        this.actionLink = actionLink;
+        power: Power;
+        erupt: EruptBuildModel;
+        behavior: 'add' | 'edit';
+    };
 
+    @Input() set actionLink(al: {
+        fromErupt: EruptBuildModel;
+        fromValue: STData;
+        conditions: QueryCondition[];
+        eruptName: string;
+        power: Power;
+        erupt: EruptBuildModel;
+        behavior: 'add' | 'edit';
+    }) {
+        this._actionLink = al;
         this.init(
-            this.dataService.getEruptBuild(actionLink.eruptName),
+            this.dataService.getEruptBuild(this._actionLink.erupt.eruptModel.eruptName),
             {
-                url: RestPath.data + '/table/' + actionLink.eruptName,
+                url: RestPath.data + '/table/' + this._actionLink.erupt.eruptModel.eruptName,
                 header: {
-                    erupt: actionLink.eruptName,
+                    erupt: this._actionLink.erupt.eruptModel.eruptName,
                 },
-                conditions: actionLink.conditions,
+                conditions: this._actionLink.conditions,
             },
             (eb: EruptBuildModel) => {}
         );
@@ -207,7 +219,7 @@ export class TableComponent implements OnInit {
         //put table api header
         this.stConfig.req.headers = req.header;
         this.stConfig.url = req.url;
-        this.stConfig.req.param['condition'] = req.conditions;
+        this.stConfig.req.params['relation'] = req.conditions;
         observable.subscribe((eb) => {
             let dt = eb.eruptModel.eruptJson.linkTree;
             this.linkTree = !!dt;
@@ -223,27 +235,22 @@ export class TableComponent implements OnInit {
     }
 
     query() {
-        const conditions: QueryCondition[] = [];
-        conditions
-            .concat(
-                this.dataHandler.eruptObjectToCondition(
-                    this.dataHandler.searchEruptToObject({
-                        eruptModel: this.searchErupt,
-                    })
-                )
-            )
-            .concat(this.actionLink!.conditions);
-        this.stConfig.req.param['condition'] = conditions;
+        let conditions: QueryCondition[] = this.dataHandler.eruptObjectToCondition(
+            this.dataHandler.searchEruptToObject({
+                eruptModel: this.searchErupt,
+            })
+        );
+        this.stConfig.req.params['condition'] = conditions;
 
         let linkTree = this.eruptBuildModel.eruptModel.eruptJson.linkTree;
         if (linkTree && linkTree.field) {
-            this.stConfig.req.param['linkTreeVal'] = linkTree.value;
+            this.stConfig.req.params['linkTreeVal'] = linkTree.value;
         }
-        this.st.load(1, this.stConfig.req.param);
+        this.st.load(1, this.stConfig.req.params);
     }
-
     buildTableConfig() {
         const _columns: STColumn[] = [];
+        const that = this;
         const power = this.eruptBuildModel.power;
         _columns.push({
             title: '',
@@ -299,12 +306,7 @@ export class TableComponent implements OnInit {
             tableOperators.push({
                 icon: 'edit',
                 iif: (item) => {
-                    if (power.ifExpr) {
-                        let depend = this._drill ? this._drill : null;
-                        return eval(power.ifExpr);
-                    } else {
-                        return true;
-                    }
+                    return that.evalIfExpr(power.ifExpr, item);
                 },
                 click: (record: any) => {
                     const model = this.modal.create({
@@ -353,12 +355,7 @@ export class TableComponent implements OnInit {
                 pop: this.i18n.fanyi('table.delete.hint'),
                 type: 'del',
                 iif: (item) => {
-                    if (power.ifExpr) {
-                        let depend = this._drill ? this._drill : null;
-                        return eval(power.ifExpr) && power.delete;
-                    } else {
-                        return power.delete;
-                    }
+                    return this.evalIfExpr(power.ifExpr, item, power.delete);
                 },
                 click: (record) => {
                     this.dataService
@@ -379,51 +376,25 @@ export class TableComponent implements OnInit {
                 },
             });
         }
-        const that = this;
-        for (let i in this.eruptBuildModel.eruptModel.eruptJson.rowOperation) {
-            let ro = this.eruptBuildModel.eruptModel.eruptJson.rowOperation[i];
-            if (ro.mode !== OperationMode.BUTTON) {
-                let text = '';
-                if (ro.icon) {
-                    text = `<i class=\"${ro.icon}\"></i>`;
-                }
-                tableOperators.push({
-                    type: 'link',
-                    text: text,
-                    tooltip: ro.title + (ro.tip && '(' + ro.tip + ')'),
-                    click: (record: any, modal: any) => {
-                        that.createOperator(ro, record);
-                    },
-                    iif: (item) => {
-                        if (ro.ifExpr) {
-                            let depend = this._drill ? this._drill : null;
-                            ro.show = eval(ro.ifExpr);
-                        } else {
-                            ro.show = true;
-                        }
-                        return ro.show;
-                    },
-                });
-            }
-        }
+
         for (let action of this.eruptBuildModel.eruptModel.eruptJson.actions) {
             action.contentErupt = this.eruptBuildModel.actionErupts
                 ? this.eruptBuildModel.actionErupts[action.code]
                 : null;
-            if (action.rowMode === 'none') return;
-            if (action.type)
+            if (action.rowMode === 'NONE') {
+                action.show = this.evalIfExpr(action.ifExpr, null);
+                continue;
+            }
+            if (action.type !== 'none') {
                 action.iif = (item) => {
-                    if (action.ifExpr) {
-                        let depend = this.actionLink.fromValue;
-                        action.show = eval(action.ifExpr);
-                    } else {
-                        action.show = true;
-                    }
+                    action.show = this.evalIfExpr(action.ifExpr, item);
                     return action.show;
                 };
+            }
             if (action.contentType === 'none') {
                 //按钮确认信息
-                action.pop = this.i18n.fanyi('' + action.pop);
+                if (action.pop) action.pop = this.i18n.fanyi('' + action.pop);
+                else action.pop = false;
             } else {
                 action.pop = false;
             }
@@ -487,14 +458,14 @@ export class TableComponent implements OnInit {
                 return null;
         }
     }
-    getModalOperatorExecuteParams(action: Action, record: STData, contentComponentInstance: any) {
+    getModalOperatorExecuteParams(action: Action, record: STData, content: TableComponent) {
         const em = this.eruptBuildModel.eruptModel;
         const contentErupt = action.contentErupt.eruptModel;
-
         const param = {
             dependency: {
+                actionLink: this._actionLink,
                 eruptName: em.eruptName,
-                ids: this.getSelectedTableRowIds(this, em.eruptJson.primaryKeyCol, record),
+                ids: this.getSelectedTableRowIds(em.eruptJson.primaryKeyCol, record),
             },
             content: {
                 eruptName: contentErupt.eruptName,
@@ -503,11 +474,13 @@ export class TableComponent implements OnInit {
             },
         };
         if (action.contentType === 'table') {
-            param.content.ids = this.getSelectedTableRowIds(
-                contentComponentInstance,
-                contentErupt.eruptJson.primaryKeyCol,
-                null
-            );
+            console.log('table' + content);
+            param.content.ids = content.getSelectedTableRowIds(contentErupt.eruptJson.primaryKeyCol, null);
+            console.log('param.content.ids:' + param.content.ids);
+            if (!param.content.ids || param.content.ids.length === 0) {
+                this.msg.warning(this.i18n.fanyi('table.require.select_one'));
+                return;
+            }
         } else if (action.contentType === 'form') {
             const eruptValue = this.dataHandler.eruptValueToObject(action.contentErupt);
             param.content.formValue = eruptValue;
@@ -515,55 +488,65 @@ export class TableComponent implements OnInit {
         return param;
     }
     createModalActionButton(action: Action, button: ModalButton, record: STData): ModalButtonOptions {
-        let item = record;
         button.danger = true;
-        button.show = button.ifExpr ? eval(button.ifExpr) : true;
+        button.show = this.evalIfExpr(button.ifExpr, record); //button.ifExpr ? eval(button.ifExpr) : true;
         const that = this;
         button.onClick = async function(this: ModalButtonOptions<any>, contentComponent: any) {
             that.selectedRows = [];
-            const params = that.getModalOperatorExecuteParams(action, contentComponent, record);
-            let res = await that.dataService
-                .executeAction(that.eruptBuildModel.eruptModel.eruptName, action.code, button.code, params)
-                .toPromise()
-                .then();
-            that.st.reload();
-            if (res.data) {
-                eval(res.data);
-            }
+            const params = that.getModalOperatorExecuteParams(action, record, contentComponent);
+            that.executeAction(
+                button.modalRef,
+                that.eruptBuildModel.eruptModel.eruptName,
+                action.code,
+                button.code,
+                params
+            );
         };
         return button;
     }
 
-    getSelectedTableRowIds(table: TableComponent, rowIdName: string, record: STData): string[] {
+    async executeAction(modalRef: NzModalRef, eruptName: string, actionCode: string, buttonCode: string, params) {
+        let res = await this.dataService
+            .executeAction(eruptName, actionCode, buttonCode, params)
+            .toPromise()
+            .then((res) => res);
+        if (res.status === Status.SUCCESS) {
+            console.log(modalRef);
+            this.st.reload();
+            modalRef.getInstance().close(true);
+        }
+    }
+
+    getSelectedTableRowIds(rowIdName: string, record: STData): string[] {
         let ids = [];
         //先找选中的数据
-        table.selectedRows.forEach((e) => {
+        this.selectedRows.forEach((e) => {
             ids.push(e[rowIdName]);
         });
         //如果是在数据行的则选中的是当前行，否则为checkbox或者radio选中的行
         ids = record ? [record[rowIdName]] : ids;
+        console.log('get param:' + ids);
         return ids;
     }
     createAction(action: Action, record: STData) {
         const eruptModel = this.eruptBuildModel.eruptModel;
-
         if (!action.contentErupt) action.contentErupt = this.eruptBuildModel;
-        const size = action.contentType === 'table' || action.contentErupt.tabErupts ? 'modal-xxl' : 'modal-lg';
         const options: ModalOptionsForService = {
             nzKeyboard: true,
             nzTitle: '' + action.text,
-            nzStyle: { top: '60px' },
-            nzWrapClassName: size,
-            nzOkLoading: true,
-
+            nzStyle: { top: '20px' },
             nzContent: this.getActionContent(action.contentType),
             nzComponentParams: this.getActionContentInitParams(action, record),
             nzMaskClosable: false,
         };
+        if (action.contentType !== 'none')
+            options.nzWrapClassName =
+                action.contentType === 'table' || action.contentErupt.tabErupts ? 'modal-xxl' : 'modal-lg';
+
         //如果行为是行数据依赖的，那么提醒选择数据
         if (
-            action.rowMode !== 'none' &&
-            this.getSelectedTableRowIds(this, eruptModel.eruptJson.primaryKeyCol, record).length === 0
+            action.rowMode !== 'NONE' &&
+            this.getSelectedTableRowIds(eruptModel.eruptJson.primaryKeyCol, record).length === 0
         ) {
             this.msg.warning(this.i18n.fanyi('table.require.select_one'));
             return;
@@ -573,7 +556,24 @@ export class TableComponent implements OnInit {
         //如果按钮只有一个，那么ok按钮执行逻辑，否则自定义按钮
         if (buttons.length === 0) options.nzFooter = null;
         else if (buttons.length === 1) {
-            options.nzOnOk = this.createModalActionButton(action, buttons[0], record).onClick;
+            options.nzOnOk = () => {
+                console.log('aaa');
+                console.log(buttons[0]);
+                let params;
+                let content;
+                if (buttons[0] && buttons[0].modalRef) {
+                    content = buttons[0].modalRef.getContentComponent();
+                }
+                params = this.getModalOperatorExecuteParams(action, record, content);
+
+                this.executeAction(
+                    buttons[0].modalRef,
+                    this.eruptBuildModel.eruptModel.eruptName,
+                    action.code,
+                    buttons[0].code,
+                    params
+                );
+            };
             options.nzCancelText = this.i18n.fanyi('global.close');
         } else {
             options.nzFooter = null;
@@ -581,14 +581,17 @@ export class TableComponent implements OnInit {
             buttons.forEach((button) => {
                 footer.push(this.createModalActionButton(action, button, record));
             });
-            console.log(footer);
             options.nzFooter = footer;
         }
         if (action.contentType === 'none') {
             options.nzContent = this.i18n.fanyi('table.hint.operation');
             this.modal.confirm(options);
         } else {
-            this.modal.create(options);
+            let modal = this.modal.create(options);
+            buttons.forEach((button) => {
+                console.log(modal);
+                button.modalRef = modal;
+            });
         }
     }
     getActionContentInitParams(action: Action, record: STData): Partial<any> {
@@ -597,13 +600,13 @@ export class TableComponent implements OnInit {
                 url: this.dataService.getEruptActionTpl(
                     this.eruptBuildModel.eruptModel.eruptName,
                     action.code,
-                    this.getSelectedTableRowIds(this, this.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol, null)
+                    this.getSelectedTableRowIds(this.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol, null)
                 ),
             };
         else if (action.contentType === 'importx') {
-            const em = this.actionLink.fromErupt.eruptModel;
-            let paramData = this.actionLink
-                ? { fromErupt: em.eruptName, fromEruptId: this.actionLink.fromValue[em.eruptJson.primaryKeyCol] }
+            const em = this._actionLink.fromErupt.eruptModel;
+            let paramData = this._actionLink
+                ? { fromErupt: em.eruptName, fromEruptId: this._actionLink.fromValue[em.eruptJson.primaryKeyCol] }
                 : {};
             return {
                 eruptModel: this.eruptBuildModel.eruptModel,
@@ -634,6 +637,7 @@ export class TableComponent implements OnInit {
                         value: relation.value ? relation.value : record[relation.recordKey],
                     });
                 });
+
             const param = {
                 actionLink: {
                     fromErupt: this.eruptBuildModel,
@@ -642,181 +646,10 @@ export class TableComponent implements OnInit {
                     erupt: action.contentErupt,
                     conditions: conditions,
                     behavior: action.formMode,
+                    actionLink: this._actionLink,
                 },
             };
             return param;
-        }
-    }
-
-    /**
-     *  自定义功能触发
-     * @param rowOperation 行按钮对象
-     * @param data 数据（单个执行时使用）
-     */
-    createOperator(rowOperation: RowOperation, data?: object) {
-        const eruptModel = this.eruptBuildModel.eruptModel;
-        const ro = rowOperation;
-        let ids = [];
-        if (data) {
-            ids = [data[eruptModel.eruptJson.primaryKeyCol]];
-        } else {
-            if (ro.mode === OperationMode.MULTI && this.selectedRows.length === 0) {
-                this.msg.warning(this.i18n.fanyi('table.require.select_one'));
-                return;
-            }
-            this.selectedRows.forEach((e) => {
-                ids.push(e[eruptModel.eruptJson.primaryKeyCol]);
-            });
-        }
-        if (ro.type === OperationType.TPL) {
-            let url = this.dataService.getEruptOperationTpl(this.eruptBuildModel.eruptModel.eruptName, ro.code, ids);
-            this.modal.create({
-                nzKeyboard: true,
-                nzTitle: ro.title,
-                nzMaskClosable: false,
-                nzStyle: { top: '20px' },
-                // nzWrapClassName: "modal-xxl",
-                nzWrapClassName: 'modal-lg',
-                nzBodyStyle: {
-                    padding: 0,
-                },
-                nzFooter: null,
-                nzContent: EruptIframeComponent,
-                nzComponentParams: {
-                    url: url,
-                },
-            });
-        } else if (ro.type == OperationType.IMPORT) {
-            let paramData = this._drill
-                ? { parent: this._drill.parent.eruptModel.eruptName, parentId: this._drill.val }
-                : {};
-            let model = this.modal.create({
-                nzKeyboard: true,
-                nzTitle: 'Excel导入',
-                nzOkText: null,
-                nzCancelText: '关闭（ESC）',
-                nzWrapClassName: 'modal-lg',
-                nzContent: ExcelImportComponent,
-                nzComponentParams: {
-                    eruptModel: this.eruptBuildModel.eruptModel,
-                    url:
-                        RestPath.data +
-                        '/' +
-                        this.eruptBuildModel.eruptModel.eruptName +
-                        '/operator/importx/' +
-                        ro.code,
-                    param: paramData,
-                },
-                nzOnCancel: () => {
-                    if (model.getContentComponent().upload) {
-                        this.st.reload();
-                    }
-                },
-            });
-        } else if (ro.type === OperationType.ERUPT) {
-            let operationErupt = null;
-            if (this.eruptBuildModel.operationErupts) {
-                operationErupt = this.eruptBuildModel.operationErupts[ro.code];
-            }
-            if (operationErupt) {
-                if (ro.eruptMode === OperationEruptMode.FORM) {
-                    this.dataHandler.initErupt({ eruptModel: operationErupt });
-                    this.dataHandler.emptyEruptValue({
-                        eruptModel: operationErupt,
-                    });
-                    let modal = this.modal.create({
-                        nzKeyboard: false,
-                        nzTitle: ro.title,
-                        nzMaskClosable: false,
-                        nzCancelText: this.i18n.fanyi('global.close'),
-                        nzWrapClassName: 'modal-lg',
-                        nzOnOk: async () => {
-                            modal.getInstance().nzCancelDisabled = true;
-                            let eruptValue = this.dataHandler.eruptValueToObject({ eruptModel: operationErupt });
-                            let res = await this.dataService
-                                .execOperatorFun(eruptModel.eruptName, ro.code, ids, eruptValue)
-                                .toPromise()
-                                .then((res) => res);
-                            modal.getInstance().nzCancelDisabled = false;
-                            this.selectedRows = [];
-                            if (res.status === Status.SUCCESS) {
-                                this.st.reload();
-                                res.data && eval(res.data);
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        },
-                        nzContent: EditTypeComponent,
-                        nzComponentParams: {
-                            mode: Scene.ADD,
-                            eruptBuildModel: {
-                                eruptModel: operationErupt,
-                            },
-                            parentEruptName: this.eruptBuildModel.eruptModel.eruptName,
-                        },
-                    });
-                } else {
-                    let modal = this.modal.create({
-                        nzKeyboard: false,
-                        nzTitle: ro.title,
-                        nzMaskClosable: false,
-                        nzCancelText: '关闭',
-                        nzWrapClassName: 'modal-xxl',
-                        nzOnOk: async () => {
-                            modal.getInstance().nzCancelDisabled = true;
-                            const sids = [];
-
-                            const sRows = modal.getContentComponent().selectedRows;
-                            if (!sRows || sRows.length === 0) {
-                                this.msg.warning('请至少选一条数据');
-                                return;
-                            }
-
-                            sRows.forEach((e) => {
-                                sids.push(
-                                    e[modal.getContentComponent().eruptBuildModel.eruptModel.eruptJson.primaryKeyCol]
-                                );
-                            });
-                            //let eruptValue = this.dataHandler.eruptValueToObject({eruptModel: operationErupt});
-                            let res = await this.dataService
-                                .execOperatorFun(eruptModel.eruptName, ro.code, sids, this._drill)
-                                .toPromise()
-                                .then((res) => res);
-                            modal.getInstance().nzCancelDisabled = false;
-                            this.selectedRows = [];
-                            if (res.status === Status.SUCCESS) {
-                                this.st.reload();
-                                res.data && eval(res.data);
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        },
-                        nzContent: TableComponent,
-                        nzComponentParams: {
-                            eruptName: operationErupt.eruptName,
-                        },
-                    });
-                }
-            } else {
-                this.modal.confirm({
-                    nzTitle: ro.title,
-                    nzContent: this.i18n.fanyi('table.hint.operation'),
-                    nzCancelText: this.i18n.fanyi('global.close'),
-                    nzOnOk: async () => {
-                        this.selectedRows = [];
-                        let res = await this.dataService
-                            .execOperatorFun(this.eruptBuildModel.eruptModel.eruptName, ro.code, ids, this._drill)
-                            .toPromise()
-                            .then();
-                        this.st.reload();
-                        if (res.data) {
-                            eval(res.data);
-                        }
-                    },
-                });
-            }
         }
     }
 
@@ -841,7 +674,7 @@ export class TableComponent implements OnInit {
                     }, 500);
                     if (modal.getContentComponent().beforeSaveValidate()) {
                         let res: EruptApiModel;
-                        if (this._drill && this._drill.val) {
+                        if (this._actionLink && this._actionLink.fromValue) {
                             res = await this.dataService
                                 .addEruptDrillData(
                                     this._drill.parent.eruptModel.eruptName,
@@ -925,24 +758,14 @@ export class TableComponent implements OnInit {
     tableDataChange(event: STChange) {
         const power = this.eruptBuildModel.power;
         let that = this;
-        let depend = this._drill ? this._drill : null;
-        if (event.type === 'loaded') {
-            for (let i in this.eruptBuildModel.eruptModel.eruptJson.rowOperation) {
-                let ro = this.eruptBuildModel.eruptModel.eruptJson.rowOperation[i];
 
-                if (ro.mode === OperationMode.BUTTON) {
-                    ro.show = ro.ifExpr ? eval(ro.ifExpr) : true;
-                } else {
-                    ro.show = false;
-                }
-            }
-            if (power.ifExpr && depend) {
-                power.add = eval(power.ifExpr);
-                power.edit = eval(power.ifExpr);
-                power.delete = eval(power.ifExpr);
-                power.importable = eval(power.ifExpr);
-                power.delete = eval(power.ifExpr);
-            }
+        if (event.type === 'loaded') {
+            power.add = this.evalIfExpr(power.ifExpr, null, power.add);
+            power.edit = this.evalIfExpr(power.ifExpr, null, power.edit);
+            power.delete = this.evalIfExpr(power.ifExpr, null, power.delete);
+            power.importable = this.evalIfExpr(power.ifExpr, null, power.importable);
+            power.export = this.evalIfExpr(power.ifExpr, null, power.export);
+            power.delete = this.evalIfExpr(power.ifExpr, null, power.delete);
         }
         let rows: STData[];
         if (this._reference) {
@@ -972,16 +795,21 @@ export class TableComponent implements OnInit {
         if (rows) {
             let deletable = true;
             for (let item of rows) {
-                if (power.ifExpr) {
-                    let depend = this._drill ? this._drill : null;
-                    deletable = eval(power.ifExpr);
-                    if (!deletable) break;
+                deletable = this.evalIfExpr(power.ifExpr, item);
+                if (!deletable) {
+                    power.delete = deletable;
                 }
             }
-            power.delete = deletable;
         }
     }
-
+    evalIfExpr(ifexpr: string, item: STData, second: boolean = true) {
+        let depend = this._actionLink && this._actionLink.fromValue ? this._actionLink.fromValue : null;
+        if (ifexpr) {
+            return eval(ifexpr) && second;
+        } else {
+            return second;
+        }
+    }
     downloadExcelTemplate() {
         this.dataService.downloadExcelTemplate(this.eruptBuildModel.eruptModel.eruptName);
     }

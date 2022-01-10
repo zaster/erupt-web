@@ -271,6 +271,7 @@ export class DataService {
     }
 
     executeAction(eruptName: string, actionCode: string, subcode: string, param: object) {
+        console.log('post');
         return this._http.post(
             RestPath.data + '/' + eruptName + '/action/' + actionCode + '/subaction/' + subcode,
             {

@@ -15,7 +15,7 @@ export class BuildConfig {
             front: false,
         },
         req: {
-            param: {},
+            params: {},
             headers: {},
             method: 'POST',
             allInBody: true,

@@ -93,24 +93,12 @@
                                     &nbsp;
                                 </ng-container>
         
-                                <ng-container *ngIf="eruptBuildModel.eruptModel.eruptJson.rowOperation">
-                                    <ng-container *ngFor="let item of eruptBuildModel.eruptModel.eruptJson.rowOperation">
-                                        <ng-container *ngIf="item.mode != operationMode.SINGLE">
-                                            <button [hidden]="!item.show"
-                                                nz-button nzType="default" class="mb-sm" [nz-tooltip]="item.tip"
-                                                    (click)="createOperator(item)">
-                                                <i class="fa" [ngClass]="item.icon"></i>
-                                                <span style="margin-left: 8px;">{{item.title}}</span>
-                                            </button>
-                                        </ng-container>
-                                    </ng-container>
-                                </ng-container>
 
                                 <ng-container *ngIf="eruptBuildModel.eruptModel.eruptJson.actions">
                                     <ng-container *ngFor="let item of eruptBuildModel.eruptModel.eruptJson.actions">
                                         
-                                        <ng-container *ngIf="item.rowMode == 'SINGLE'">
-                                            {{item.icon}}<button [hidden]="item.show"
+                                        <ng-container *ngIf="item.rowMode !== 'SINGLE'">
+                                            <button [hidden]="!item.show"
                                                 nz-button nzType="default" class="mb-sm" [nz-tooltip]="item.tooltip"
                                                     (click)="createAction(item,false)">
                                                 <i nz-icon [nzType]="item.icon"
@@ -145,7 +133,8 @@
                 
                 <st #st
                     [widthMode]="{strictBehavior:'wrap'}"
-                    [data]="stConfig.url" [columns]="columns"
+                    [data]="stConfig.url" 
+                    [columns]="columns"
                     [scroll]="{x: (clientWidth > 768 ? eruptBuildModel.eruptModel.tableColumns.length * 150 : 0) + 'px'}"
                     (change)="tableDataChange($event)"
                     [bordered]="settingSrv.layout.bordered"
