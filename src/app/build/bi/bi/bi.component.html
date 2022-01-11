@@ -27,8 +27,8 @@
         <ng-container *ngIf="columns&&columns.length>0">
             <nz-divider nzType="vertical"></nz-divider>
             <button nz-button nzType="default" nz-popover
-                    [nzContent]="tableColumnCtrl"
-                    nzTrigger="click" class="mb-sm hidden-mobile">
+                    [nzPopoverContent]="tableColumnCtrl"
+                    nzPopoverTrigger="click" class="mb-sm hidden-mobile">
                 <i nz-icon nzType="table" nzTheme="outline"></i>{{'table.col.ctrl'|i18n}}
             </button>
             <ng-template #tableColumnCtrl>

@@ -19,8 +19,8 @@
     </nz-form-item>
     <nz-form-item>
         <nz-form-control>
-            <nz-input-group class="full-width" nzSize="large" nz-popover nzPlacement="right"
-                            [nzContent]="nzTemplate" nzAddOnBeforeIcon="anticon anticon-lock">
+            <nz-input-group class="full-width" nzSize="large" nz-popover nzPopoverPlacement="right"
+                            [nzPopoverContent]="nzTemplate" nzAddOnBeforeIcon="anticon anticon-lock">
                 <input nz-input type="password" formControlName="newPwd" placeholder="新密码（至少6位密码，区分大小写）">
             </nz-input-group>
             <nz-form-explain *ngIf="newPwd.dirty && newPwd.errors">密码至少六位</nz-form-explain>
