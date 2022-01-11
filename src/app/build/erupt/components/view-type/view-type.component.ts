@@ -70,7 +70,7 @@ export class ViewTypeComponent implements OnInit, AfterViewInit {
         }, 200);
     }
 
-    @ViewChild('carousel', { static: false }) carouselComponent: NzCarouselComponent;
+    @ViewChild('carousel') carouselComponent: NzCarouselComponent;
 
     currIndex: number = 0;
 

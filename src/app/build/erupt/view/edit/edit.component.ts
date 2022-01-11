@@ -42,7 +42,7 @@ export class EditComponent implements OnInit, OnDestroy {
 
     @Input() col1 = colRules[3];
 
-    @ViewChild('eruptEdit', { static: false }) eruptEdit: EditTypeComponent;
+    @ViewChild('eruptEdit') eruptEdit: EditTypeComponent;
 
     eruptFieldModelMap: Map<String, EruptFieldModel>;
 

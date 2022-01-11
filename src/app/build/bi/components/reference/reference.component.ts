@@ -26,7 +26,7 @@ export class ReferenceComponent implements OnInit {
 
     loading: boolean = false;
 
-    @ViewChild("tree", {static: false}) tree: NzTreeBaseService;
+    @ViewChild("tree") tree: NzTreeBaseService;
 
     constructor(private dataService: BiDataService, private handlerService: HandlerService) {
 

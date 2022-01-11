@@ -85,7 +85,7 @@ export class LayoutDefaultComponent implements OnInit, AfterViewInit, OnDestroy 
 
     nowYear = new Date().getFullYear();
 
-    @ViewChild('settingHost', { read: ViewContainerRef, static: false })
+    @ViewChild('settingHost', { read: ViewContainerRef })
     settingHost: ViewContainerRef;
 
     constructor(

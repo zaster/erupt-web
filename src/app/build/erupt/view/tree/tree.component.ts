@@ -38,7 +38,7 @@ export class TreeComponent implements OnInit, OnDestroy {
 
     private currentKey: string;
 
-    @ViewChild('tree', { static: false }) tree: NzTreeBaseService;
+    @ViewChild('tree') tree: NzTreeBaseService;
 
     constructor(
         private dataService: DataService,
