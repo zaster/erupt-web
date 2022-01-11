@@ -168,6 +168,7 @@ export class TableComponent implements OnInit {
     private _actionLink: {
         fromErupt: EruptBuildModel;
         fromValue: STData;
+        fromIds: string[];
         conditions: QueryCondition[];
         eruptName: string;
         power: Power;
@@ -178,6 +179,7 @@ export class TableComponent implements OnInit {
     @Input() set actionLink(al: {
         fromErupt: EruptBuildModel;
         fromValue: STData;
+        fromIds: string[];
         conditions: QueryCondition[];
         eruptName: string;
         power: Power;
@@ -277,6 +279,7 @@ export class TableComponent implements OnInit {
         const tableOperators: STColumnButton[] = [];
         if (power.viewDetails) {
             tableOperators.push({
+                text: '查看',
                 icon: 'eye',
                 click: (record: any, modal: any) => {
                     let modalSize = 'modal-lg';
@@ -304,6 +307,7 @@ export class TableComponent implements OnInit {
         }
         if (power.edit) {
             tableOperators.push({
+                text: '编辑',
                 icon: 'edit',
                 iif: (item) => {
                     return that.evalIfExpr(power.ifExpr, item);
@@ -347,6 +351,7 @@ export class TableComponent implements OnInit {
         }
         if (power.delete) {
             tableOperators.push({
+                text: this.i18n.fanyi('table.delete'),
                 icon: {
                     type: 'delete',
                     theme: 'twotone',
@@ -376,7 +381,7 @@ export class TableComponent implements OnInit {
                 },
             });
         }
-
+        let width = 0;
         for (let action of this.eruptBuildModel.eruptModel.eruptJson.actions) {
             action.contentErupt = this.eruptBuildModel.actionErupts
                 ? this.eruptBuildModel.actionErupts[action.code]
@@ -401,43 +406,16 @@ export class TableComponent implements OnInit {
             action.click = (record) => {
                 this.createAction(action, record);
             };
+            width += action.text.length * 20;
             tableOperators.push(action);
         }
         //drill
-        const eruptJson = this.eruptBuildModel.eruptModel.eruptJson;
-        for (let i in eruptJson.drills) {
-            let drill = eruptJson.drills[i];
-            tableOperators.push({
-                type: 'link',
-                tooltip: drill.title,
-                text: `<i class="${drill.icon}"></i>`,
-                click: (record) => {
-                    let drill = eruptJson.drills[i];
-                    this.modal.create({
-                        nzWrapClassName: 'modal-xxl',
-                        nzStyle: { top: '30px' },
-                        nzMaskClosable: false,
-                        nzKeyboard: false,
-                        nzTitle: drill.title,
-                        nzFooter: null,
-                        nzContent: TableComponent,
-                        nzComponentParams: {
-                            drill: {
-                                code: drill.code,
-                                val: record,
-                                erupt: drill.link.linkErupt,
-                                parent: this.eruptBuildModel,
-                            },
-                        },
-                    });
-                },
-            });
-        }
+
         if (tableOperators.length > 0) {
             _columns.push({
                 title: this.i18n.fanyi('table.operation'),
                 fixed: 'right',
-                width: tableOperators.length * 40 + 8,
+                width: width,
                 className: 'text-center',
                 buttons: tableOperators,
             });
@@ -461,9 +439,13 @@ export class TableComponent implements OnInit {
     getModalOperatorExecuteParams(action: Action, record: STData, content: TableComponent) {
         const em = this.eruptBuildModel.eruptModel;
         const contentErupt = action.contentErupt.eruptModel;
+
         const param = {
             dependency: {
-                actionLink: this._actionLink,
+                from: {
+                    eruptName: this._actionLink ? this._actionLink.fromErupt.eruptModel.eruptName : null,
+                    ids: this._actionLink ? this._actionLink.fromIds : null,
+                },
                 eruptName: em.eruptName,
                 ids: this.getSelectedTableRowIds(em.eruptJson.primaryKeyCol, record),
             },
@@ -473,10 +455,10 @@ export class TableComponent implements OnInit {
                 formValue: null,
             },
         };
+        if (this._actionLink) {
+        }
         if (action.contentType === 'table') {
-            console.log('table' + content);
             param.content.ids = content.getSelectedTableRowIds(contentErupt.eruptJson.primaryKeyCol, null);
-            console.log('param.content.ids:' + param.content.ids);
             if (!param.content.ids || param.content.ids.length === 0) {
                 this.msg.warning(this.i18n.fanyi('table.require.select_one'));
                 return;
@@ -511,9 +493,8 @@ export class TableComponent implements OnInit {
             .toPromise()
             .then((res) => res);
         if (res.status === Status.SUCCESS) {
-            console.log(modalRef);
             this.st.reload();
-            modalRef.getInstance().close(true);
+            if (modalRef) modalRef.getInstance().close(true);
         }
     }
 
@@ -525,7 +506,6 @@ export class TableComponent implements OnInit {
         });
         //如果是在数据行的则选中的是当前行，否则为checkbox或者radio选中的行
         ids = record ? [record[rowIdName]] : ids;
-        console.log('get param:' + ids);
         return ids;
     }
     createAction(action: Action, record: STData) {
@@ -552,20 +532,17 @@ export class TableComponent implements OnInit {
             return;
         }
         let buttons = action.buttons;
-
+        let tempButtons = [];
         //如果按钮只有一个，那么ok按钮执行逻辑，否则自定义按钮
         if (buttons.length === 0) options.nzFooter = null;
         else if (buttons.length === 1) {
             options.nzOnOk = () => {
-                console.log('aaa');
-                console.log(buttons[0]);
                 let params;
                 let content;
                 if (buttons[0] && buttons[0].modalRef) {
                     content = buttons[0].modalRef.getContentComponent();
                 }
                 params = this.getModalOperatorExecuteParams(action, record, content);
-
                 this.executeAction(
                     buttons[0].modalRef,
                     this.eruptBuildModel.eruptModel.eruptName,
@@ -574,13 +551,23 @@ export class TableComponent implements OnInit {
                     params
                 );
             };
-            options.nzCancelText = this.i18n.fanyi('global.close');
+            options.nzCancelText = this.i18n.fanyi('global.close') + '（ESC）';
         } else {
             options.nzFooter = null;
             const footer = [];
             buttons.forEach((button) => {
                 footer.push(this.createModalActionButton(action, button, record));
             });
+            const closeButton: ModalButton = {
+                label: this.i18n.fanyi('global.close') + '（ESC）',
+                onClick: () => {
+                    const modalRef = closeButton.modalRef;
+                    if (modalRef) modalRef.getInstance().close(true);
+                },
+            };
+            tempButtons = [].concat(buttons, closeButton);
+
+            footer.push(closeButton);
             options.nzFooter = footer;
         }
         if (action.contentType === 'none') {
@@ -588,26 +575,20 @@ export class TableComponent implements OnInit {
             this.modal.confirm(options);
         } else {
             let modal = this.modal.create(options);
-            buttons.forEach((button) => {
-                console.log(modal);
+            tempButtons.forEach((button) => {
                 button.modalRef = modal;
             });
         }
     }
     getActionContentInitParams(action: Action, record: STData): Partial<any> {
+        const ids = this.getSelectedTableRowIds(this.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol, record);
         if (action.contentType === 'tpl')
             return {
-                url: this.dataService.getEruptActionTpl(
-                    this.eruptBuildModel.eruptModel.eruptName,
-                    action.code,
-                    this.getSelectedTableRowIds(this.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol, null)
-                ),
+                url: this.dataService.getEruptActionTpl(this.eruptBuildModel.eruptModel.eruptName, action.code, ids),
             };
         else if (action.contentType === 'importx') {
             const em = this._actionLink.fromErupt.eruptModel;
-            let paramData = this._actionLink
-                ? { fromErupt: em.eruptName, fromEruptId: this._actionLink.fromValue[em.eruptJson.primaryKeyCol] }
-                : {};
+            let paramData = this.getModalOperatorExecuteParams(action, record, null);
             return {
                 eruptModel: this.eruptBuildModel.eruptModel,
                 url:
@@ -642,6 +623,7 @@ export class TableComponent implements OnInit {
                 actionLink: {
                     fromErupt: this.eruptBuildModel,
                     fromValue: record,
+                    fromIds: ids,
                     power: action.power,
                     erupt: action.contentErupt,
                     conditions: conditions,
@@ -787,6 +769,7 @@ export class TableComponent implements OnInit {
             rows = this._reference.eruptField.eruptFieldJson.edit.$tempValue;
         } else {
             if (event.type === 'checkbox') {
+                power.delete = true;
                 this.selectedRows = event.checkbox;
             }
             rows = event.checkbox;
