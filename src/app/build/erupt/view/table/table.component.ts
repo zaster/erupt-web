@@ -455,8 +455,6 @@ export class TableComponent implements OnInit {
                 formValue: null,
             },
         };
-        if (this._actionLink) {
-        }
         if (action.contentType === 'table') {
             param.content.ids = content.getSelectedTableRowIds(contentErupt.eruptJson.primaryKeyCol, null);
             if (!param.content.ids || param.content.ids.length === 0) {
@@ -473,7 +471,7 @@ export class TableComponent implements OnInit {
         button.danger = true;
         button.show = this.evalIfExpr(button.ifExpr, record); //button.ifExpr ? eval(button.ifExpr) : true;
         const that = this;
-        button.onClick = async function(this: ModalButtonOptions<any>, contentComponent: any) {
+        button.onClick = async function (this: ModalButtonOptions<any>, contentComponent: any) {
             that.selectedRows = [];
             const params = that.getModalOperatorExecuteParams(action, record, contentComponent);
             that.executeAction(
@@ -532,7 +530,7 @@ export class TableComponent implements OnInit {
             return;
         }
         let buttons = action.buttons;
-        let tempButtons = [];
+        let tempButtons = buttons;
         //如果按钮只有一个，那么ok按钮执行逻辑，否则自定义按钮
         if (buttons.length === 0) options.nzFooter = null;
         else if (buttons.length === 1) {
@@ -565,7 +563,7 @@ export class TableComponent implements OnInit {
                     if (modalRef) modalRef.getInstance().close(true);
                 },
             };
-            tempButtons = [].concat(buttons, closeButton);
+            tempButtons = tempButtons.concat(closeButton);
 
             footer.push(closeButton);
             options.nzFooter = footer;
