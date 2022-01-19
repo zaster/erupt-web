@@ -11,11 +11,10 @@
          [nzBordered]="true">
     <nz-tree class="tree-container"
              [nzData]="list"
-             [nzShowLine]="true"
              [nzSearchValue]="searchValue"
-             [nzBlockNode]="true"
              (nzClick)="nodeClickEvent($event)"
              (nzDblClick)="nzDblClick($event)"
     >
     </nz-tree>
+    
 </nz-card>

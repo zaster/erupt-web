@@ -1,6 +1,7 @@
 export interface QueryCondition {
     key: string;
     value: any;
+    expression: Expression;
 }
 
 export interface Relation extends QueryCondition {

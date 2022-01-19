@@ -249,15 +249,26 @@ export class EditTypeComponent implements OnInit, OnDestroy, DoCheck {
             },
             nzOnOk: () => {
                 let radioValue = edit.$tempValue;
-                if (!radioValue) {
+
+                if (!radioValue || radioValue.length <= 0) {
                     this.msg.warning('请选中一条数据');
                     return false;
                 }
-                if (radioValue[edit.referenceTableType.id] != field.eruptFieldJson.edit.$value) {
+                if (radioValue[0][edit.referenceTableType.id] != field.eruptFieldJson.edit.$value) {
                     this.clearReferValue(field);
                 }
-                edit.$value = radioValue[edit.referenceTableType.id];
-                edit.$viewValue = radioValue[edit.referenceTableType.label] || '-----';
+                const ids = edit.referenceTableType.id.split('.');
+                const labels = edit.referenceTableType.label.split('.');
+                let objv = radioValue[0];
+                let objl = radioValue[0];
+                ids.forEach((v) => {
+                    objv = objv[v];
+                });
+                labels.forEach((v) => {
+                    objl = objl[v];
+                });
+                edit.$value = objv;
+                edit.$viewValue = objl || '-----';
                 edit.$tempValue = radioValue;
             },
         });

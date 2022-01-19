@@ -1,6 +1,6 @@
 import { Edit, EruptFieldModel, VL } from '../model/erupt-field.model';
 import { EruptModel, Tree } from '../model/erupt.model';
-import { DateEnum, EditType, ViewType } from '../model/erupt.enum';
+import { ChoiceEnum, DateEnum, EditType, ViewType } from '../model/erupt.enum';
 import { NzMessageService, NzModalService, UploadFile } from 'ng-zorro-antd';
 import { deepCopy } from '@delon/util';
 import { Inject, Injectable } from '@angular/core';
@@ -8,7 +8,7 @@ import { EruptBuildModel } from '../model/erupt-build.model';
 import { DataService } from '@shared/service/data.service';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
-import { QueryCondition } from '../model/erupt.vo';
+import { Expression, QueryCondition } from '../model/erupt.vo';
 import { isNotNull } from '@shared/util/erupt.util';
 import { STColumn, STData, STColumnBadge, STColumnBadgeValue, STColumnTag } from '@delon/abc';
 @Injectable()
@@ -96,9 +96,35 @@ export class DataHandlerService {
         const searchFieldModels = [];
         const searchFieldModelsMap: Map<String, EruptFieldModel> = new Map();
         copyErupt.eruptFieldModels.forEach((field) => {
-            if (!field.eruptFieldJson.edit) {
-                return;
-            }
+            const columns = field.eruptFieldJson.columns;
+            let isColumnSearch = false;
+            columns.forEach((column) => {
+                if (column.edit.search.value) {
+                    //column.edit.search.value = true;
+                    column.edit.title = column.title.text;
+                    const searchField: EruptFieldModel = {
+                        fieldName: column.index,
+                        choiceList: column.choiceList,
+                        eruptFieldJson: {
+                            edit: column.edit,
+                        },
+                    };
+
+                    searchField.value = null;
+                    searchField.eruptFieldJson.edit.notNull = searchField.eruptFieldJson.edit.search.notNull;
+                    searchField.eruptFieldJson.edit.show = true;
+                    searchField.eruptFieldJson.edit.readOnly.add = false;
+                    searchField.eruptFieldJson.edit.readOnly.edit = false;
+                    searchField.eruptFieldJson.edit.$value = null;
+                    searchField.eruptFieldJson.edit.$viewValue = null;
+                    searchField.eruptFieldJson.edit.$tempValue = null;
+                    searchFieldModels.push(searchField);
+                    searchFieldModelsMap.set(searchField.fieldName, searchField);
+                    isColumnSearch = true;
+                }
+            });
+            if (isColumnSearch) return;
+            if (!field.eruptFieldJson.edit) return;
             searchFieldModelsMap.set(field.fieldName, field);
             if (field.eruptFieldJson.edit.search.value) {
                 field.value = null;
@@ -115,6 +141,7 @@ export class DataHandlerService {
         copyErupt.mode = 'search';
         copyErupt.eruptFieldModels = searchFieldModels;
         copyErupt.eruptFieldModelMap = searchFieldModelsMap;
+
         return copyErupt;
     }
 
@@ -139,14 +166,18 @@ export class DataHandlerService {
     }
 
     dataTreeToZorroTree(nodes: Tree[], expandLevel: number) {
+        console.log(nodes);
         const tempNodes = [];
+
         nodes.forEach((node) => {
             let option: any = {
                 key: node.id,
                 title: node.label,
-                data: node.data,
+                data: node,
                 expanded: node.level <= expandLevel,
             };
+            console.log('node.data');
+            console.log(node.data);
             if (node.children && node.children.length > 0) {
                 tempNodes.push(option);
                 option.children = this.dataTreeToZorroTree(node.children, expandLevel);
@@ -155,6 +186,8 @@ export class DataHandlerService {
                 tempNodes.push(option);
             }
         });
+        console.log('tempNodes');
+        console.log(tempNodes);
         return tempNodes;
     }
 
@@ -164,6 +197,7 @@ export class DataHandlerService {
             queryCondition.push({
                 key: key,
                 value: obj[key],
+                expression: Expression.EQ,
             });
         }
         return queryCondition;
@@ -308,9 +342,8 @@ export class DataHandlerService {
                             let ids = [];
                             (<any[]>edit.$value).forEach((val) => {
                                 const obj = {};
-                                obj[
-                                    eruptBuildModel.tabErupts[field.fieldName].eruptModel.eruptJson.primaryKeyCol
-                                ] = val;
+                                obj[eruptBuildModel.tabErupts[field.fieldName].eruptModel.eruptJson.primaryKeyCol] =
+                                    val;
                                 ids.push(obj);
                             });
                             eruptData[field.fieldName] = ids;

@@ -46,13 +46,13 @@ export class LayoutTreeComponent implements OnInit {
             } else {
                 this.list = this.dataHandler.dataTreeToZorroTree(data, this.eruptModel.eruptJson.tree.expandLevel);
             }
-            if (!this.eruptModel.eruptJson.linkTree.dependNode) {
-                this.list.unshift({
-                    key: null,
-                    title: this.i18n.fanyi('global.all'),
-                    isLeaf: true,
-                });
-            }
+            // if (!this.eruptModel.eruptJson.linkTree.dependNode) {
+            //     this.list.unshift({
+            //         key: null,
+            //         title: this.i18n.fanyi('global.all'),
+            //         isLeaf: true,
+            //     });
+            // }
             this.treeLoading = false;
         });
     }
@@ -63,15 +63,17 @@ export class LayoutTreeComponent implements OnInit {
     }
 
     nodeClickEvent(event: NzFormatEmitEvent): void {
+        event.node.isSelected = true;
         if (event.node.origin.key == null) {
             this.trigger.emit(null);
         } else {
             let dt = this.eruptModel.eruptJson.linkTree;
 
             if (!event.node.origin.selected && !dt.dependNode) {
-                this.trigger.emit(null);
+                //this.trigger.emit(null);
             } else {
-                this.trigger.emit(event.node.origin.key);
+                console.log(event.node);
+                this.trigger.emit(event.node);
             }
         }
         // this.data.queryEruptDataById(this.eruptBuildModel.eruptModel.eruptName, this.currentKey).subscribe(data => {

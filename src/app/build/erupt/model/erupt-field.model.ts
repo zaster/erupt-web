@@ -37,6 +37,7 @@ export interface Column extends STColumn {
     show?: boolean;
     template?: string;
     link?: LinkModel;
+    edit: Edit;
     eruptFieldModel?: EruptFieldModel;
 }
 
@@ -57,6 +58,7 @@ export interface Action extends STColumnButton {
 export interface ModalButton extends ModalButtonOptions {
     code?: string;
     modalRef?: NzModalRef;
+    action?: Action;
 }
 
 export interface LinkModel {

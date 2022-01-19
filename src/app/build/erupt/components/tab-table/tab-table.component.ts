@@ -100,8 +100,8 @@ export class TabTableComponent implements OnInit {
                                 if (result.status == Status.SUCCESS) {
                                     let $value = this.tabErupt.eruptFieldModel.eruptFieldJson.edit.$value;
                                     $value.forEach((val, index) => {
-                                        let tabPrimaryKeyCol = this.tabErupt.eruptBuildModel.eruptModel.eruptJson
-                                            .primaryKeyCol;
+                                        let tabPrimaryKeyCol =
+                                            this.tabErupt.eruptBuildModel.eruptModel.eruptJson.primaryKeyCol;
                                         if (record[tabPrimaryKeyCol] == val[tabPrimaryKeyCol]) {
                                             $value[index] = obj;
                                         }
@@ -211,7 +211,8 @@ export class TabTableComponent implements OnInit {
             nzOnOk: () => {
                 let tabEruptModel = this.tabErupt.eruptBuildModel.eruptModel;
                 let edit = this.tabErupt.eruptFieldModel.eruptFieldJson.edit;
-                if (!edit.$tempValue) {
+                console.log(edit.$tempValue);
+                if (!edit.$tempValue || edit.$tempValue.length <= 0) {
                     this.msg.warning(this.i18n.fanyi('global.select.one'));
                     return false;
                 }

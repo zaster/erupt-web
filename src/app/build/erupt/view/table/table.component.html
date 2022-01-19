@@ -15,11 +15,11 @@
                     
                 </div>
 
-                <nz-card *ngIf="searchErupt&&searchErupt.eruptFieldModels&&searchErupt.eruptFieldModels.length>0"
+                <nz-card 
                          [nzBodyStyle]="{padding:'10px'}"
                          class="search-card"
                          >
-                    <erupt-edit-type
+                    <erupt-edit-type *ngIf="searchErupt&&searchErupt.eruptFieldModels&&searchErupt.eruptFieldModels.length>0"
                             [eruptBuildModel]="{eruptModel:searchErupt,referenceErupts:eruptBuildModel.referenceErupts}"
                             [col]="{ xs: 24, sm: 24, md: 12, lg: 8, xl: 8, xxl: 6 }"
                             (search)="query()"
@@ -31,7 +31,7 @@
                     </erupt-edit-type>
 
                         <div class="erupt-btn-item">
-                            <div *ngIf="eruptBuildModel.eruptModel.eruptJson.power.query&&searchErupt.eruptFieldModels&&searchErupt.eruptFieldModels.length>0"
+                            <div *ngIf="eruptBuildModel.eruptModel.eruptJson.power.query"
                             class="condition-btn">
                             <button nz-button nzType="primary" style="background: #fff !important;" [nzGhost]="true"
                             class="mb-sm" [nzLoading]="st._loading" id="erupt-btn-query"
