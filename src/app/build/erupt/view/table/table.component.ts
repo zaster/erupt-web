@@ -682,8 +682,7 @@ export class TableComponent implements OnInit {
                         if (this._actionLink && this._actionLink.fromValue) {
                             this._actionLink.relations.forEach((element) => {
                                 let obj = data;
-                                const keys = element.key.split('.');
-                                keys.forEach((v, i, a) => {
+                                element.key.split('.').forEach((v, i, a) => {
                                     obj[v] = i === a.length - 1 ? this._actionLink.fromValue[element.recordKey] : {};
                                     obj = obj[v];
                                 });
